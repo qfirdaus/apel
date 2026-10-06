@@ -1,0 +1,20 @@
+/* portfolio-register.css */
+
+#section_manual {
+    transition: all 0.3s ease-in-out;
+    border-left: 4px solid #3b82f6 !important; /* Warna biru primary */
+}
+
+.payment-method {
+    cursor: pointer;
+}
+
+.payment-method + label {
+    cursor: pointer;
+    margin-right: 20px;
+    font-weight: 500;
+}
+
+#paparan_yuran {
+    letter-spacing: 1px;
+}
