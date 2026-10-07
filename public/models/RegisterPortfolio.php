@@ -5,7 +5,7 @@ class RegisterPortfolio
 {
     private PDO $pdoSPK;
 
-    public function __construct(PDO $pdoSPK = null)
+    public function __construct(?PDO $pdoSPK = null)
     {
         // Dalam contoh sebenar, connection database dimasukkan di sini
         $this->pdoSPK = $pdoSPK ?? new PDO('sqlite::memory:'); 
