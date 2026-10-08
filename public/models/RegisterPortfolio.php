@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 class RegisterPortfolio
 {
-    private PDO $pdoSPK;
+    private ?PDO $pdoSPK;
 
     public function __construct(?PDO $pdoSPK = null)
     {
-        // Dalam contoh sebenar, connection database dimasukkan di sini
-        $this->pdoSPK = $pdoSPK ?? new PDO('sqlite::memory:'); 
+        // Sambungan sebenar boleh disuntik apabila modul mula menggunakan DB.
+        // Aliran semasa menggunakan data dummy dan tidak memerlukan SQLite.
+        $this->pdoSPK = $pdoSPK;
     }
 
     public function getSenaraiProgramDummy(): array
