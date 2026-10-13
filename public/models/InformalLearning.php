@@ -1,74 +1,113 @@
 <?php
-declare(strict_types=1);
+class InformalLearning {
+    private PDO $db;
 
-require_once __DIR__ . '/../classes/Database.php';
-
-class InformalLearning
-{
-    private PDO $pdo;
-
-    public function __construct()
-    {
-        // Guna sambungan pangkalan data sistem anda
-        $this->pdo = Database::pdoMysql(); 
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    public function __construct(PDO $db) {
+        $this->db = $db;
     }
 
-    // 1. Simpan Pengalaman Kerja
-    public function addWorkExperience(string $userID, array $data): int
-    {
-        $sql = "INSERT INTO tbl_portfolio_work_exp 
-                (user_id, employer_name, contact_address, date_from, date_to, position_held, what_learned) 
-                VALUES (:user_id, :employer, :address, :d_from, :d_to, :position, :learned)";
-        
-        $stmt = $this->pdo->prepare($sql);
+    public function saveWorkExperience(array $data): int {
+        $sql = "INSERT INTO apelq_work_experience 
+                (student_id, employer_name, contact_address, start_date, end_date, position_held, what_learned) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ':user_id'  => $userID,
-            ':employer' => $data['employer_name'],
-            ':address'  => $data['contact_address'],
-            ':d_from'   => !empty($data['date_from']) ? $data['date_from'] : null,
-            ':d_to'     => !empty($data['date_to']) ? $data['date_to'] : null,
-            ':position' => $data['position_held'],
-            ':learned'  => $data['what_learned']
+            $data['student_id'] ?? '', 
+            $data['employer_name'] ?? '', 
+            $data['contact_address'] ?? '', 
+            $data['start_date'], 
+            $data['end_date'], 
+            $data['position_held'] ?? '', 
+            $data['what_learned'] ?? ''
         ]);
-
-        return (int)$this->pdo->lastInsertId(); // Pulangkan ID rekod untuk link dengan dokumen
+        return (int)$this->db->lastInsertId();
     }
 
-    // 2. Simpan Aktiviti Pembelajaran Lain
-    public function addOtherActivity(string $userID, array $data): int
-    {
-        $sql = "INSERT INTO tbl_portfolio_other_act 
-                (user_id, activity_name, start_date, end_date, organizer, skill_level, what_learned) 
-                VALUES (:user_id, :activity, :s_date, :e_date, :organizer, :skill, :learned)";
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            ':user_id'   => $userID,
-            ':activity'  => $data['activity_name'],
-            ':s_date'    => !empty($data['start_date']) ? $data['start_date'] : null,
-            ':e_date'    => !empty($data['end_date']) ? $data['end_date'] : null,
-            ':organizer' => $data['organizer'],
-            ':skill'     => $data['skill_level'] ?? null,
-            ':learned'   => $data['what_learned']
-        ]);
+    public function saveEvidenceFiles(string $studentId, string $moduleType, int $recordId, array $files): void {
+        $sql = "INSERT INTO apelq_evidence_files (student_id, module_type, record_id, file_name, file_path) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
 
-        return (int)$this->pdo->lastInsertId();
+        $uploadDir = __DIR__ . '/../pages/portfolio/informal/uploads/';
+        
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        if (isset($files['name']) && is_array($files['name'])) {
+            foreach ($files['name'] as $key => $name) {
+                if ($files['error'][$key] === UPLOAD_ERR_OK) {
+                    $ext = pathinfo($name, PATHINFO_EXTENSION);
+                    $newName = strtolower($moduleType) . '_' . $recordId . '_' . time() . '_' . $key . '.' . $ext;
+                    $dest = $uploadDir . $newName;
+                    
+                    if (move_uploaded_file($files['tmp_name'][$key], $dest)) {
+                        $dbFilePath = 'uploads/' . $newName;
+                        
+                        $stmt->execute([$studentId, $moduleType, $recordId, $name, $dbFilePath]);
+                    }
+                }
+            }
+        }
     }
 
-    // 3. Simpan Rekod Dokumen (Polymorphic untuk kedua-dua tab)
-    public function addDocument(string $moduleType, int $recordID, string $fileName, string $filePath): bool
-    {
-        $sql = "INSERT INTO tbl_portfolio_documents 
-                (module_type, record_id, file_name, file_path) 
-                VALUES (:module, :record, :fname, :fpath)";
+    public function getEvidenceFiles(string $moduleType, int $recordId): array {
+        $sql = "SELECT * FROM apelq_evidence_files WHERE module_type = ? AND record_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$moduleType, $recordId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getWorkExperience(string $studentId): array {
+        $sql = "SELECT * FROM apelq_work_experience WHERE student_id = ? ORDER BY start_date DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$studentId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }    
+
+    public function deleteWorkExperience(int $id): bool {
+        $files = $this->getEvidenceFiles('WORK', $id);
+        foreach ($files as $file) {
+            $physicalPath = __DIR__ . '/../' . $file['file_path']; 
+            if (file_exists($physicalPath) && is_file($physicalPath)) {
+                @unlink($physicalPath); 
+            }
+        }
+
+        $sqlFile = "DELETE FROM apelq_evidence_files WHERE module_type = 'WORK' AND record_id = ?";
+        $stmtFile = $this->db->prepare($sqlFile);
+        $stmtFile->execute([$id]);
+
+        $sql = "DELETE FROM apelq_work_experience WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$id]);
+    }    
+
+    public function updateWorkExperience(array $data): bool {
+        $sql = "UPDATE apelq_work_experience 
+                SET employer_name = ?, contact_address = ?, start_date = ?, end_date = ?, position_held = ?, what_learned = ? 
+                WHERE id = ?";
+                
+        $stmt = $this->db->prepare($sql);
         
-        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            ':module' => $moduleType,
-            ':record' => $recordID,
-            ':fname'  => $fileName,
-            ':fpath'  => $filePath
+            $data['employer_name'] ?? '', 
+            $data['contact_address'] ?? '', 
+            $data['start_date'], 
+            $data['end_date'], 
+            $data['position_held'] ?? '', 
+            $data['what_learned'] ?? '',
+            $data['record_id']
         ]);
     }
+    
+    public function getEvidenceFileById(int $fileId) {
+        $stmt = $this->db->prepare("SELECT * FROM apelq_evidence_files WHERE id = ?");
+        $stmt->execute([$fileId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteEvidenceFileById(int $fileId): bool {
+        $stmt = $this->db->prepare("DELETE FROM apelq_evidence_files WHERE id = ?");
+        return $stmt->execute([$fileId]);
+    }    
 }

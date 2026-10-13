@@ -1,6 +1,84 @@
 <?php
 
 return [
-    // Project-specific Malay translations.
-    // Keys in this file override public/lang/core/ms.php.
+    // ===== Informal Learning (index.php) =====
+    'informal_title' => 'Pembelajaran Informal',
+    'informal_subtitle' => 'Pembelajaran yang berlaku secara berterusan melalui pengalaman hidup dan pekerjaan. Ia selalunya pembelajaran yang tidak disengajakan.',
+    'informal_tab_other' => 'Aktiviti Pembelajaran Lain',
+    'informal_work_info' => 'Sila klik <a href="#" class="text-primary fw-bold text-decoration-none">lampiran</a> untuk memuat naik dokumen sokongan sebagai rujukan. Sila mulakan dengan <strong>pengalaman terkini</strong>.',
+    'informal_other_desc' => 'Senaraikan sebarang aktiviti informal atau kemahiran lain yang telah anda perolehi.',
+
+    // ===== Pengalaman Kerja =====
+    'work_title' => 'Pengalaman Kerja',
+    'work_employer' => 'Nama Majikan / Bekerja Sendiri',
+    'work_position' => 'Jawatan Disandang',
+    'work_address' => 'Alamat Tempat Kerja',
+    'work_start_date' => 'Dari (Tarikh Mula)',
+    'work_end_date' => 'Hingga (Tarikh Tamat)',
+    'work_learned' => 'Apa Yang Saya Pelajari / Perolehi',
+    'work_evidence' => 'Bukti Pembelajaran',
+    'work_btn_add' => 'Tambah Rekod',
+    'work_btn_save' => 'Simpan Perubahan',
+    'work_btn_close' => 'Tutup',
+
+    // Jadual (f-work-experience.php)
+    'work_th_no' => 'BIL',
+    'work_th_employer' => 'NAMA MAJIKAN',
+    'work_th_duration' => 'TEMPOH (DARI - HINGGA)',
+    'work_th_position' => 'JAWATAN DISANDANG',
+    'work_th_learned' => 'APA YANG SAYA PELAJARI',
+    'work_th_evidence' => 'BUKTI',
+    'work_th_action' => 'TINDAKAN',
+    'work_none' => 'Tiada',
+    'work_tip_view_files' => 'Lihat Lampiran',
+    'work_tip_edit' => 'Kemaskini Rekod',
+    'work_tip_delete' => 'Padam Rekod',
+
+    // Modal senarai fail
+    'work_files_title' => 'Fail Lampiran',
+
+    'work_modal_add_title' => 'Tambah Rekod',
+    'work_placeholder_employer' => 'cth. Syarikat ABC Sdn Bhd',
+    'work_placeholder_position' => 'cth. Eksekutif Pemasaran',
+    'work_placeholder_address' => 'Alamat penuh majikan...',
+    'work_placeholder_learned' => 'Terangkan kemahiran dan pengetahuan yang anda perolehi...',
+
+    'work_upload_info_1' => 'Anda boleh memilih dan memuat naik <strong>lebih daripada satu fail (multiple files)</strong> serentak.',
+    'work_upload_info_2' => '(Cara: Tekan butang <code>Ctrl</code> pada papan kekunci dan klik fail).',
+    'work_upload_limit' => '** Hanya fail PDF, JPEG dan JPG dengan saiz maksimum 5MB dibenarkan.',
+
+    'work_modal_edit_title' => 'Kemaskini Pengalaman Kerja',
+    'work_existing_evidence' => 'Fail Lampiran Sedia Ada',
+    'work_optional_new_file' => '(Pilihan - Tambah Fail Baharu)',
+
+    // ===== JavaScript / SweetAlert (informal-learning.js) =====
+    'js_datepicker_clear' => 'Kosongkan',
+    'js_search_placeholder' => 'Cari...',
+    'js_cancel' => 'Batal',
+    'js_save_confirm_title' => 'Simpan Rekod?',
+    'js_save_confirm_text' => 'Pastikan maklumat dan dokumen lampiran adalah tepat.',
+    'js_save_btn' => 'Ya, Simpan',
+    'js_saving_title' => 'Sedang Menyimpan...',
+    'js_saving_text' => 'Sila tunggu sebentar. Dokumen anda sedang dimuat naik.',
+    'js_success' => 'Berjaya!',
+    'js_save_success' => 'Rekod berjaya disimpan.',
+    'js_error' => 'Ralat',
+    'js_system_error' => 'Ralat Sistem',
+    'js_request_failed' => 'Permintaan tidak dapat diproses.',
+    'js_connection_error' => 'Ralat sambungan pelayan. Sila cuba lagi.',
+    'js_selected_files' => 'Fail yang dipilih ({n} fail):',
+    'js_no_files_found' => 'Tiada fail dijumpai.',
+    'js_delete_confirm_title' => 'Adakah anda pasti?',
+    'js_delete_record_text' => 'Rekod ini dan fail lampirannya akan dipadam secara kekal!',
+    'js_delete_btn' => 'Ya, Padam',
+    'js_deleting' => 'Sedang Memadam...',
+    'js_delete_record_failed' => 'Gagal memadam rekod.',
+    'js_server_unreachable' => 'Gagal berhubung dengan pelayan.',
+    'js_server_unreachable_retry' => 'Gagal berhubung dengan pelayan. Sila cuba lagi.',
+    'js_delete_this_file' => 'Padam Fail Ini',
+    'js_no_attachments' => 'Tiada fail lampiran.',
+    'js_no_existing_attachments' => 'Tiada fail lampiran sedia ada.',
+    'js_delete_file_text' => 'Fail lampiran ini akan dipadam secara kekal!',
+    'js_file_deleted' => 'Fail telah dipadam.',
+    'js_delete_file_failed' => 'Gagal memadam fail.',
 ];

@@ -1,0 +1,113 @@
+.table {
+    border-color: #eef2f7;
+}
+
+.table thead th {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6c757d;
+    background-color: #f8f9fa !important;
+    border-bottom: 2px solid #eef2f7;
+    padding: 12px 15px;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    color: #495057;
+    font-size: 0.9rem;
+    padding: 12px 15px;
+}
+
+.page-title-subtitle {
+    margin: .4rem 0 0 2.9rem;
+    color: var(--ul-muted);
+    font-size: .82rem;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   Gaya Modal Dinamik (Mengikut Pilihan Warna Templat)
+========================================================= */
+
+.modal-add-accent .modal-content {
+    border: none !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 28px 72px rgba(15, 23, 42, .24) !important;
+}
+
+/* Gradient Header menggunakan CSS Variables Templat (--ct-primary) */
+.modal-add-accent .modal-header {
+    background: linear-gradient(135deg, var(--ct-primary-start, var(--ct-primary, #3b5998)) 0%, var(--ct-primary-end, var(--ct-primary, #2a4073)) 100%) !important;
+    color: #ffffff !important;
+    border-bottom: none !important;
+    padding: 1.1rem 1.35rem !important;
+}
+
+/* Susunan Tajuk Modal */
+.modal-add-accent .modal-title {
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0;
+}
+
+.modal-add-accent .modal-title i {
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+/* Butang Close (X) ditukar warna putih */
+.modal-add-accent .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+    transition: all 0.2s ease;
+}
+
+.modal-add-accent .btn-close:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Footer Modal */
+.modal-add-accent .modal-footer {
+    background: #f8f9fa !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.15) !important;
+    padding: 1rem 1.35rem !important;
+}
+
+/* Butang Save Record (Primary) */
+.modal-add-accent .modal-footer .btn-primary {
+    background: linear-gradient(135deg, var(--ct-primary-start, var(--ct-primary, #3b5998)) 0%, var(--ct-primary-end, var(--ct-primary, #2a4073)) 100%) !important;
+    border: none !important;
+    font-weight: 600;
+    color: #ffffff !important;
+    /* Guna rgba var(--ct-primary-rgb) jika disokong oleh templat, jika tidak ia fallback ke bayang neutral */
+    box-shadow: 0 4px 12px rgba(var(--ct-primary-rgb, 59, 89, 152), 0.28) !important;
+    transition: all 0.2s ease;
+}
+
+.modal-add-accent .modal-footer .btn-primary:hover {
+    box-shadow: 0 6px 16px rgba(var(--ct-primary-rgb, 59, 89, 152), 0.38) !important;
+    transform: translateY(-1px);
+}
+
+/* Pastikan kalendar sentiasa berada di lapisan paling atas (atas modal) */
+.daterangepicker {
+    z-index: 99999 !important;
+}
+
+.swal2-container {
+    z-index: 99999 !important;
+}

@@ -1,19 +1,41 @@
 <?php
-// Fail ini diletakkan di dalam folder pages/portfolio/informal/
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
-header('Content-Type: application/json');
+declare(strict_types=1);
 
-require_once __DIR__ . '/../../../controllers/InformalController.php';
+session_start();
+header('Content-Type: application/json; charset=utf-8');
 
-// Pastikan ia adalah POST request
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $controller = new InformalController();
-    $controller->handleRequest();
-} else {
+require_once __DIR__ . '/../../../controllers/InformalLearningController.php';
+
+try {    
+    $controller = new InformalLearningController();
+
+    $action = $_POST['action'] ?? '';
+
+    if ($action === 'add_work') {
+        $response = $controller->addWorkExperience($_POST, $_FILES);
+        
+    } elseif ($action === 'update_work') {
+        $response = $controller->updateWorkExperience($_POST, $_FILES);
+
+    } elseif ($action === 'delete_work') {
+        $id = (int)($_POST['id'] ?? 0);
+        $response = $controller->deleteWorkExperience($id);
+        
+    } elseif ($action === 'delete_file') {
+        $id = (int)($_POST['id'] ?? 0);
+        $response = $controller->deleteSingleEvidenceFile($id);
+
+    } else {
+        $response = ['status' => 'error', 'message' => 'Tindakan (action) borang tidak sah.'];
+    }
+
+    echo json_encode($response);
+    exit;
+
+} catch (Throwable $e) {
     echo json_encode([
-        'status' => 'error',
-        'message' => 'Permintaan tidak sah (Bukan POST).'
+        'status'  => 'error',
+        'message' => $e->getMessage()
     ]);
+    exit;
 }
