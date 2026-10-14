@@ -81,4 +81,27 @@ return [
     'js_delete_file_text' => 'Fail lampiran ini akan dipadam secara kekal!',
     'js_file_deleted' => 'Fail telah dipadam.',
     'js_delete_file_failed' => 'Gagal memadam fail.',
+
+    // ===== Aktiviti Pembelajaran Lain =====
+    'other_checkbox_none' => 'Tiada Aktiviti Pembelajaran Lain',
+    'other_checkbox_none_info' => 'Sistem mendapati anda mempunyai rekod sedia ada. Sila <strong>padam semua rekod</strong> di bawah terlebih dahulu untuk menggunakan pilihan ini.',
+    'other_th_no' => 'Bil',
+    'other_th_activity' => 'Aktiviti lain',
+    'other_th_skill' => 'Tahap Kemahiran',
+    'other_th_learned' => 'Apa yang saya pelajari/perolehi',
+    'other_th_evidence' => 'Bukti',
+    'other_th_action' => 'Tindakan',
+    'other_modal_add_title' => 'Tambah Rekod (Aktiviti Pembelajaran Lain)',
+    'other_modal_edit_title' => 'Kemaskini Aktiviti Pembelajaran Lain',
+    'other_activity' => 'Aktiviti lain',
+    'other_placeholder_activity' => 'cth. Bengkel Pembinaan Item',
+    'other_start_date' => 'Tarikh Mula',
+    'other_end_date' => 'Tarikh Tamat',
+    'other_organizer' => 'Penganjur',
+    'other_placeholder_organizer' => 'cth. Kementerian Pendidikan',
+    'other_skill_level' => 'Tahap Kemahiran',
+    // Kod bahasa semasa (digunakan untuk pilih levelDesc / levelDescEN)
+    'lang_code' => 'ms',
+    'other_skill_choose' => '- SILA PILIH -',
+    'other_learned' => 'Apa Yang Saya Pelajari/Perolehi',
 ];

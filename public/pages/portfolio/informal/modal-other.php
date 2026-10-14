@@ -1,57 +1,89 @@
-<div class="modal fade" id="modalOther" tabindex="-1" aria-hidden="true" aria-labelledby="modalOtherTitle">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <form id="formOther" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalOtherTitle">Add Record (Other Learning Activities)</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="student_id" value="<?= h($_SESSION['student_id'] ?? '') ?>">
+<!-- Modal Add Other Learning Activity -->
+<div class="modal fade modal-add-accent" id="modalAddOtherAct" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <form id="formOtherAct" enctype="multipart/form-data">
+            <div class="modal-content">
 
-                    <div class="mb-3">
-                        <label for="otherActivityName" class="form-label">Other activities</label>
-                        <input type="text" name="activity_name" id="otherActivityName" class="form-control" required>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="otherStartDate" class="form-label">Start Date</label>
-                            <input type="date" name="start_date" id="otherStartDate" class="form-control">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="ri-lightbulb-flash-line"></i>
+                        <span><?= h(__('other_modal_add_title')) ?></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= h(__('work_btn_close')) ?>"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body px-4 py-4">
+                    <input type="hidden" name="action" value="add_other">
+
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-secondary"><?= h(__('other_activity')) ?> <span class="text-danger">*</span></label>
+                            <input type="text" name="activity_name" class="form-control" placeholder="<?= h(__('other_placeholder_activity')) ?>" maxlength="255" required>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="otherEndDate" class="form-label">End Date</label>
-                            <input type="date" name="end_date" id="otherEndDate" class="form-control">
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-secondary"><?= h(__('other_start_date')) ?></label>
+                            <input type="text" name="start_date" class="form-control datepicker" placeholder="dd/mm/yyyy" autocomplete="off">
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="otherOrganizer" class="form-label">Organizer</label>
-                        <input type="text" name="organizer" id="otherOrganizer" class="form-control">
-                    </div>
-                    <div class="mb-3">
-                        <label for="skillLevel" class="form-label">Skill Level</label>
-                        <select name="skill_level" id="skillLevel" class="form-select">
-                            <option value="" disabled selected>- PLEASE CHOOSE -</option>
-                            <option value="Asas">Asas (Basic)</option>
-                            <option value="Pertengahan">Pertengahan (Intermediate)</option>
-                            <option value="Mahir">Mahir (Advanced)</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="otherWhatLearned" class="form-label">What I Have Learned/Acquired</label>
-                        <textarea name="what_learned" id="otherWhatLearned" class="form-control" rows="4"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="otherEvidence" class="form-label fw-bold">Evidence Of Learning</label>
-                        <p class="text-danger small mb-1">** Only PDF, JPEG and JPG files are allowed. You can select multiple files.</p>
-                        <input type="file" name="evidence[]" id="otherEvidence" class="form-control" accept=".pdf,.jpeg,.jpg" multiple>
-                        <ul class="list-group list-group-flush small mt-2" id="otherEvidenceList" aria-live="polite"></ul>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-secondary"><?= h(__('other_end_date')) ?></label>
+                            <input type="text" name="end_date" class="form-control datepicker" placeholder="dd/mm/yyyy" autocomplete="off">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-secondary"><?= h(__('other_organizer')) ?></label>
+                            <input type="text" name="organizer" class="form-control" placeholder="<?= h(__('other_placeholder_organizer')) ?>" maxlength="255">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-secondary"><?= h(__('other_skill_level')) ?></label>
+                            <select name="skill_level" class="form-select">
+                                <option value="" selected><?= h(__('other_skill_choose')) ?></option>
+                                <?php foreach ($skillOptions as $opt): ?>
+                                <option value="<?= h($opt['id']) ?>"><?= h($opt['label']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-secondary"><?= h(__('other_learned')) ?></label>
+                            <textarea name="what_learned" class="form-control" rows="4" placeholder="<?= h(__('work_placeholder_learned')) ?>"></textarea>
+                        </div>
+
+                        <!-- Bahagian Muat Naik Fail -->
+                        <div class="col-12 mt-4">
+                            <div class="p-4 bg-light border border-primary border-opacity-25 rounded-3">
+                                <label class="form-label fw-bold text-primary mb-3">
+                                    <i class="ri-upload-cloud-2-line me-1"></i> <?= h(__('work_evidence')) ?>
+                                </label>
+
+                                <div class="alert alert-primary bg-primary bg-opacity-10 text-primary py-2 px-3 mb-3 border-0 d-flex align-items-start" role="alert">
+                                    <i class="ri-information-fill me-2 mt-1 fs-5"></i>
+                                    <div>
+                                        <?= __('work_upload_info_1') ?>
+                                        <br><span class="small text-muted"><?= __('work_upload_info_2') ?></span>
+                                    </div>
+                                </div>
+
+                                <input type="file" name="evidence_files[]" id="evidenceFilesOther" class="form-control border-primary" accept=".pdf,.jpg,.jpeg" multiple>
+                                <p class="text-danger small mt-2 mb-0 fw-medium"><?= h(__('work_upload_limit')) ?></p>
+
+                                <div id="fileListOther" class="file-list-display mt-3 text-primary small fw-semibold"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Modal Footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal"><?= h(__('work_btn_close')) ?></button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="ri-save-3-line me-1"></i> <?= h(__('work_btn_add')) ?>
+                    </button>
                 </div>
-            </form>
-        </div>
+
+            </div>
+        </form>
     </div>
 </div>

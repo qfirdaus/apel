@@ -1,16 +1,3 @@
-<style>
-    /* Jadual Work Experience: muat dalam container, tiada scroll */
-    #tblWork { width: 100% !important; table-layout: fixed; }
-    #tblWork th, #tblWork td { overflow-wrap: anywhere; }
-    #tblWork td.col-action { white-space: nowrap; }
-
-    /* Ruang di bawah jadual (Showing... & Previous/Next) */
-    #tblWork_wrapper .dataTables_info,
-    #tblWork_wrapper .dt-info,
-    #tblWork_wrapper .dataTables_paginate,
-    #tblWork_wrapper .dt-paging { padding: .5rem 1.25rem 1.25rem !important; }
-</style>
-
 <div class="border border-light-subtle rounded-3 p-3 mt-3 bg-white shadow-sm">
     
     <div class="d-flex justify-content-end mb-3">
@@ -72,7 +59,7 @@
                                 ?>
                                 
                                 <button type="button" 
-                                        class="btn btn-sm btn-info text-white position-relative btn-view-files" 
+                                        class="btn btn-sm btn-outline-info position-relative btn-view-files" 
                                         data-files="<?= $jsonFiles ?>" 
                                         title="<?= h(__('work_tip_view_files')) ?>">
                                     <i class="ri-attachment-line"></i>
@@ -88,7 +75,7 @@
 
                         <td class="text-center col-action">
                             <div class="d-flex justify-content-center gap-1">
-                            <button type="button" class="btn btn-sm btn-warning text-white btn-edit-work" 
+                            <button type="button" class="btn btn-sm btn-outline-warning btn-edit-work" 
                                 data-id="<?= $recordId ?>"
                                 data-employer="<?= htmlspecialchars($row['employer_name']) ?>"
                                 data-address="<?= htmlspecialchars($row['contact_address'] ?? '') ?>" 
@@ -101,7 +88,7 @@
                                 <i class="ri-pencil-line"></i>
                             </button>
                             
-                            <button type="button" class="btn btn-sm btn-danger btn-delete-work" data-id="<?= $recordId ?>" title="<?= h(__('work_tip_delete')) ?>">
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-delete-work" data-id="<?= $recordId ?>" title="<?= h(__('work_tip_delete')) ?>">
                                 <i class="ri-delete-bin-line"></i>
                             </button>
                             </div>
@@ -119,6 +106,5 @@
 
 <?php 
     include __DIR__ . '/modal-work.php'; 
-    include __DIR__ . '/modal-view-files.php'; 
     include __DIR__ . '/modal-update-work.php';
 ?>

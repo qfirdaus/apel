@@ -81,4 +81,27 @@ return [
     'js_delete_file_text' => 'This attachment will be permanently deleted!',
     'js_file_deleted' => 'The file has been deleted.',
     'js_delete_file_failed' => 'Failed to delete the file.',
+
+    // ===== Other Learning Activities =====
+    'other_checkbox_none' => 'No Other Learning Activities',
+    'other_checkbox_none_info' => 'The system detected that you have existing records. Please <strong>delete all records</strong> below first to use this option.',
+    'other_th_no' => 'No',
+    'other_th_activity' => 'Other activities',
+    'other_th_skill' => 'Skill Level',
+    'other_th_learned' => 'What I have learnt/acquired',
+    'other_th_evidence' => 'Evidence',
+    'other_th_action' => 'Action',
+    'other_modal_add_title' => 'Add Record (Other Learning Activities)',
+    'other_modal_edit_title' => 'Edit Other Learning Activity',
+    'other_activity' => 'Other activities',
+    'other_placeholder_activity' => 'e.g. Item Construction Workshop',
+    'other_start_date' => 'Start Date',
+    'other_end_date' => 'End Date',
+    'other_organizer' => 'Organizer',
+    'other_placeholder_organizer' => 'e.g. Ministry of Education',
+    'other_skill_level' => 'Skill Level',
+    // Kod bahasa semasa (digunakan untuk pilih levelDesc / levelDescEN)
+    'lang_code' => 'en',
+    'other_skill_choose' => '- PLEASE CHOOSE -',
+    'other_learned' => 'What I Have Learned/Acquired',
 ];

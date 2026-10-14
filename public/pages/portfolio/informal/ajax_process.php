@@ -25,6 +25,19 @@ try {
         $id = (int)($_POST['id'] ?? 0);
         $response = $controller->deleteSingleEvidenceFile($id);
 
+    } elseif ($action === 'add_other') {
+        $response = $controller->addOtherActivity($_POST, $_FILES);
+
+    } elseif ($action === 'update_other') {
+        $response = $controller->updateOtherActivity($_POST, $_FILES);
+
+    } elseif ($action === 'delete_other') {
+        $id = (int)($_POST['id'] ?? 0);
+        $response = $controller->deleteOtherActivity($id);
+
+    } elseif ($action === 'update_other_flag') {
+        $response = $controller->updateOtherActivitiesFlag($_POST);
+
     } else {
         $response = ['status' => 'error', 'message' => 'Tindakan (action) borang tidak sah.'];
     }

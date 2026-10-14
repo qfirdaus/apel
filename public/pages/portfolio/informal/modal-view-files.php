@@ -1,5 +1,5 @@
 <!-- Modal Senarai Fail Lampiran -->
-<div class="modal fade" id="modalViewFiles" tabindex="-1" aria-hidden="true">
+<div class="modal fade modal-add-accent" id="modalViewFiles" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-light">
