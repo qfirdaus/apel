@@ -101,7 +101,7 @@ include __DIR__ . '/../../../controllers/InformalLearningController.php';
     <?php 
       include __DIR__ . '/../../../includes/script.php';  
       include __DIR__ . '/modal-view-files.php';       
-      include __DIR__ . '/translate-js.php'; 
+      include __DIR__ . '/../translate-js.php'; 
     ?>
 
     <script src="<?= h(base_url('assets/js/helpers/datatables-standard.js')) ?>?v=<?= h((string)time()) ?>" defer></script>

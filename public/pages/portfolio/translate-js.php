@@ -38,6 +38,8 @@ $kunciUntukJs = [
     'js_delete_file_failed',
     'js_server_unreachable',
     'js_server_unreachable_retry',
+    
+    'js_delete_record_success'
 ];
 
 // Ambil teks sebenar (ikut bahasa semasa) bagi setiap kunci

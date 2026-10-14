@@ -36,7 +36,7 @@ foreach ($informalController->getSkillLevels() as $lv) {
             <?php if ($hasOtherRecords): ?>
                 <div class="text-danger small mt-2 ms-1">
                     <i class="ri-error-warning-line me-1"></i> 
-                    <?= h(__('other_checkbox_none_info')) ?>
+                    <?= __('other_checkbox_none_info') ?>
                 </div>
             <?php endif; ?>
         </div>
