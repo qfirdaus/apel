@@ -53,6 +53,14 @@ $kunciUntukJs = [
     'js_referees_save_title',
     'js_referees_save_text',
     'js_referees_save_success',
+
+    // Upload Document
+    'js_upload_too_big',
+    'js_upload_bad_format',
+    'js_uploading_title',
+    'js_uploading_text',
+    'js_upload_success',
+    'js_upload_failed',
 ];
 
 // Ambil teks sebenar (ikut bahasa semasa) bagi setiap kunci

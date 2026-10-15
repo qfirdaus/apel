@@ -71,7 +71,6 @@ include __DIR__ . '/../../../controllers/InformalLearningController.php';
                                     <div class="profile-section-icon"><i class="ri-briefcase-line"></i></div>
                                     <div>
                                         <h5><?= h(__('work_title')) ?></h5>
-                                        <!-- Info Amaran (mengandungi HTML dalam fail bahasa) -->
                                         <div class="text-dark fs-6"><?= __('informal_work_info') ?></div>
                                     </div>
                                 </div>

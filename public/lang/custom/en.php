@@ -191,4 +191,21 @@ return [
     'js_referees_save_title' => 'Save Referee Information?',
     'js_referees_save_text' => 'Please confirm that you want to save your referee details.',
     'js_referees_save_success' => 'Referee information saved successfully.',
+
+    // ===== Upload Document =====
+    'upload_doc_title' => 'Upload Other Documents',
+    'upload_doc_info' => 'Please click <a href="#" class="text-primary fw-bold text-decoration-none">attachment</a> for reference upload supporting documents. Format accepted: <strong>PDF, JPG, PNG (Max 5MB)</strong>.',
+    'upload_supporting_docs' => 'Supporting Documents',
+    'upload_required_docs' => 'Upload Required Documents',    
+    'upload_required_docs_info' => 'Required document. Please upload a clear copy of your',
+    'upload_doc_btn_upload' => 'Upload File',
+    'upload_doc_btn_replace' => 'Replace File',
+    'upload_doc_btn_view' => 'View File',
+    'upload_alert_info' => 'No supporting documents required by the administrator at this time.',
+    'js_upload_too_big' => 'File size is too large. The maximum allowed is 5MB.',
+    'js_upload_bad_format' => 'File format not allowed. Only PDF, JPG and PNG are accepted.',
+    'js_uploading_title' => 'Uploading...',
+    'js_uploading_text' => 'Please wait, your document is being processed.',
+    'js_upload_success' => 'File uploaded successfully.',
+    'js_upload_failed' => 'Failed to upload the file.',
 ];

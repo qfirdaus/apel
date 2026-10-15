@@ -191,4 +191,21 @@ return [
     'js_referees_save_title' => 'Simpan Maklumat Perujuk?',
     'js_referees_save_text' => 'Mengesahkan penyimpanan data perujuk anda.',
     'js_referees_save_success' => 'Maklumat perujuk berjaya disimpan.',
+
+    // ===== Muat Naik Dokumen =====
+    'upload_doc_title' => 'Muat Naik Dokumen Lain',
+    'upload_doc_info' => 'Sila klik <a href="#" class="text-primary fw-bold text-decoration-none">lampiran</a> untuk memuat naik dokumen sokongan. Format yang diterima: <strong>PDF, JPG, PNG (Max 5MB)</strong>.',
+    'upload_supporting_docs' => 'Dokumen Sokongan',
+    'upload_required_docs' => 'Dokumen Diperlukan',    
+    'upload_required_docs_info' => 'Dokumen diperlukan. Sila muat naik salinan jelas daripada',
+    'upload_doc_btn_upload' => 'Muat Naik Fail',
+    'upload_doc_btn_replace' => 'Ganti Fail',
+    'upload_doc_btn_view' => 'Lihat Fail',
+    'upload_alert_info' => 'No supporting documents required by the administrator at this time.',    
+    'js_upload_too_big' => 'Saiz fail terlalu besar. Had maksimum adalah 5MB.',
+    'js_upload_bad_format' => 'Format fail tidak dibenarkan. Hanya PDF, JPG, dan PNG diterima.',
+    'js_uploading_title' => 'Memuat Naik...',
+    'js_uploading_text' => 'Sila tunggu, dokumen anda sedang diproses.',
+    'js_upload_success' => 'Fail berjaya dimuat naik.',
+    'js_upload_failed' => 'Gagal memuat naik fail.',
 ];
