@@ -158,4 +158,21 @@ return [
     'lang_label_writing' => 'Writing',
     'lang_btn_save' => 'Save',
     'lang_modal_edit_title' => 'Edit Record',
+
+    // ===== Self Reflection =====
+    'reflection_title' => 'Self-Assessment/Reflection',
+    'reflection_info' => 'Outline your learning journey, aspirations and readiness for your intended programme.',
+    'reflection_tab' => 'Self Reflection',
+    'reflection_intro' => 'Describe how your prior learning experiences prepare you for the intended level of study (at least 500 words):',
+    'reflection_q1' => 'Why do you want to pursue this intended programme of study?',
+    'reflection_q2' => 'How is your personal prior learning experience applicable to/related to/relevant to your chosen programme and level of study?',
+    'reflection_q2_hint' => '(You may provide your description based on how your prior experiential learning has improved your knowledge, skills set, professionalism, communication, leadership, problem-solving, etc.)',
+    'reflection_q3' => 'How will the completion of this programme help you in your work/personal life?',
+    'reflection_q4' => 'What are your action plans to ensure the successful completion of your programme?',
+    'reflection_q4_hint' => '(Commitment, time management, financial resources and support, etc.)',
+    'reflection_btn_save' => 'Save',
+    'js_warning' => 'Attention',
+    'js_reflection_min_words' => 'Please make sure you write at least 500 words in total across all questions. (Current: {n} words)',
+    'js_reflection_save_title' => 'Save Reflection?',
+    'js_reflection_save_text' => 'Please confirm that you want to save your reflection.',
 ];

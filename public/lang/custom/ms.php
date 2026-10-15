@@ -158,4 +158,21 @@ return [
     'lang_label_writing' => 'Menulis',
     'lang_btn_save' => 'Simpan',
     'lang_modal_edit_title' => 'Kemaskini Rekod',
+
+    // ===== Refleksi Kendiri =====
+    'reflection_title' => 'Penilaian Kendiri/Refleksi',
+    'reflection_info' => 'Huraikan perjalanan pembelajaran, aspirasi dan kesediaan anda untuk program yang dihasratkan.',
+    'reflection_tab' => 'Refleksi Kendiri',
+    'reflection_intro' => 'Terangkan bagaimana pengalaman pembelajaran terdahulu anda menyediakan anda untuk tahap pengajian yang dihasratkan (sekurang-kurangnya 500 patah perkataan):',
+    'reflection_q1' => 'Mengapakah anda ingin menyambung pengajian dalam program yang dihasratkan ini?',
+    'reflection_q2' => 'Bagaimanakah pengalaman pembelajaran terdahulu anda berkaitan/relevan dengan program dan tahap pengajian pilihan anda?',
+    'reflection_q2_hint' => '(Anda boleh memberikan huraian berdasarkan bagaimana pembelajaran berasaskan pengalaman terdahulu anda telah meningkatkan pengetahuan, set kemahiran, profesionalisme, komunikasi, kepimpinan, penyelesaian masalah dan sebagainya.)',
+    'reflection_q3' => 'Bagaimanakah penyempurnaan program ini akan membantu anda dalam kerjaya/kehidupan peribadi anda?',
+    'reflection_q4' => 'Apakah pelan tindakan anda bagi memastikan program anda berjaya disempurnakan?',
+    'reflection_q4_hint' => '(Komitmen, pengurusan masa, sumber kewangan dan sokongan, dan sebagainya.)',
+    'reflection_btn_save' => 'Simpan',
+    'js_warning' => 'Perhatian',
+    'js_reflection_min_words' => 'Sila pastikan anda menulis sekurang-kurangnya 500 patah perkataan secara keseluruhan bagi semua soalan. (Kini: {n} patah perkataan)',
+    'js_reflection_save_title' => 'Simpan Refleksi?',
+    'js_reflection_save_text' => 'Mengesahkan penyimpanan data refleksi anda.',
 ];

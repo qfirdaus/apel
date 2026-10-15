@@ -136,7 +136,10 @@
     padding: 0.5rem 1.25rem 1.25rem !important; 
 }
 
-/* ##### Select2  ##### */
+
+/* ====================================================================
+  SELECT2 STYLING
+   ==================================================================== */
 
 .select2-container--default .select2-selection--single {
     height: 40px !important;              
@@ -180,4 +183,14 @@
     border-color: transparent transparent #6c757d transparent !important;
 }
 
-/* #### Select2 #### */
+
+/* ====================================================================
+  TINYMCE EDITOR STYLING (PORTFOLIO MODULES)
+  ==================================================================== */
+
+.question-title { 
+        font-weight: 600; 
+        margin-bottom: 0.8rem; 
+        margin-top: 1.5rem; 
+        color: #333;
+    }

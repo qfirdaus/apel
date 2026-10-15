@@ -42,6 +42,12 @@ $kunciUntukJs = [
     
     // Kemahiran diperlukan
     'js_skill_required',
+
+    // Self Reflection
+    'js_warning',
+    'js_reflection_min_words',
+    'js_reflection_save_title',
+    'js_reflection_save_text',
 ];
 
 // Ambil teks sebenar (ikut bahasa semasa) bagi setiap kunci
