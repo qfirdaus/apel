@@ -129,7 +129,6 @@ return [
     'nf_label_outcomes' => 'Apa Yang Saya Pelajari/Perolehi',
     'nf_outcomes_hint' => '(sila tandakan &#10004; pada yang berkaitan)',
     'nf_label_docs' => 'Dokumen Sokongan',
-    'js_delete_record_success' => 'Rekod berjaya dipadam.',
     'nf_err_required' => 'Sila lengkapkan maklumat yang bertanda (*).',
     'nf_err_too_long' => 'Teks terlalu panjang.',
     'nf_err_invalid_date' => 'Format tarikh tidak sah (DD/MM/YYYY).',
@@ -144,4 +143,19 @@ return [
     'nf_err_csrf' => 'Token keselamatan tidak sepadan. Sila muat semula halaman dan cuba lagi.',
     'nf_err_invalid_request' => 'Permintaan tidak sah.',
     'nf_err_db_error' => 'Ralat sistem. Sila cuba lagi.',
+
+    'js_delete_record_success' => 'Rekod berjaya dipadam.',
+    'js_skill_required' => 'Sila pilih sekurang-kurangnya satu kemahiran.',
+
+    // ===== Kompetensi Bahasa =====
+    'lang_title' => 'Kompetensi Bahasa',
+    'lang_subtitle' => 'Butiran Kompetensi Bahasa.',
+    'lang_section_title' => 'Kompetensi Bahasa',
+    'lang_info' => '** Sila hantar portfolio anda sebelum .',
+    'lang_label_language' => 'Bahasa',
+    'lang_label_reading' => 'Membaca',
+    'lang_label_speaking' => 'Bertutur',
+    'lang_label_writing' => 'Menulis',
+    'lang_btn_save' => 'Simpan',
+    'lang_modal_edit_title' => 'Kemaskini Rekod',
 ];

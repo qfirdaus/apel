@@ -129,7 +129,6 @@ return [
     'nf_label_outcomes' => 'What I Have Learned/Acquired',
     'nf_outcomes_hint' => '(Please tick &#10004; for the relevant items)',
     'nf_label_docs' => 'Supporting Documents',
-    'js_delete_record_success' => 'Record deleted successfully.',
     'nf_err_required' => 'Please complete the fields marked (*).',
     'nf_err_too_long' => 'Some text is too long.',
     'nf_err_invalid_date' => 'Invalid date format (DD/MM/YYYY).',
@@ -144,4 +143,19 @@ return [
     'nf_err_csrf' => 'Security token mismatch. Please refresh the page and try again.',
     'nf_err_invalid_request' => 'Invalid request.',
     'nf_err_db_error' => 'A system error occurred. Please try again.',
+
+    'js_delete_record_success' => 'Record deleted successfully.',
+    'js_skill_required' => 'Please select at least one skill.',
+
+    // ===== Language Competency =====
+    'lang_title' => 'Language Competency',
+    'lang_subtitle' => 'Language Competency details.',
+    'lang_section_title' => 'Language Competency',
+    'lang_info' => '** Please submit your portfolio before .',
+    'lang_label_language' => 'Language',
+    'lang_label_reading' => 'Reading',
+    'lang_label_speaking' => 'Speaking',
+    'lang_label_writing' => 'Writing',
+    'lang_btn_save' => 'Save',
+    'lang_modal_edit_title' => 'Edit Record',
 ];

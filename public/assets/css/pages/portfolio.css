@@ -111,3 +111,73 @@
 .swal2-container {
     z-index: 99999 !important;
 }
+
+/* ====================================================================
+  DATATABLES STYLING (PORTFOLIO MODULES)
+   ==================================================================== */
+
+.dt-standard table { 
+    width: 100% !important; 
+    table-layout: fixed; 
+}
+
+.dt-standard table th, 
+.dt-standard table td { 
+    overflow-wrap: anywhere; 
+}
+
+.dt-standard table td.col-action { 
+    white-space: nowrap; 
+}
+
+.dt-standard .dataTables_info,
+.dt-standard .dt-paging,
+.dt-standard .dataTables_paginate { 
+    padding: 0.5rem 1.25rem 1.25rem !important; 
+}
+
+/* ##### Select2  ##### */
+
+.select2-container--default .select2-selection--single {
+    height: 40px !important;              
+    border: 1px solid #dee2e6 !important;   
+    border-radius: 12px !important;        
+    background-color: #fff !important;
+    display: block !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-left: 1rem !important;       
+    font-size: 0.85rem !important;        
+    color: #212529 !important;
+    line-height: 38px !important;         
+    text-align: left !important;          
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px !important;
+    top: 1px !important;
+    right: 12px !important;               
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #6c757d !important; 
+    padding-left: 1rem !important;        
+    font-size: 0.85rem !important;        
+    line-height: 38px !important;         
+    text-align: left !important;          
+}
+
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #6c757d !important; 
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #6c757d transparent transparent transparent !important;
+}
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-color: transparent transparent #6c757d transparent !important;
+}
+
+/* #### Select2 #### */

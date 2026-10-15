@@ -104,11 +104,16 @@ include __DIR__ . '/../../../controllers/InformalLearningController.php';
       include __DIR__ . '/../translate-js.php'; 
     ?>
 
+    <?php if ($NEED_SELECT2): ?>
+      <script src="<?= base_url('assets/vendor/select2/js/select2.min.js') ?>?v=<?= time(); ?>"></script>
+    <?php endif; ?>
+
     <script src="<?= h(base_url('assets/js/helpers/datatables-standard.js')) ?>?v=<?= h((string)time()) ?>" defer></script>
+    <script src="<?= base_url('assets/js/pages/pages-main.js?v=' . time()) ?>"></script> 
     <script src="<?= h(base_url('assets/js/pages/informal-learning.js')) ?>?v=<?= h((string)time()) ?>" defer></script>
 
     <!-- css refer profile dan custom -->
     <link href="<?= base_url('assets/css/pages/profile.css') ?>?v=<?= h((string)time()) ?>" rel="stylesheet">
-    <link rel="stylesheet" href="<?= h(base_url('assets/css/pages/informal-learning.css')) ?>?v=<?= h((string)time()) ?>">
+    <link rel="stylesheet" href="<?= h(base_url('assets/css/pages/portfolio.css')) ?>?v=<?= h((string)time()) ?>">
 </body>
 </html>
