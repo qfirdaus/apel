@@ -48,6 +48,11 @@ $kunciUntukJs = [
     'js_reflection_min_words',
     'js_reflection_save_title',
     'js_reflection_save_text',
+
+    // Referees
+    'js_referees_save_title',
+    'js_referees_save_text',
+    'js_referees_save_success',
 ];
 
 // Ambil teks sebenar (ikut bahasa semasa) bagi setiap kunci

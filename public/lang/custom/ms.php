@@ -107,7 +107,7 @@ return [
 
     // ===== Pembelajaran Tidak Formal =====
     'nf_title' => 'Pembelajaran Tidak Formal',
-    'nf_subtitle' => 'Pembelajaran yang berlaku selari dengan sistem pendidikan dan latihan arus perdana. Ia mungkin telah dinilai tetapi biasanya tidak membawa kepada pensijilan formal.',
+    'nf_subtitle' => 'Pembelajaran yang berlaku selari dengan sistem pendidikan dan latihan arus perdana.<br>Ia mungkin telah dinilai tetapi biasanya tidak membawa kepada pensijilan formal.',
     'nf_section_title' => 'Latihan/Kursus',
     'nf_info' => 'Sila klik <a href="#" class="text-primary fw-bold text-decoration-none">lampiran</a> untuk memuat naik dokumen sokongan sebagai rujukan. Sila mulakan dengan <strong>yang terkini</strong>.',
     'nf_th_no' => 'Bil',
@@ -151,7 +151,6 @@ return [
     'lang_title' => 'Kompetensi Bahasa',
     'lang_subtitle' => 'Butiran Kompetensi Bahasa.',
     'lang_section_title' => 'Kompetensi Bahasa',
-    'lang_info' => '** Sila hantar portfolio anda sebelum .',
     'lang_label_language' => 'Bahasa',
     'lang_label_reading' => 'Membaca',
     'lang_label_speaking' => 'Bertutur',
@@ -175,4 +174,21 @@ return [
     'js_reflection_min_words' => 'Sila pastikan anda menulis sekurang-kurangnya 500 patah perkataan secara keseluruhan bagi semua soalan. (Kini: {n} patah perkataan)',
     'js_reflection_save_title' => 'Simpan Refleksi?',
     'js_reflection_save_text' => 'Mengesahkan penyimpanan data refleksi anda.',
+
+    // ===== Perujuk =====
+    'referees_title' => 'Perujuk',
+    'referees_section_title' => 'Perujuk',
+    'referees_subtitle' => 'Nyatakan butiran individu yang boleh mengesahkan pengalaman dan kompetensi anda.',
+    'referees_info' => 'Maklumat Perujuk',
+    'referees_name' => 'Nama',
+    'referees_position' => 'Jawatan Disandang',
+    'referees_organization' => 'Organisasi',
+    'referees_office_phone' => 'Telefon Pejabat',
+    'referees_mobile_phone' => 'Telefon Bimbit',
+    'referees_email' => 'E-mel',
+    'referees_relationship' => 'Hubungan',
+    'referees_btn_save' => 'Simpan',
+    'js_referees_save_title' => 'Simpan Maklumat Perujuk?',
+    'js_referees_save_text' => 'Mengesahkan penyimpanan data perujuk anda.',
+    'js_referees_save_success' => 'Maklumat perujuk berjaya disimpan.',
 ];

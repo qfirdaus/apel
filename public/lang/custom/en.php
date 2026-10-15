@@ -107,7 +107,7 @@ return [
 
     // ===== Non-Formal Learning =====
     'nf_title' => 'Non-Formal Learning',
-    'nf_subtitle' => 'Learning that takes place alongside the mainstream systems of education and training. It may have been assessed but does not normally lead to a formal certification.',
+    'nf_subtitle' => 'Learning that takes place alongside the mainstream systems of education and training.<br>It may have been assessed but does not normally lead to a formal certification.',
     'nf_section_title' => 'Training/Course',
     'nf_info' => 'Please click <a href="#" class="text-primary fw-bold text-decoration-none">attachment</a> for reference upload supporting documents. Please start with the <strong>most recent</strong>.',
     'nf_th_no' => 'No',
@@ -151,7 +151,6 @@ return [
     'lang_title' => 'Language Competency',
     'lang_subtitle' => 'Language Competency details.',
     'lang_section_title' => 'Language Competency',
-    'lang_info' => '** Please submit your portfolio before .',
     'lang_label_language' => 'Language',
     'lang_label_reading' => 'Reading',
     'lang_label_speaking' => 'Speaking',
@@ -175,4 +174,21 @@ return [
     'js_reflection_min_words' => 'Please make sure you write at least 500 words in total across all questions. (Current: {n} words)',
     'js_reflection_save_title' => 'Save Reflection?',
     'js_reflection_save_text' => 'Please confirm that you want to save your reflection.',
+
+    // ===== Referees =====
+    'referees_title' => 'Referees',
+    'referees_section_title' => 'Referees',
+    'referees_subtitle' => 'Provide the details of individuals who can verify your experience and competencies.',
+    'referees_info' => 'Referee Information',
+    'referees_name' => 'Name',
+    'referees_position' => 'Position Held',
+    'referees_organization' => 'Organization',
+    'referees_office_phone' => 'Office Phone',
+    'referees_mobile_phone' => 'Mobile Phone',
+    'referees_email' => 'Email',
+    'referees_relationship' => 'Relationship',
+    'referees_btn_save' => 'Save',
+    'js_referees_save_title' => 'Save Referee Information?',
+    'js_referees_save_text' => 'Please confirm that you want to save your referee details.',
+    'js_referees_save_success' => 'Referee information saved successfully.',
 ];

@@ -33,7 +33,7 @@ include __DIR__ . '/../../../controllers/NonFormalController.php';
                         <div class="page-title-box d-flex justify-content-between align-items-center flex-wrap">
                           <div class="page-title-main">
                             <h4 class="page-title"><i class="ri-book-read-line me-1"></i> <?= h($pageHeading) ?></h4>
-                            <p class="page-title-subtitle"><?= h(__('nf_subtitle')) ?> </p>
+                            <p class="page-title-subtitle"><?= __('nf_subtitle') ?> </p>
                           </div>
                           <div class="page-title-right">
                             <ol class="breadcrumb m-0">
