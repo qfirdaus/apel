@@ -85,7 +85,7 @@ class InformalLearning {
         $sql = "INSERT INTO apelq_evidence_files (student_id, module_type, record_id, file_name, file_path) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
 
-        $uploadDir = __DIR__ . '/../pages/portfolio/informal/uploads/';
+        $uploadDir = __DIR__ . '/../pages/student/portfolio/informal/uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
         if (isset($files['name']) && is_array($files['name'])) {

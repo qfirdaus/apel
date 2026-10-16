@@ -1,18 +1,8 @@
 $(function () {
     'use strict';
 
-    // Teks bahasa dihantar dari PHP (lihat translate-js.php -> window.TEKS_BAHASA)
-    // t('kunci') = ambil teks ikut bahasa semasa
-    var TEKS = window.TEKS_BAHASA || {};
-    function t(key, params) {
-        var text = Object.prototype.hasOwnProperty.call(TEKS, key) ? TEKS[key] : key;
-        if (params) {
-            Object.keys(params).forEach(function (p) {
-                text = text.split('{' + p + '}').join(params[p]);
-            });
-        }
-        return text;
-    }
+    // terjemahan global (pages-main.js)
+    var t = window.t;
 
     $('.btn-upload-trigger').on('click', function () {
         var docTypeId = $(this).data('doctype');

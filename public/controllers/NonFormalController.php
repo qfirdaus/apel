@@ -119,15 +119,58 @@ class NonFormalController {
     public function deleteTraining(int $id): array {
         try {
             $studentId = trim((string)($_SESSION['f_stafID'] ?? ''));
-            $this->model->deleteTraining($id, $studentId);
-            return ['status' => 'success', 'message' => ''];
+            if ($id <= 0 || $studentId === '') {
+                return ['status' => 'error', 'message' => 'ID rekod tidak sah.'];
+            }
+
+            $files = $this->model->getEvidenceFiles('TRAINING', $id);
+            $pathsToDelete = [];
+
+            if (!empty($files)) {
+                foreach ($files as $f) {
+                    $fileId = (int)($f['id'] ?? 0);
+                    if ($fileId > 0) {
+                        $fileInfo = $this->model->getEvidenceFileById($fileId);
+                        if ($fileInfo && !empty($fileInfo['file_path'])) {
+                            $pathsToDelete[] = $fileInfo['file_path'];
+                        }
+                    }
+                }
+            }
+
+            $deleted = $this->model->deleteTraining($id, $studentId);
+
+            if ($deleted) {
+                foreach ($pathsToDelete as $path) {
+                    $physicalPath = __DIR__ . '/../pages/student/portfolio/non-formal/' . ltrim($path, '/');
+                    if (file_exists($physicalPath) && is_file($physicalPath)) {
+                        @unlink($physicalPath);
+                    }
+                }
+                return ['status' => 'success', 'message' => 'Rekod dan lampiran berjaya dipadam.'];
+            }
+            return ['status' => 'error', 'message' => 'Gagal memadam rekod.'];
+
         } catch (Throwable $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
 
     public function deleteSingleEvidenceFile(int $fileId): array {
-        $this->model->deleteEvidenceFileById($fileId);
-        return ['status' => 'success', 'message' => ''];
+        try {
+            $fileInfo = $this->model->getEvidenceFileById($fileId);
+            if ($fileInfo) {
+                $physicalPath = __DIR__ . '/../pages/student/portfolio/non-formal/' . $fileInfo['file_path'];
+                if (file_exists($physicalPath) && is_file($physicalPath)) {
+                    @unlink($physicalPath);
+                }
+                
+                $this->model->deleteEvidenceFileById($fileId);
+                return ['status' => 'success', 'message' => 'Fail berjaya dipadam.'];
+            }
+            return ['status' => 'error', 'message' => 'Fail tidak wujud.'];
+        } catch (Throwable $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
     }
 }

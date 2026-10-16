@@ -27,7 +27,7 @@ class UploadDocumentController {
         return $this->model->getStudentDocumentsList($studentId);
     }
 
-    public function processUpload(array $post, array $files): array {
+public function processUpload(array $post, array $files): array {
         try {
             $studentId = trim((string)($_SESSION['f_stafID'] ?? ''));
             
@@ -35,10 +35,10 @@ class UploadDocumentController {
                 return ['status' => 'error', 'message' => 'Sesi telah tamat. Sila log masuk semula.'];
             }
 
+            // ID yang datang dari borang (form)
             $docTypeId = (int)($post['document_type_id'] ?? 0);
             $docName = $post['document_name'] ?? 'document'; 
 
-            // 1. Semakan Fail
             if (!isset($files['document_file']) || $files['document_file']['error'] !== UPLOAD_ERR_OK) {
                 return ['status' => 'error', 'message' => 'Sila pilih fail untuk dimuat naik atau fail mungkin rosak.'];
             }
@@ -49,22 +49,35 @@ class UploadDocumentController {
             $originalName = $file['name'];
             $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
 
-            // Format Fail (Hanya PDF, JPG, PNG)
             $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
             if (!in_array($ext, $allowedExtensions)) {
                 return ['status' => 'error', 'message' => 'Format fail tidak dibenarkan. Hanya PDF, JPG, dan PNG diterima.'];
             }
 
-            // Saiz Fail (Contoh: Max 5MB = 5 * 1024 * 1024 bytes)
             if ($fileSize > (5 * 1024 * 1024)) {
                 return ['status' => 'error', 'message' => 'Saiz fail terlalu besar. Had maksimum adalah 5MB.'];
             }
 
-            // new file name (Format: studentId_cover_letter_16973849.pdf)
-            $safeDocName = preg_replace('/[^a-z0-9]+/i', '_', strtolower($docName)); // Tukar "Cover Letter" jadi "cover_letter"
+            // 1. CARI FAIL LAMA (MENGGUNAKAN NAMA LAJUR YANG TEPAT: doc_type_id)
+            $oldFileName = null;
+            $existingDocs = $this->model->getStudentDocumentsList($studentId);
+            if (!empty($existingDocs)) {
+                foreach ($existingDocs as $doc) {
+                    // Berdasarkan hasil debug, nama lajurnya adalah 'doc_type_id'
+                    $currentTypeId = (int)($doc['doc_type_id'] ?? 0);
+                    
+                    if ($currentTypeId === $docTypeId && !empty($doc['file_path'])) {
+                        $oldFileName = basename($doc['file_path']);
+                        break; 
+                    }
+                }
+            }
+
+            $safeDocName = preg_replace('/[^a-z0-9]+/i', '_', strtolower($docName)); 
             $newFileName = $studentId . '_' . $safeDocName . '_' . time() . '.' . $ext;
 
-            $uploadDir = __DIR__ . '/../pages/portfolio/upload-documents/uploads/';
+            // 2. TETAPKAN FOLDER
+            $uploadDir = __DIR__ . '/../pages/student/portfolio/upload-documents/uploads/';
             
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true); 
@@ -76,16 +89,24 @@ class UploadDocumentController {
             if (move_uploaded_file($tmpName, $destination)) {
                 $dbData = [
                     'student_id'       => $studentId,
-                    'document_type_id' => $docTypeId,
+                    'document_type_id' => $docTypeId, // Kekalkan ini jika Model save guna format ini
                     'file_name'        => $originalName, 
                     'file_path'        => $dbPath
                 ];
 
                 $this->model->saveDocumentRecord($dbData);
 
+                // 3. PADAM FAIL LAMA SECARA FIZIKAL
+                if ($oldFileName) {
+                    $oldPhysicalPath = $uploadDir . $oldFileName;
+                    if (file_exists($oldPhysicalPath) && is_file($oldPhysicalPath)) {
+                        @unlink($oldPhysicalPath);
+                    }
+                }
+
                 return ['status' => 'success', 'message' => 'Fail berjaya dimuat naik.', 'file_path' => $dbPath];
             } else {
-                return ['status' => 'error', 'message' => 'Ralat semasa memindahkan fail ke dalam pelayan. Sila periksa kebenaran (permission) folder.'];
+                return ['status' => 'error', 'message' => 'Ralat semasa memindahkan fail.'];
             }
             
         } catch (Throwable $e) {

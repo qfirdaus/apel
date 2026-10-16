@@ -107,7 +107,7 @@ class NonFormalLearning {
         $this->setAuditUser($studentId);
         $sql = "INSERT INTO apelq_evidence_files (student_id, module_type, record_id, file_name, file_path) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        $uploadDir = __DIR__ . '/../pages/portfolio/non-formal/uploads/';
+        $uploadDir = __DIR__ . '/../pages/student/portfolio/non-formal/uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
         if (isset($files['name']) && is_array($files['name'])) {
@@ -131,8 +131,14 @@ class NonFormalLearning {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
+    public function getEvidenceFileById(int $fileId) {
+        $stmt = $this->db->prepare("SELECT * FROM apelq_evidence_files WHERE id = ?");
+        $stmt->execute([$fileId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function deleteEvidenceFileById(int $fileId): bool {
-        $this->setAuditUser();
+        $this->setAuditUser(); 
         $stmt = $this->db->prepare("DELETE FROM apelq_evidence_files WHERE id = ?");
         return $stmt->execute([$fileId]);
     }

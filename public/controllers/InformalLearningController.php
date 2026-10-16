@@ -94,17 +94,26 @@ class InformalLearningController
                 return ['status' => 'error', 'message' => 'ID rekod tidak sah.'];
             }
 
+            $files = $this->model->getEvidenceFiles('WORK', $id);
             $deleted = $this->model->deleteWorkExperience($id);
             
             if ($deleted) {
-                return ['status' => 'success', 'message' => 'Rekod berjaya dipadam.'];
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        $physicalPath = __DIR__ . '/../pages/student/portfolio/informal/' . $file['file_path'];
+                        if (file_exists($physicalPath) && is_file($physicalPath)) {
+                            @unlink($physicalPath);
+                        }
+                    }
+                }
+                return ['status' => 'success', 'message' => 'Rekod dan lampiran berjaya dipadam.'];
             }
             return ['status' => 'error', 'message' => 'Gagal memadam rekod atau rekod tidak wujud.'];
 
         } catch (Throwable $e) {
             return ['status' => 'error', 'message' => 'Ralat: ' . $e->getMessage()];
         }
-    } 
+    }
     
     public function updateWorkExperience(array $post, array $files): array 
     {
@@ -148,7 +157,7 @@ class InformalLearningController
         try {
             $fileInfo = $this->model->getEvidenceFileById($fileId);
             if ($fileInfo) {
-                $physicalPath = __DIR__ . '/../pages/portfolio/informal/' . $fileInfo['file_path'];
+                $physicalPath = __DIR__ . '/../pages/student/portfolio/informal/' . $fileInfo['file_path'];
                 if (file_exists($physicalPath) && is_file($physicalPath)) {
                     @unlink($physicalPath);
                 }
@@ -351,8 +360,20 @@ class InformalLearningController
                 return ['status' => 'error', 'message' => 'ID rekod tidak sah.'];
             }
 
-            if ($this->model->deleteOtherActivity($id, $studentId)) {
-                return ['status' => 'success', 'message' => 'Rekod berjaya dipadam.'];
+            $files = $this->model->getEvidenceFiles('OTHER', $id);
+            
+            $deleted = $this->model->deleteOtherActivity($id, $studentId);
+
+            if ($deleted) {
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        $physicalPath = __DIR__ . '/../pages/student/portfolio/informal/' . $file['file_path'];
+                        if (file_exists($physicalPath) && is_file($physicalPath)) {
+                            @unlink($physicalPath);
+                        }
+                    }
+                }
+                return ['status' => 'success', 'message' => 'Rekod dan lampiran berjaya dipadam.'];
             }
             return ['status' => 'error', 'message' => 'Gagal memadam rekod atau rekod tidak wujud.'];
 
