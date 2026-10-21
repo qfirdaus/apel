@@ -11,7 +11,6 @@ class AdminFinanceController {
     public function __construct() {
         if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 
-
         $this->pdoApel = Database::pdoMysql();
         $this->pdoApel->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->model = new AdminFinance($this->pdoApel);
