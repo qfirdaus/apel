@@ -2,7 +2,7 @@
 $nonFormalController ??= new NonFormalController();
 $studentId = (string)($_SESSION['f_stafID'] ?? '');
 
-$nfRecords = $nonFormalController->getTrainingCourses($studentId);
+$nfRecords = $nonFormalController->getTrainingCourses($studentId, $applicationId);
 $durationTypes = $nonFormalController->getDurationTypes(); 
 $durationLabels = [];
 
@@ -50,7 +50,7 @@ foreach ($durationTypes as $dt) {
                                         $fileData[] = [
                                             'id'   => $file['id'],
                                             'name' => htmlspecialchars($file['file_name']),
-                                            'url'  => base_url('pages/portfolio/non-formal/' . $file['file_path'])
+                                            'url'  => base_url('pages/student/portfolio/non-formal/' . $file['file_path'])
                                         ];
                                     }
                                     $jsonFiles = htmlspecialchars(json_encode($fileData), ENT_QUOTES, 'UTF-8');

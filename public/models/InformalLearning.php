@@ -24,11 +24,12 @@ class InformalLearning {
         $this->setAuditUser($data['student_id'] ?? null);
 
         $sql = "INSERT INTO apelq_work_experience 
-                (student_id, employer_name, contact_address, start_date, end_date, position_held, what_learned) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+                (student_id, application_id, employer_name, contact_address, start_date, end_date, position_held, what_learned) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             $data['student_id'] ?? '', 
+            $data['application_id'],  
             $data['employer_name'] ?? '', 
             $data['contact_address'] ?? '', 
             $data['start_date'], 
@@ -126,10 +127,10 @@ class InformalLearning {
         return $stmt->execute([$fileId]);
     }
 
-    public function getWorkExperience(string $studentId): array {
-        $sql = "SELECT * FROM apelq_work_experience WHERE student_id = ? ORDER BY start_date DESC";
+    public function getWorkExperience(string $studentId, int $applicationId): array {
+        $sql = "SELECT * FROM apelq_work_experience WHERE student_id = ? AND application_id = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$studentId]);
+        $stmt->execute([$studentId, $applicationId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }    
 
@@ -140,14 +141,15 @@ class InformalLearning {
     }
 
     public function saveOtherActivity(array $data): int {
-        $this->setAuditUser($data['student_id'] ?? null); // Set Audit User
+        $this->setAuditUser($data['student_id'] ?? null);
 
         $sql = "INSERT INTO apelq_other_activities
-                (student_id, activity_name, start_date, end_date, organizer, skill_level, what_learned)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+                (student_id, application_id, activity_name, start_date, end_date, organizer, skill_level, what_learned)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             $data['student_id'],
+            $data['application_id'], // [+] TAMBAH INI
             $data['activity_name'],
             $data['start_date'] ?? null,
             $data['end_date'] ?? null,
@@ -195,8 +197,7 @@ class InformalLearning {
             return false;
         }
 
-        $this->setAuditUser($studentId); // Set Audit User
-        $files = $this->getEvidenceFiles('OTHER', $id);
+        $this->setAuditUser($studentId);
 
         $this->db->beginTransaction();
         try {
@@ -207,35 +208,28 @@ class InformalLearning {
             $stmt->execute([$id, $studentId]);
 
             $this->db->commit();
+            return true;
         } catch (Throwable $e) {
             $this->db->rollBack();
             throw $e;
         }
-
-        foreach ($files as $file) {
-            $physicalPath = __DIR__ . '/../pages/portfolio/informal/' . $file['file_path'];
-            if (is_file($physicalPath)) {
-                @unlink($physicalPath);
-            }
-        }
-        return true;
-    }
+    }   
 
     // OTHER ACTIVITIES FLAG
-    public function getOtherActivitiesFlag(string $studentId): ?int {
-        $stmt = $this->db->prepare("SELECT has_other_activities FROM apelq_other_activities_status WHERE student_id = ?");
-        $stmt->execute([$studentId]);
+    public function getOtherActivitiesFlag(string $studentId, int $applicationId): ?int {
+        $stmt = $this->db->prepare("SELECT has_other_activities FROM apelq_other_activities_status WHERE student_id = ? AND application_id = ?");
+        $stmt->execute([$studentId, $applicationId]);
         $result = $stmt->fetchColumn();
         return $result !== false && $result !== null ? (int)$result : null;
     }
 
-    public function updateOtherActivitiesFlag(string $studentId, int $flag): bool {
-        $this->setAuditUser($studentId); // Set Audit User untuk Trigger
+    public function updateOtherActivitiesFlag(string $studentId, int $applicationId, int $flag): bool {
+        $this->setAuditUser($studentId);
 
-        $sql = "INSERT INTO apelq_other_activities_status (student_id, has_other_activities) 
-                VALUES (?, ?) 
+        $sql = "INSERT INTO apelq_other_activities_status (student_id, application_id, has_other_activities) 
+                VALUES (?, ?, ?) 
                 ON DUPLICATE KEY UPDATE has_other_activities = ?";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$studentId, $flag, $flag]);
+        return $stmt->execute([$studentId, $applicationId, $flag, $flag]);
     }
 }

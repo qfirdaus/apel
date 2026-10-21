@@ -31,27 +31,24 @@ class InformalLearningController
                 return ['status' => 'error', 'message' => 'Sila lengkapkan maklumat yang bertanda (*).'];
             }
 
-            // Format Tarikh dari DD/MM/YYYY ke YYYY-MM-DD
+            $post['application_id'] = (int)($post['application_id'] ?? 0);
+            if ($post['application_id'] === 0) {
+                 return ['status' => 'error', 'message' => 'ID Permohonan tidak ditemui.'];
+            }
+
             $rawStartDate = trim((string)($post['start_date'] ?? ''));
             $rawEndDate   = trim((string)($post['end_date'] ?? ''));
-
             $dbStartDate = null;
             $dbEndDate   = null;
 
             if (!empty($rawStartDate)) {
                 $dateObj = DateTime::createFromFormat('d/m/Y', $rawStartDate);
-                if ($dateObj !== false) {
-                    $dbStartDate = $dateObj->format('Y-m-d');
-                }
+                if ($dateObj !== false) $dbStartDate = $dateObj->format('Y-m-d');
             }
-
             if (!empty($rawEndDate)) {
                 $dateObj = DateTime::createFromFormat('d/m/Y', $rawEndDate);
-                if ($dateObj !== false) {
-                    $dbEndDate = $dateObj->format('Y-m-d');
-                }
+                if ($dateObj !== false) $dbEndDate = $dateObj->format('Y-m-d');
             }
-
             $post['start_date'] = $dbStartDate;
             $post['end_date']   = $dbEndDate;
 
@@ -61,14 +58,10 @@ class InformalLearningController
                 $studentId = (string)($post['student_id'] ?? $_SESSION['student_id'] ?? '');
                 $this->model->saveEvidenceFiles($studentId, 'WORK', $recordId, $files['evidence_files']);
             }
-
             return ['status' => 'success', 'message' => ''];
 
         } catch (Throwable $e) {
-            return [
-                'status'  => 'error', 
-                'message' => 'Ralat: ' . $e->getMessage()
-            ];
+            return ['status'  => 'error', 'message' => 'Ralat: ' . $e->getMessage()];
         }
     }
 
@@ -80,13 +73,13 @@ class InformalLearningController
         }
     }
 
-    public function getWorkExperience(string $studentId): array {
+    public function getWorkExperience(string $studentId, int $applicationId = 0): array {
         try {
-            return $this->model->getWorkExperience($studentId);
+            return $this->model->getWorkExperience($studentId, $applicationId);
         } catch (Throwable $e) {
             return []; 
         }
-    } 
+    }
     
     public function deleteWorkExperience(int $id): array {
         try {
@@ -232,16 +225,14 @@ class InformalLearningController
             return [[], 'Tahap kemahiran tidak sah.'];
         }
 
-        $organizer = trim((string)($post['organizer'] ?? ''));
-        $learned   = trim((string)($post['what_learned'] ?? ''));
-
         return [[
+            'application_id'=> (int)($post['application_id'] ?? 0), 
             'activity_name' => $activity,
             'start_date'    => $start,
             'end_date'      => $end,
-            'organizer'     => $organizer !== '' ? $organizer : null,
+            'organizer'     => trim((string)($post['organizer'] ?? '')) ?: null,
             'skill_level'   => $skill !== '' ? $skill : null,
-            'what_learned'  => $learned !== '' ? $learned : null,
+            'what_learned'  => trim((string)($post['what_learned'] ?? '')) ?: null,
         ], null];
     }
 
@@ -273,10 +264,10 @@ class InformalLearningController
         return null;
     }
 
-    public function getOtherActivities(string $studentId): array
+    public function getOtherActivities(string $studentId, int $applicationId = 0): array
     {
         try {
-            return $this->model->getOtherActivities($studentId);
+            return $this->model->getOtherActivities($studentId, $applicationId);
         } catch (Throwable $e) {
             return [];
         }
@@ -302,6 +293,7 @@ class InformalLearningController
 
             $data['student_id'] = $studentId;
             $recordId = $this->model->saveOtherActivity($data);
+            $this->model->updateOtherActivitiesFlag($studentId, $data['application_id'], 1);
 
             if (!empty($files['evidence_files']) && $recordId > 0) {
                 $this->model->saveEvidenceFiles($studentId, 'OTHER', $recordId, $files['evidence_files']);
@@ -356,6 +348,8 @@ class InformalLearningController
     {
         try {
             $studentId = $this->currentStudentId();
+            $applicationId = (int)($_POST['application_id'] ?? 0); 
+
             if ($id <= 0 || $studentId === '') {
                 return ['status' => 'error', 'message' => 'ID rekod tidak sah.'];
             }
@@ -365,6 +359,14 @@ class InformalLearningController
             $deleted = $this->model->deleteOtherActivity($id, $studentId);
 
             if ($deleted) {
+                if ($applicationId > 0) {
+                    $bakiRekod = $this->model->getOtherActivities($studentId, $applicationId);
+                    
+                    if (empty($bakiRekod)) {
+                        $this->model->updateOtherActivitiesFlag($studentId, $applicationId, 0); 
+                    }
+                }
+
                 if (!empty($files)) {
                     foreach ($files as $file) {
                         $physicalPath = __DIR__ . '/../pages/student/portfolio/informal/' . $file['file_path'];
@@ -382,9 +384,9 @@ class InformalLearningController
         }
     }
 
-    public function getOtherActivitiesFlag(string $studentId): ?int {
+    public function getOtherActivitiesFlag(string $studentId, int $applicationId = 0): ?int {
         try {
-            return $this->model->getOtherActivitiesFlag($studentId);
+            return $this->model->getOtherActivitiesFlag($studentId, $applicationId);
         } catch (Throwable $e) {
             return null;
         }
@@ -393,24 +395,37 @@ class InformalLearningController
     public function updateOtherActivitiesFlag(array $post): array {
         try {
             $studentId = $this->currentStudentId();
-            $flag = isset($post['flag']) ? (int)$post['flag'] : 1; // 0 = Tiada, 1 = Ada
+            $applicationId = (int)($post['application_id'] ?? 0); 
+            $flag = isset($post['flag']) ? (int)$post['flag'] : 1; 
 
-            if ($studentId === '') {
-                return ['status' => 'error', 'message' => 'Sesi tamat. Sila log masuk semula.'];
+            if ($studentId === '' || $applicationId === 0) {
+                return ['status' => 'error', 'message' => 'Sesi atau ID Permohonan tidak sah.'];
             }
 
-            // Jika pengguna tick "Tiada Aktiviti" (flag 0), semak dahulu kalau ada rekod 
+            $existingRecords = $this->model->getOtherActivities($studentId, $applicationId);
+
             if ($flag === 0) {
-                $existingRecords = $this->model->getOtherActivities($studentId);
+                // Jika Tick kotak "Tiada Aktiviti", pastikan table kosong
                 if (!empty($existingRecords)) {
                     return ['status' => 'error', 'message' => 'Sila padam semua rekod sedia ada terlebih dahulu sebelum menanda kotak ini.'];
                 }
+                // Update DB: Tiada Aktiviti
+                $this->model->updateOtherActivitiesFlag($studentId, $applicationId, 0);
+                
+            } else {
+                // Jika Untick kotak (flag dihantar sebagai 1)
+                if (empty($existingRecords)) {
+                    // (Flag akan automatik menjadi 1 apabila mereka selesai tambah rekod)
+                    return ['status' => 'success', 'message' => 'Sila tambah maklumat aktiviti.'];
+                }
+                
+                // Jika memang sudah ada data, baru set flag kepada 1
+                $this->model->updateOtherActivitiesFlag($studentId, $applicationId, 1);
             }
 
-            $this->model->updateOtherActivitiesFlag($studentId, $flag);
             return ['status' => 'success', 'message' => 'Pilihan berjaya disimpan.'];
         } catch (Throwable $e) {
             return ['status' => 'error', 'message' => 'Ralat: ' . $e->getMessage()];
         }
-    }    
+    } 
 }

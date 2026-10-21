@@ -56,12 +56,18 @@ class FeeController {
     public function checkInstrumentPayment(string $studentId, string $semester, string $category = 'portfolio_fee'): array {
         $payment = $this->model->getInstrumentPayment($studentId, $semester, $category);
         
-        if (!$payment || $payment['payment_status'] === 'failed') {
+        if (!$payment) {
             return ['status' => 'unpaid', 'data' => null];
         }
+        
+        if ($payment['payment_status'] === 'failed') {
+            return ['status' => 'failed', 'data' => $payment];
+        }
+        
         if ($payment['payment_status'] === 'processing') {
             return ['status' => 'processing', 'data' => $payment];
         }
+        
         return ['status' => 'success', 'data' => $payment];
-    }    
+    }  
 }

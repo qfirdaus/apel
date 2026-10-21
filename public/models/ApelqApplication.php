@@ -9,12 +9,17 @@ class ApelqApplication {
     }
 
     public function getActiveApplication(string $studentId): ?array {
-        $sql = "SELECT a.*, s.status_student, s.status_staff 
+        $sql = "SELECT a.*,
+                       s.status_student,
+                       s.status_student_EN
                 FROM apelq_applications a
-                LEFT JOIN lp_status s ON a.portfolio_status_id = s.status_code AND s.module_type = 'portfolio'
-                WHERE a.student_id = :student_id LIMIT 1";
+                LEFT JOIN lp_status s
+                       ON s.module_type = 'portfolio'
+                      AND s.status_code = a.portfolio_status_id
+                WHERE a.student_id = ?
+                LIMIT 1";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(['student_id' => $studentId]);
+        $stmt->execute([$studentId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
         return $result ?: null;

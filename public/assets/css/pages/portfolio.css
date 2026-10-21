@@ -316,3 +316,125 @@
 .uppercase {
     text-transform: uppercase;
 }
+
+/* elevate */
+.hover-elevate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hover-elevate:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important; }
+.btn-soft-info { background-color: rgba(57, 175, 209, 0.1); color: #39afd1; border: none; }
+.btn-soft-info:hover { background-color: #39afd1; color: #fff; }
+
+/* Portfolio Checklist */
+.status-indicator {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    vertical-align: middle;
+    transition: transform 0.2s;
+}
+.status-indicator.complete { 
+    background-color: #10b981; /* Emerald Green */
+    box-shadow: 0 0 0 1px #059669;
+}
+.status-indicator.incomplete { 
+    background-color: #ef4444; /* Rose Red */
+    box-shadow: 0 0 0 1px #dc2626;
+}
+
+
+/* ====================================================================
+  SUBMIT PORTFOLIO (CHECKLIST & DECLARATION)
+==================================================================== */
+
+.table-wrapper {
+    background: #fff;
+    border-radius: 0.5rem;
+    border: 1px solid #eef2f7; 
+    overflow: hidden;
+}
+
+.table-premium {
+    margin-bottom: 0;
+    border-collapse: collapse;
+}
+
+.table-premium thead th {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    color: #6c757d !important;
+    background-color: #f8f9fa !important;
+    border-bottom: 2px solid #eef2f7 !important;
+    padding: 12px 15px !important;
+}
+
+.table-premium tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.table-premium tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table-premium tbody tr:hover {
+    background-color: #f0fdfa !important; 
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+    position: relative;
+}
+
+.table-premium tbody tr:hover .status-indicator {
+    transform: scale(1.15);
+}
+
+.table-premium td {
+    padding: 12px 15px !important;
+    vertical-align: middle;
+    color: #495057;
+    font-size: 0.9rem;
+    border: none;
+}
+
+.declaration-box {
+    background: linear-gradient(to right, #f8fafc, #ffffff);
+    border-left: 4px solid #3b82f6;
+}
+
+/* ====================================================================
+   GLOBAL READ-ONLY MODE (APABILA PORTFOLIO DIHANTAR)
+==================================================================== */
+.read-only-mode .btn-primary[data-bs-toggle="modal"],
+.read-only-mode .col-action, 
+.read-only-mode .btn-upload-trigger,
+.read-only-mode .btn-delete,
+.read-only-mode .btn-edit,
+.read-only-mode button[type="submit"] {
+    display: none !important;
+}
+
+/* Sorokkan header lajur "Tindakan" dan isi sel "Tindakan" */
+.read-only-mode th:last-child, 
+.read-only-mode td.col-action {
+    display: none !important;
+}
+
+/* Kunci semua kotak input (Disable interaction) */
+.read-only-mode input, 
+.read-only-mode select, 
+.read-only-mode textarea, 
+.read-only-mode .tinymce-editor {
+    pointer-events: none !important;
+    background-color: #f3f4f6 !important; /* Warna kelabu cair */
+    border-color: #e5e7eb !important;
+    color: #6b7280 !important;
+    opacity: 1 !important;
+}
+
+/* Sorokkan butang Toolbar TinyMCE */
+.read-only-mode .tox-editor-header {
+    display: none !important;
+}

@@ -2,7 +2,7 @@
     $controller = new SelfReflectionController();
     $studentId = (string)($_SESSION['f_stafID'] ?? '');
     
-    $record = $controller->getReflectionRecord($studentId);
+    $record = $controller->getReflectionRecord($studentId, $applicationId);
 ?>
 <div class="alert alert-secondary mb-4 text-dark">
     <strong><?= h(__('reflection_intro')) ?></strong>
@@ -10,6 +10,7 @@
 
 <form id="formSelfReflection" method="post">
     <input type="hidden" name="action" value="save_reflection">
+    <input type="hidden" name="application_id" value="<?= $applicationId ?>">
     
     <!-- Soalan 1 -->
     <div class="mb-4">

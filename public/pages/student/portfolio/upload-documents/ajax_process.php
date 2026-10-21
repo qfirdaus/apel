@@ -3,8 +3,20 @@ declare(strict_types=1);
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../../../../controllers/UploadDocumentController.php';
+require_once __DIR__ . '/../../../../controllers/ApplicationController.php';
 
 try {    
+    $studentId = (string)($_SESSION['f_stafID'] ?? $_SESSION['student_id'] ?? '');
+    $appController = new ApplicationController();
+    $activeApp = $appController->getStudentApplication($studentId);
+    
+    if (!$activeApp) {
+        echo json_encode(['status' => 'error', 'message' => 'Sesi permohonan tidak sah.']);
+        exit;
+    }
+    
+    $_POST['application_id'] = (int)$activeApp['id'];
+
     $controller = new UploadDocumentController();
     $action = $_POST['action'] ?? '';
 
@@ -12,7 +24,6 @@ try {
         $response = $controller->processUpload($_POST, $_FILES);
         echo json_encode($response);
         exit;
-
     } else {
         $response = ['status' => 'error', 'message' => 'Tindakan tidak sah.'];
     }

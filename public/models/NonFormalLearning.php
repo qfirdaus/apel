@@ -27,29 +27,30 @@ class NonFormalLearning {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }    
 
-    public function getTrainingCourses(string $studentId): array {
-        $sql = "SELECT * FROM apelq_training_course WHERE student_id = ? ORDER BY course_date DESC, id DESC";
+    public function getTrainingCourses(string $studentId, int $applicationId): array {
+        $sql = "SELECT * FROM apelq_training_course WHERE student_id = ? AND application_id = ? ORDER BY course_date DESC, id DESC";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$studentId]);
+        $stmt->execute([$studentId, $applicationId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } 
+    }
 
     public function saveTraining(array $data): int {
         $this->setAuditUser($data['student_id'] ?? null);
 
         $sql = "INSERT INTO apelq_training_course 
-                (student_id, course_name, organizer, course_date, duration, duration_type_id, knowledge_desc, skills_learned) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                (student_id, application_id, course_name, organizer, course_date, duration, duration_type_id, knowledge_desc, skills_learned) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             $data['student_id'], 
+            $data['application_id'], 
             $data['course_name'], 
             $data['organizer'], 
             $data['course_date'], 
             $data['duration'], 
             $data['duration_type_id'], 
             $data['knowledge_desc'] ?? '', 
-            $data['skills_learned'] // Disimpan sebagai format JSON
+            $data['skills_learned'] //json
         ]);
         return (int)$this->db->lastInsertId();
     }
@@ -76,7 +77,6 @@ class NonFormalLearning {
 
     public function deleteTraining(int $id, string $studentId): bool {
         $this->setAuditUser($studentId);
-
         $files = $this->getEvidenceFiles('TRAINING', $id);
 
         $this->db->beginTransaction();
@@ -93,9 +93,8 @@ class NonFormalLearning {
             throw $e;
         }
 
-        // Padam fail fizikal
         foreach ($files as $file) {
-            $physicalPath = __DIR__ . '/../pages/portfolio/non-formal/' . $file['file_path'];
+            $physicalPath = __DIR__ . '/../pages/student/portfolio/non-formal/' . $file['file_path'];
             if (is_file($physicalPath)) {
                 @unlink($physicalPath);
             }

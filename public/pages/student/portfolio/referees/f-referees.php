@@ -2,10 +2,11 @@
     $controller = new RefereesController();
     $studentId = (string)($_SESSION['f_stafID'] ?? '');
 
-    $records = $controller->getRefereesRecord($studentId);
+    $records = $controller->getRefereesRecord($studentId, $applicationId);
 ?>
 <form id="formReferees" method="post">
     <input type="hidden" name="action" value="save_referees">
+    <input type="hidden" name="application_id" value="<?= $applicationId ?>">
     
     <div class="row g-4 mb-4">
         <!-- Referee 1 -->

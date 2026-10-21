@@ -23,19 +23,19 @@ class UploadDocumentController {
         $this->model = new UploadDocument($this->pdoApel);   
     }
 
-    public function getDocumentsList(string $studentId): array {
-        return $this->model->getStudentDocumentsList($studentId);
+    public function getDocumentsList(string $studentId, int $applicationId = 0): array {
+        return $this->model->getStudentDocumentsList($studentId, $applicationId); 
     }
 
 public function processUpload(array $post, array $files): array {
         try {
             $studentId = trim((string)($_SESSION['f_stafID'] ?? ''));
+            $appId = (int)($post['application_id'] ?? 0);
             
             if (empty($studentId)) {
                 return ['status' => 'error', 'message' => 'Sesi telah tamat. Sila log masuk semula.'];
             }
 
-            // ID yang datang dari borang (form)
             $docTypeId = (int)($post['document_type_id'] ?? 0);
             $docName = $post['document_name'] ?? 'document'; 
 
@@ -58,12 +58,10 @@ public function processUpload(array $post, array $files): array {
                 return ['status' => 'error', 'message' => 'Saiz fail terlalu besar. Had maksimum adalah 5MB.'];
             }
 
-            // 1. CARI FAIL LAMA (MENGGUNAKAN NAMA LAJUR YANG TEPAT: doc_type_id)
             $oldFileName = null;
-            $existingDocs = $this->model->getStudentDocumentsList($studentId);
+            $existingDocs = $this->model->getStudentDocumentsList($studentId, $appId); 
             if (!empty($existingDocs)) {
                 foreach ($existingDocs as $doc) {
-                    // Berdasarkan hasil debug, nama lajurnya adalah 'doc_type_id'
                     $currentTypeId = (int)($doc['doc_type_id'] ?? 0);
                     
                     if ($currentTypeId === $docTypeId && !empty($doc['file_path'])) {
@@ -76,7 +74,6 @@ public function processUpload(array $post, array $files): array {
             $safeDocName = preg_replace('/[^a-z0-9]+/i', '_', strtolower($docName)); 
             $newFileName = $studentId . '_' . $safeDocName . '_' . time() . '.' . $ext;
 
-            // 2. TETAPKAN FOLDER
             $uploadDir = __DIR__ . '/../pages/student/portfolio/upload-documents/uploads/';
             
             if (!is_dir($uploadDir)) {
@@ -89,14 +86,14 @@ public function processUpload(array $post, array $files): array {
             if (move_uploaded_file($tmpName, $destination)) {
                 $dbData = [
                     'student_id'       => $studentId,
-                    'document_type_id' => $docTypeId, // Kekalkan ini jika Model save guna format ini
+                    'application_id'   => $appId,
+                    'document_type_id' => $docTypeId, 
                     'file_name'        => $originalName, 
                     'file_path'        => $dbPath
                 ];
 
                 $this->model->saveDocumentRecord($dbData);
 
-                // 3. PADAM FAIL LAMA SECARA FIZIKAL
                 if ($oldFileName) {
                     $oldPhysicalPath = $uploadDir . $oldFileName;
                     if (file_exists($oldPhysicalPath) && is_file($oldPhysicalPath)) {

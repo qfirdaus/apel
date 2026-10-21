@@ -16,11 +16,21 @@ class AdminFinance {
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
+    public function getTransactionHistory(): array {
+        $sql = "SELECT p.*, u.f_nama AS verified_by_name 
+                FROM apelq_payments p
+                LEFT JOIN tbl_m_user u ON p.verified_by COLLATE utf8mb4_unicode_ci = u.f_stafID
+                WHERE p.payment_status IN ('success', 'failed') 
+                ORDER BY p.verified_at DESC";
+                
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
     public function approveReceipt(int $paymentId, string $adminId): bool {
         try {
             $this->db->beginTransaction();
 
-            // A. Dapatkan maklumat bayaran & Kunci baris ini sementara (FOR UPDATE)
             $stmt = $this->db->prepare("SELECT student_id FROM apelq_payments WHERE id = ? AND payment_status = 'processing' FOR UPDATE");
             $stmt->execute([$paymentId]);
             $payment = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -61,5 +71,5 @@ class AdminFinance {
                 SET payment_status = 'failed', verified_by = ?, verified_at = NOW(), remarks = ? 
                 WHERE id = ? AND payment_status = 'processing'";
         return $this->db->prepare($sql)->execute([$adminId, $remarks, $paymentId]);
-    }
+    }  
 }

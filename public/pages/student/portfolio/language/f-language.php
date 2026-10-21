@@ -1,7 +1,7 @@
 <?php
     $languageController ??= new LanguageController();
     $studentId = (string)($_SESSION['f_stafID'] ?? '');
-    $langRecords = $languageController->getLanguageRecords($studentId);
+    $langRecords = $languageController->getLanguageRecords($studentId, $applicationId);
 
     $listLang = $languageController->getLanguageList();
     $listSkill = $languageController->getSkillLevels();
@@ -33,15 +33,12 @@
                 <table class="table table-striped table-bordered align-middle w-100 text-center" id="tblLanguage">
                     <thead class="bg-light">
                         <tr>
-                            <th rowspan="2" class="align-middle" width="5%"><?= h(__('other_th_no')) ?></th>
-                            <th rowspan="2" class="align-middle text-start" width="25%"><?= h(__('lang_label_language')) ?></th>
-                            <th colspan="3" class="text-center"><?= h(__('other_th_skill')) ?></th>
-                            <th rowspan="2" class="align-middle" width="10%"><?= h(__('other_th_action')) ?></th>
-                        </tr>
-                        <tr>
-                            <th width="20%"><?= h(__('lang_label_reading')) ?></th>
-                            <th width="20%"><?= h(__('lang_label_speaking')) ?></th>
-                            <th width="20%"><?= h(__('lang_label_writing')) ?></th>
+                            <th class="align-middle text-center" width="5%"><?= h(__('other_th_no')) ?></th>
+                            <th class="align-middle text-start" width="25%"><?= h(__('lang_label_language')) ?></th>
+                            <th class="align-middle text-center" width="20%"><?= h(__('lang_label_reading')) ?></th>
+                            <th class="align-middle text-center" width="20%"><?= h(__('lang_label_speaking')) ?></th>
+                            <th class="align-middle text-center" width="20%"><?= h(__('lang_label_writing')) ?></th>
+                            <th class="align-middle text-center" width="10%"><?= h(__('other_th_action')) ?></th>
                         </tr>
                     </thead>
                     <tbody>

@@ -21,8 +21,12 @@ class LanguageController {
         try { return $this->model->getSkillLevels(); } catch (Throwable $e) { return []; }
     }
 
-    public function getLanguageRecords(string $studentId): array {
-        try { return $this->model->getLanguageRecords($studentId); } catch (Throwable $e) { return []; }
+    public function getLanguageRecords(string $studentId, int $applicationId = 0): array {
+        try { 
+            return $this->model->getLanguageRecords($studentId, $applicationId); 
+        } catch (Throwable $e) { 
+            return []; 
+        }
     }
 
     public function addLanguage(array $post): array {
@@ -32,13 +36,16 @@ class LanguageController {
 
             $this->model->saveLanguage([
                 'student_id'     => $studentId,
+                'application_id' => (int)($post['application_id'] ?? 0), 
                 'language_id'    => (int)($post['language_id'] ?? 0),
                 'reading_level'  => (int)($post['reading_level'] ?? 0),
                 'speaking_level' => (int)($post['speaking_level'] ?? 0),
                 'writing_level'  => (int)($post['writing_level'] ?? 0)
             ]);
             return ['status' => 'success', 'message' => ''];
-        } catch (Throwable $e) { return ['status' => 'error', 'message' => $e->getMessage()]; }
+        } catch (Throwable $e) { 
+            return ['status' => 'error', 'message' => $e->getMessage()]; 
+        }
     }
 
     public function updateLanguage(array $post): array {

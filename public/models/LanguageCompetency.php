@@ -26,11 +26,17 @@ class LanguageCompetency {
 
     public function saveLanguage(array $data): bool {
         $this->setAuditUser($data['student_id']);
-        $sql = "INSERT INTO apelq_language (student_id, language_id, reading_level, speaking_level, writing_level) 
-                VALUES (?, ?, ?, ?, ?)";
+        
+        $sql = "INSERT INTO apelq_language (student_id, application_id, language_id, reading_level, speaking_level, writing_level) 
+                VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
-            $data['student_id'], $data['language_id'], $data['reading_level'], $data['speaking_level'], $data['writing_level']
+            $data['student_id'], 
+            $data['application_id'], 
+            $data['language_id'], 
+            $data['reading_level'], 
+            $data['speaking_level'], 
+            $data['writing_level']
         ]);
     }
 
@@ -52,10 +58,10 @@ class LanguageCompetency {
         return $stmt->execute([$id, $studentId]);
     }
 
-    public function getLanguageRecords(string $studentId): array {
-        $sql = "SELECT * FROM apelq_language WHERE student_id = ? ORDER BY id DESC";
+    public function getLanguageRecords(string $studentId, int $applicationId): array {
+        $sql = "SELECT * FROM apelq_language WHERE student_id = ? AND application_id = ? ORDER BY id DESC";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$studentId]);
+        $stmt->execute([$studentId, $applicationId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

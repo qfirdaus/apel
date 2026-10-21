@@ -5,10 +5,20 @@ session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../../../../controllers/InformalLearningController.php';
-
+require_once __DIR__ . '/../../../../controllers/ApplicationController.php'; 
 try {    
+    $studentId = (string)($_SESSION['f_stafID'] ?? $_SESSION['student_id'] ?? '');
+    $appController = new ApplicationController();
+    $activeApp = $appController->getStudentApplication($studentId);
+    
+    if (!$activeApp) {
+        echo json_encode(['status' => 'error', 'message' => 'Sesi permohonan tidak sah atau belum diluluskan.']);
+        exit;
+    }
+    
+    $_POST['application_id'] = (int)$activeApp['id'];
+    
     $controller = new InformalLearningController();
-
     $action = $_POST['action'] ?? '';
 
     if ($action === 'add_work') {

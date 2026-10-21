@@ -24,7 +24,7 @@
                 <?php
                 $informalController = new InformalLearningController();
                 $studentId = $_SESSION['student_id'] ?? '';
-                $workRecords = $informalController->getWorkExperience($studentId);
+                $workRecords = $informalController->getWorkExperience($studentId, $applicationId);
                 
                 if (!empty($workRecords)): 
                     $bil = 1;
@@ -52,7 +52,7 @@
                                         $fileData[] = [
                                             'id'   => $file['id'],
                                             'name' => htmlspecialchars($file['file_name']),
-                                            'url'  => base_url('pages/portfolio/informal/' . $file['file_path'])
+                                            'url'  => base_url('pages/student/portfolio/informal/' . $file['file_path'])
                                         ];
                                     }
                                     $jsonFiles = htmlspecialchars(json_encode($fileData), ENT_QUOTES, 'UTF-8');

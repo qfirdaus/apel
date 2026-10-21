@@ -10,6 +10,8 @@ class AdminFinanceController {
 
     public function __construct() {
         if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+
+
         $this->pdoApel = Database::pdoMysql();
         $this->pdoApel->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->model = new AdminFinance($this->pdoApel);
@@ -17,6 +19,10 @@ class AdminFinanceController {
 
     public function getPendingList(): array {
         return $this->model->getPendingReceipts();
+    }
+    
+    public function getHistoryList(): array {
+        return $this->model->getTransactionHistory();
     }
 
     public function processApproval(int $paymentId, string $adminId, string $action, string $remarks = ''): array {

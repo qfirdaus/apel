@@ -24,28 +24,31 @@ class RefereesController
         $this->model = new Referees($this->pdoApel);   
     }
 
-    public function getRefereesRecord(string $studentId): array {
-        return $this->model->getReferees($studentId);
+    public function getRefereesRecord(string $studentId, int $applicationId = 0): array {
+        return $this->model->getReferees($studentId, $applicationId); 
     }
 
     // Save
     public function saveReferees(array $post): array {
         try {
             $studentId = trim((string)($_SESSION['f_stafID'] ?? ''));
+            $appId = (int)($post['application_id'] ?? 0); 
             
             if (empty($studentId)) {
                 return ['status' => 'error', 'message' => 'Sesi telah tamat. Sila log masuk semula.'];
             }
+            if ($appId === 0) {
+                return ['status' => 'error', 'message' => 'ID Permohonan tidak sah.'];
+            }
 
-            // name="referee[1][name]"
             $refereesData = $post['referee'] ?? [];
 
-            // Loop referee (Type 1 dan Type 2)
             foreach ([1, 2] as $type) {
                 $refData = $refereesData[$type] ?? [];
                 
                 $data = [
                     'student_id'    => $studentId,
+                    'application_id'=> $appId, 
                     'referee_type'  => $type,
                     'name'          => trim($refData['name'] ?? ''),
                     'position_held' => trim($refData['position_held'] ?? ''),
@@ -56,7 +59,6 @@ class RefereesController
                     'relationship'  => trim($refData['relationship'] ?? '')
                 ];
 
-                // Simpan ke DB (UPSERT)
                 $this->model->saveReferee($data);
             }
 

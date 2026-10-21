@@ -3,11 +3,11 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4">
             <div class="modal-header border-bottom-0 pt-4 pb-0 px-4">
-                <h5 class="modal-title fw-bold fs-4">Kaedah Pembayaran</h5>
+                <h5 class="modal-title fw-bold fs-4"><?= h(__('reg_pay_method_title')) ?></h5>
                 <button type="button" class="btn-close bg-light rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <p class="text-muted mb-4">Sila pilih kaedah pembayaran untuk meneruskan pendaftaran Portfolio sebanyak <strong>RM <?= number_format($portfolioFee ?? 300, 2) ?></strong>.</p>
+                <p class="text-muted mb-4"><?= str_replace('{amount}', number_format($portfolioFee ?? 300, 2), __('reg_pay_method_text')) ?></p>
                 
                 <div class="d-grid gap-3">
                     <!-- Option 1: FPX (DITAMBAH data-bs-dismiss="modal") -->
@@ -16,8 +16,8 @@
                             <i class="ri-bank-card-line fs-2 text-primary"></i>
                         </div>
                         <div>
-                            <h5 class="mb-1 fw-bold">Perbankan Internet (FPX)</h5>
-                            <span class="text-muted small">Bayaran terus melalui sistem perbankan.</span>
+                            <h5 class="mb-1 fw-bold"><?= h(__('reg_pay_fpx_title')) ?></h5>
+                            <span class="text-muted small"><?= h(__('reg_pay_fpx_desc')) ?></span>
                         </div>
                         <i class="ri-arrow-right-line fs-3 ms-auto text-primary"></i>
                     </button>
@@ -28,8 +28,8 @@
                             <i class="ri-file-upload-line fs-2 text-secondary"></i>
                         </div>
                         <div>
-                            <h5 class="mb-1 fw-bold">Muat Naik Resit</h5>
-                            <span class="text-muted small">Pindahan bank manual (EFT / CDM).</span>
+                            <h5 class="mb-1 fw-bold"><?= h(__('reg_pay_upload_title')) ?></h5>
+                            <span class="text-muted small"><?= h(__('reg_pay_upload_desc')) ?></span>
                         </div>
                         <i class="ri-arrow-right-line fs-3 ms-auto text-secondary"></i>
                     </button>
@@ -44,7 +44,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4">
             <div class="modal-header border-bottom-0 pt-4 pb-0 px-4">
-                <h5 class="modal-title fw-bold fs-4">Muat Naik Resit</h5>
+                <h5 class="modal-title fw-bold fs-4"><?= h(__('reg_pay_upload_title')) ?></h5>
                 <button type="button" class="btn-close bg-light rounded-circle p-2" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
@@ -52,18 +52,18 @@
                     <input type="hidden" name="action" value="register_portfolio_manual">
                     
                     <div class="mb-4">
-                        <label class="form-label fw-bold text-dark">Resit Pindahan Wang (PDF/JPG/PNG)</label>
+                        <label class="form-label fw-bold text-dark"><?= h(__('reg_receipt_label')) ?></label>
                         <input type="file" class="form-control form-control-lg bg-light border-light-subtle" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" required>
                     </div>
                     
                     <div class="alert alert-info border-0 bg-info-subtle d-flex align-items-start rounded-3 p-3 mb-4">
                         <i class="ri-information-fill text-info fs-4 me-2 mt-n1"></i>
-                        <span class="small text-dark">Pendaftaran anda akan disahkan oleh pentadbir selepas resit berjaya dimuat naik.</span>
+                        <span class="small text-dark"><?= h(__('reg_receipt_alert')) ?></span>
                     </div>
                     
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
-                            <i class="ri-send-plane-fill me-2"></i> Hantar Resit
+                            <i class="ri-send-plane-fill me-2"></i> <?= h(__('reg_btn_send_receipt')) ?>
                         </button>
                     </div>
                 </form>

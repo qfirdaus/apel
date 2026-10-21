@@ -2,8 +2,18 @@ $(function () {
     'use strict';
 
     var csrfToken = $('#csrfToken').val();
-    // terjemahan global (pages-main.js)
-    var t = window.t;
+    // Teks bahasa dihantar dari PHP (lihat translate-js.php -> window.TEKS_BAHASA)
+    // t('kunci') = ambil teks ikut bahasa semasa
+    var TEKS = window.TEKS_BAHASA || {};
+    function t(key, params) {
+        var text = Object.prototype.hasOwnProperty.call(TEKS, key) ? TEKS[key] : key;
+        if (params) {
+            Object.keys(params).forEach(function (p) {
+                text = text.split('{' + p + '}').join(params[p]);
+            });
+        }
+        return text;
+    }
 
     function forceCleanupBackdrop() {
         $('.modal-backdrop').remove(); 
@@ -21,19 +31,19 @@ $(function () {
             forceCleanupBackdrop(); 
 
             Swal.fire({
-                title: 'Sistem Pembayaran FPX',
-                text: 'Anda akan dibawa ke halaman perbankan FPX. Teruskan?',
+                title: t('js_fpx_title'),
+                text: t('js_fpx_text'),
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonColor: '#28a745',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: '<i class="ri-save-3-line me-1"></i> ' + 'Teruskan',
+                confirmButtonText: '<i class="ri-save-3-line me-1"></i> ' + t('js_continue'),
                 cancelButtonText: t('js_cancel'),
                 reverseButtons: true                
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
-                        title: 'Menyambung ke FPX...',
+                        title: t('js_fpx_connecting'),
                         allowOutsideClick: false,
                         didOpen: () => { Swal.showLoading(); }
                     });
@@ -46,14 +56,14 @@ $(function () {
                         if (res && res.status === 'success') {
                             Swal.fire({
                                 icon: 'success', 
-                                title: 'Berjaya', 
+                                title: t('js_success'), 
                                 text: res.message,
                                 timer: 2000,
                                 showConfirmButton: false
                             }).then(() => location.reload());
                         } else {
-                            var errorMsg = res ? res.message : 'Ralat tidak diketahui.';
-                            Swal.fire('Ralat', errorMsg, 'error');
+                            var errorMsg = res ? res.message : t('js_unknown_error');
+                            Swal.fire(t('js_error'), errorMsg, 'error');
                         }
                     }, 'json');
                 }
@@ -90,8 +100,8 @@ $(function () {
             forceCleanupBackdrop();
 
             Swal.fire({
-                title: 'Memuat Naik...',
-                text: 'Sila tunggu sebentar.',
+                title: t('js_uploading_title'),
+                text: t('js_please_wait'),
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
@@ -107,20 +117,20 @@ $(function () {
                     if (res && res.status === 'success') {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Berjaya',
-                            text: res.message || 'Resit berjaya dimuat naik.',
+                            title: t('js_success'),
+                            text: res.message || t('js_receipt_uploaded'),
                             timer: 2000,
                             showConfirmButton: false
                         }).then(() => {
                             window.location.reload();
                         });
                     } else {
-                        var errorMsg = res ? res.message : 'Gagal memproses pendaftaran.';
-                        Swal.fire('Ralat', errorMsg, 'error');
+                        var errorMsg = res ? res.message : t('js_registration_failed');
+                        Swal.fire(t('js_error'), errorMsg, 'error');
                     }
                 },
                 error: function () {
-                    Swal.fire('Ralat Sistem', 'Gagal memuat naik dokumen.', 'error');
+                    Swal.fire(t('js_system_error'), t('js_upload_doc_failed'), 'error');
                 }
             });
         }, 400);

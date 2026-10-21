@@ -25,9 +25,9 @@ class NonFormalController {
         }
     }
 
-    public function getTrainingCourses(string $studentId): array {
+    public function getTrainingCourses(string $studentId, int $applicationId = 0): array {
         try {
-            return $this->model->getTrainingCourses($studentId);
+            return $this->model->getTrainingCourses($studentId, $applicationId);
         } catch (Throwable $e) {
             return [];
         }
@@ -46,18 +46,16 @@ class NonFormalController {
             $studentId = trim((string)($_SESSION['f_stafID'] ?? ''));
             if (empty($studentId)) return ['status' => 'error', 'message' => ''];
 
-            // Format Tarikh
             $courseDate = null;
             if (!empty($post['course_date'])) {
                 $d = DateTime::createFromFormat('d/m/Y', trim($post['course_date']));
                 if ($d) $courseDate = $d->format('Y-m-d');
             }
-
-            // Tukar array skills dari checkbox ke JSON string
             $skillsJson = json_encode($post['skills'] ?? []);
 
             $data = [
                 'student_id'       => $studentId,
+                'application_id'   => (int)($post['application_id'] ?? 0), 
                 'course_name'      => trim($post['course_name'] ?? ''),
                 'organizer'        => trim($post['organizer'] ?? ''),
                 'course_date'      => $courseDate,

@@ -1,7 +1,7 @@
 <?php
     $controller = new UploadDocumentController();
     $studentId = (string)($_SESSION['f_stafID'] ?? '');
-    $documentsList = $controller->getDocumentsList($studentId);
+    $documentsList = $controller->getDocumentsList($studentId, $applicationId);
 ?>
 <div class="row g-4">
     <?php if (empty($documentsList)): ?>
@@ -72,6 +72,7 @@
 <!-- Hidden Form - AJAX File Upload -->
 <form id="formUploadDocument" style="display:none;" enctype="multipart/form-data">
     <input type="hidden" name="action" value="upload_document">
+    <input type="hidden" name="application_id" value="<?= $applicationId ?>">
     <input type="hidden" name="document_type_id" id="hidden_doc_type_id">
     <input type="hidden" name="document_name" id="hidden_doc_name">
     
@@ -79,8 +80,5 @@
 </form>
 
 <style>
-    .hover-elevate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .hover-elevate:hover { transform: translateY(-3px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important; }
-    .btn-soft-info { background-color: rgba(57, 175, 209, 0.1); color: #39afd1; border: none; }
-    .btn-soft-info:hover { background-color: #39afd1; color: #fff; }
+
 </style>

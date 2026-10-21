@@ -61,6 +61,17 @@ $kunciUntukJs = [
     'js_uploading_text',
     'js_upload_success',
     'js_upload_failed',
+
+    // Portfolio Registration
+    'js_fpx_title',
+    'js_fpx_text',
+    'js_continue',
+    'js_fpx_connecting',
+    'js_unknown_error',
+    'js_please_wait',
+    'js_receipt_uploaded',
+    'js_registration_failed',
+    'js_upload_doc_failed',
 ];
 
 // Ambil teks sebenar (ikut bahasa semasa) bagi setiap kunci
