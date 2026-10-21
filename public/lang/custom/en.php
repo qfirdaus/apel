@@ -315,4 +315,32 @@ return [
 
     // Lock Skrin Read-Only
     'lock_screen_info' => '<strong>Module Locked (Read-Only):</strong> Your portfolio has been submitted and is currently under review. This view is for reference only.',
+
+    // ===== Submit Portfolio =====
+    'submit_title' => 'Submit Portfolio',
+    'submit_denied_title' => 'Access Denied',
+    'submit_btn_check_registration' => 'Check Registration',
+    'submit_done_title' => 'Submission Complete!',
+    'submit_done_text' => 'Congratulations, your Portfolio has been received and is now being assessed. Please monitor the <strong>Portfolio Status</strong> menu for further information.',
+    'submit_btn_view_portfolio' => 'View Portfolio (Read-Only)',
+    'submit_btn_check_status' => 'Check Assessment Status',
+    'submit_tip_complete' => 'Click to complete this section',
+    'submit_checklist_title' => 'Portfolio Checklist',
+    'submit_complete' => 'Complete',
+    'submit_not_complete' => 'Not Complete',
+    'submit_th_no' => 'No',
+    'submit_th_section' => 'Section',
+    'submit_th_status' => 'Complete / Not Complete',
+    'submit_declaration_title' => 'Self-Declaration',
+    'submit_declaration_text' => 'I hereby declare that all the information/documents provided to support this application are authentic, true and accurate. I fully understand the terms and conditions of the application and agree that my application will be rejected if I have falsified any information in any way.',
+    'submit_label_name' => 'Name',
+    'submit_label_date' => 'Date',
+    'submit_btn_submit' => 'Submit Portfolio',
+    'js_submit_confirm_title' => 'Confirm Submission?',
+    'js_submit_confirm_text' => 'Are you sure? The portfolio cannot be changed after submission.',
+    'js_submit_confirm_btn' => 'Yes, Submit!',
+    'js_submit_checking_title' => 'Checking Data...',
+    'js_submit_checking_text' => 'The system is validating the 7 sections of your portfolio.',
+    'js_submit_done_btn' => 'Done',
+    'js_submit_rejected_title' => 'Submission Rejected',
 ];

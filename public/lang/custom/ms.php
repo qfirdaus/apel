@@ -315,4 +315,32 @@ return [
 
     // Lock Skrin Read-Only
     'lock_screen_info' => '<strong>Modul Dikunci (Paparan Sahaja):</strong> Portfolio anda telah dihantar dan kini dalam proses semakan. Paparan ini adalah untuk rujukan sahaja.',
+
+    // ===== Hantar Portfolio =====
+    'submit_title' => 'Hantar Portfolio',
+    'submit_denied_title' => 'Akses Ditolak',
+    'submit_btn_check_registration' => 'Semak Pendaftaran',
+    'submit_done_title' => 'Penghantaran Selesai!',
+    'submit_done_text' => 'Tahniah, Portfolio anda telah selamat diterima dan kini sedang dalam proses penilaian. Sila pantau menu <strong>Portfolio Status</strong> untuk maklumat lanjut.',
+    'submit_btn_view_portfolio' => 'Lihat Portfolio (Read-Only)',
+    'submit_btn_check_status' => 'Semak Status Penilaian',
+    'submit_tip_complete' => 'Klik untuk melengkapkan bahagian ini',
+    'submit_checklist_title' => 'Senarai Semak Portfolio',
+    'submit_complete' => 'Lengkap',
+    'submit_not_complete' => 'Belum Lengkap',
+    'submit_th_no' => 'Bil',
+    'submit_th_section' => 'Bahagian',
+    'submit_th_status' => 'Lengkap / Belum Lengkap',
+    'submit_declaration_title' => 'Akuan Kendiri',
+    'submit_declaration_text' => 'Saya dengan ini mengakui bahawa semua maklumat/dokumen yang diberikan untuk menyokong permohonan ini adalah sahih, benar dan tepat. Saya memahami sepenuhnya terma dan syarat permohonan dan bersetuju bahawa permohonan saya akan ditolak sekiranya saya memalsukan sebarang maklumat dengan apa-apa cara.',
+    'submit_label_name' => 'Nama',
+    'submit_label_date' => 'Tarikh',
+    'submit_btn_submit' => 'Hantar Portfolio',
+    'js_submit_confirm_title' => 'Sahkan Penghantaran?',
+    'js_submit_confirm_text' => 'Adakah anda pasti? Portfolio tidak boleh diubah selepas dihantar.',
+    'js_submit_confirm_btn' => 'Ya, Hantar!',
+    'js_submit_checking_title' => 'Menyemak Data...',
+    'js_submit_checking_text' => 'Sistem sedang membuat validasi 7 jadual portfolio anda.',
+    'js_submit_done_btn' => 'Selesai',
+    'js_submit_rejected_title' => 'Penghantaran Ditolak',
 ];

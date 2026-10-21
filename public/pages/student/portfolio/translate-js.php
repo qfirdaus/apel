@@ -72,6 +72,15 @@ $kunciUntukJs = [
     'js_receipt_uploaded',
     'js_registration_failed',
     'js_upload_doc_failed',
+
+    // Submit Portfolio
+    'js_submit_confirm_title',
+    'js_submit_confirm_text',
+    'js_submit_confirm_btn',
+    'js_submit_checking_title',
+    'js_submit_checking_text',
+    'js_submit_done_btn',
+    'js_submit_rejected_title',
 ];
 
 // Ambil teks sebenar (ikut bahasa semasa) bagi setiap kunci

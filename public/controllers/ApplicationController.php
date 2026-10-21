@@ -291,5 +291,101 @@ class ApplicationController {
         $status['all_complete'] = ($status['work'] && $status['other'] && $status['training'] && $status['language'] && $status['reflection'] && $status['referees'] && $status['documents']);
 
         return $status;
+    }
+    
+    public function getAdditionalDocuments(int $applicationId): array {
+        return $this->model->getAdditionalDocuments($applicationId);
+    }
+
+    /** Hantar (Status 2 -> Status 1) */
+    public function resubmitReworkPortfolio(int $applicationId): array {
+        try {
+            $studentId = (string)($_SESSION['f_stafID'] ?? '');
+            $app = $this->model->getActiveApplication($studentId);
+
+            if (!$app || (int)$app['id'] !== $applicationId) {
+                return ['status' => 'error', 'message' => 'Permohonan tidak sah.'];
+            }
+
+            if ((int)$app['portfolio_status_id'] !== 2) {
+                return ['status' => 'error', 'message' => 'Permohonan ini bukan dalam status kemaskini/rework.'];
+            }
+
+            // status kembali ke 1 (Dihantar / Semakan Penasihat)
+            $sql = "UPDATE apelq_applications 
+                    SET portfolio_status_id = 1, portfolio_submitted_at = NOW() 
+                    WHERE id = ? AND student_id = ?";
+            $stmt = $this->pdoApel->prepare($sql);
+            $stmt->execute([$applicationId, $studentId]);
+
+            return ['status' => 'success', 'message' => 'Portfolio yang dikemaskini telah berjaya dihantar semula!'];
+        } catch (Throwable $e) {
+            return ['status' => 'error', 'message' => 'Ralat Sistem: ' . $e->getMessage()];
+        }
+    }
+    
+    public function getAllStudentApplications(string $studentId): array {
+        return $this->model->getAllApplications($studentId);
+    }
+
+    public function uploadAdditionalDocument(int $applicationId, string $title, string $remarks, array $file): array {
+        try {
+            $studentId = (string)($_SESSION['f_stafID'] ?? '');
+            if (empty($studentId) || $applicationId === 0) {
+                return ['status' => 'error', 'message' => 'Sesi tidak sah.'];
+            }
+
+            // status 2 (Rework)
+            $app = $this->model->getActiveApplication($studentId);
+            if (!$app || (int)$app['id'] !== $applicationId) {
+                return ['status' => 'error', 'message' => 'Permohonan tidak dijumpai.'];
+            }
+
+            if ((int)$app['portfolio_status_id'] !== 2) {
+                return ['status' => 'error', 'message' => 'Muat naik dokumen hanya dibenarkan apabila permohonan berstatus "Dikembalikan untuk Kemaskini".'];
+            }
+
+            if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
+                return ['status' => 'error', 'message' => 'Fail yang dimuat naik tidak sah.'];
+            }
+
+            $uploadDir = __DIR__ . '/../pages/student/portfolio/additional-document/uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $fileName = 'ADD_' . time() . '_' . rand(1000, 9999) . '.' . $extension;
+            $targetPath = $uploadDir . $fileName;
+
+            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+                return ['status' => 'error', 'message' => 'Gagal menyimpan fail ke pelayan.'];
+            }
+
+            $data = [
+                'application_id'          => $applicationId,
+                'student_id'              => $studentId,
+                'portfolio_attempt_count' => (int)($app['portfolio_attempt_count'] ?? 1),
+                'document_title'          => trim($title),
+                'document_remarks'        => trim($remarks),
+                'file_path'               => $fileName,
+                'original_file_name'      => $file['name'],
+                'file_size'               => (int)$file['size']
+            ];
+
+            if ($this->model->insertAdditionalDocument($data)) {
+                return ['status' => 'success', 'message' => 'Dokumen tambahan berjaya dimuat naik!'];
+            }
+
+            if (file_exists($targetPath)) unlink($targetPath);
+            return ['status' => 'error', 'message' => 'Gagal menyimpan rekod dokumen.'];
+
+        } catch (Throwable $e) {
+            return ['status' => 'error', 'message' => 'Ralat Sistem: ' . $e->getMessage()];
+        }
+    }    
+
+    public function getPortfolioPdfData(int $applicationId): array {
+        return $this->model->getFullPortfolioDetails($applicationId);
     }    
 }
