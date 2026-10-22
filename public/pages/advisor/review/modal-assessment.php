@@ -36,7 +36,8 @@
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal"><?= h(__('js_cancel')) ?></button>
-                    <button type="submit" class="btn btn-primary px-4">
+                    <!-- Tambah ID btnSubmitDecision di sini -->
+                    <button type="submit" id="btnSubmitDecision" class="btn btn-primary px-4">
                         <i class="ri-save-3-line me-1"></i> <?= h(__('adv_btn_submit')) ?>
                     </button>
                 </div>
@@ -44,4 +45,3 @@
         </div>
     </div>
 </div>
-

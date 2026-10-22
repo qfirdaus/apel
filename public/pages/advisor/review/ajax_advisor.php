@@ -3,9 +3,6 @@ declare(strict_types=1);
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../../../includes/init.php';
-require_once __DIR__ . '/../../../includes/functions-page.php';
-
 require_once __DIR__ . '/../../../controllers/AdvisorController.php';
 require_once __DIR__ . '/../../../controllers/ApplicationController.php';
 

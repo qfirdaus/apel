@@ -11,7 +11,8 @@ class ApelqApplication {
     public function getActiveApplication(string $studentId): ?array {
         $sql = "SELECT a.*,
                        s.status_student,
-                       s.status_student_EN
+                       s.status_student_EN,
+                       (SELECT remarks FROM apelq_advisor_reviews WHERE application_id = a.id ORDER BY id DESC LIMIT 1) AS advisor_remarks
                 FROM apelq_applications a
                 LEFT JOIN lp_status s
                        ON s.module_type = 'portfolio'
@@ -35,7 +36,8 @@ class ApelqApplication {
     public function getAllApplications(string $studentId): array {
         $sql = "SELECT a.*,
                        s.status_student,
-                       s.status_student_EN
+                       s.status_student_EN,
+                       (SELECT remarks FROM apelq_advisor_reviews WHERE application_id = a.id ORDER BY id DESC LIMIT 1) AS advisor_remarks
                 FROM apelq_applications a
                 LEFT JOIN lp_status s
                        ON s.module_type = 'portfolio'
@@ -55,7 +57,7 @@ class ApelqApplication {
         }
 
         return $results;
-    }    
+    }   
 
     public function getAdditionalDocuments(int $applicationId): array {
         $sql = "SELECT * FROM apelq_additional_documents 

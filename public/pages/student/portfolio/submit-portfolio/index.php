@@ -42,8 +42,8 @@ $appStatus = (int)($activeApp['portfolio_status_id'] ?? 0);
                                         <div class="avatar-xl bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center shadow-sm mx-auto mb-4" style="width: 100px; height: 100px;">
                                             <i class="ri-lock-2-fill" style="font-size: 50px;"></i>
                                         </div>
-                                        <h2 class="fw-bold text-dark mb-3">Akses Ditolak</h2>
-                                        <a href="../registration/index.php" class="btn btn-primary rounded-pill px-4">Semak Pendaftaran</a>
+                                        <h2 class="fw-bold text-dark mb-3"><?= h(__('submit_denied_title')) ?></h2>
+                                        <a href="../registration/index.php" class="btn btn-primary rounded-pill px-4"><?= h(__('submit_btn_check_registration')) ?></a>
                                     </div>
                                 </div>
                             </div>
@@ -58,16 +58,16 @@ $appStatus = (int)($activeApp['portfolio_status_id'] ?? 0);
                                         <div class="avatar-xl bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm mx-auto mb-4" style="width: 110px; height: 110px; background-color: #10b981 !important;">
                                             <i class="ri-check-double-line" style="font-size: 55px;"></i>
                                         </div>
-                                        <h2 class="fw-bold text-dark mb-3">Penghantaran Selesai!</h2>
+                                        <h2 class="fw-bold text-dark mb-3"><?= h(__('submit_done_title')) ?></h2>
                                         <p class="text-secondary fs-5 mb-5 px-md-5">
-                                            Tahniah, Portfolio anda telah selamat diterima dan kini sedang dalam proses penilaian. Sila pantau menu <strong>Portfolio Status</strong> untuk maklumat lanjut.
+                                            <?= __('submit_done_text') ?>
                                         </p>
                                         <div class="d-flex justify-content-center gap-3">
                                             <a href="../informal/index.php" class="btn btn-light border btn-lg rounded-pill px-4 fw-medium text-dark">
-                                                <i class="ri-eye-line me-1"></i> Lihat Portfolio (Read-Only)
+                                                <i class="ri-eye-line me-1"></i> <?= h(__('submit_btn_view_portfolio')) ?>
                                             </a>
                                             <a href="../status/index.php" class="btn btn-primary btn-lg rounded-pill px-4 fw-medium shadow-sm">
-                                                <i class="ri-time-line me-1"></i> Semak Status Penilaian
+                                                <i class="ri-time-line me-1"></i> <?= h(__('submit_btn_check_status')) ?>
                                             </a>
                                         </div>
                                     </div>

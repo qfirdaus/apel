@@ -15,6 +15,17 @@ $(function () {
         }
     }
 
+    // Inisialisasi DataTable Sejarah
+    if ($.fn.DataTable && $('#tblAdvisorHistory').length) {
+        if (!$.fn.DataTable.isDataTable('#tblAdvisorHistory')) {
+            $('#tblAdvisorHistory').DataTable({
+                pageLength: 10,
+                responsive: true,
+                autoWidth: false
+            });
+        }
+    }
+
     // PAPAR PORTFOLIO (AJAX + MODAL PDF)
     $(document).on('click', '.btn-view-pdf', function () {
         var appId = $(this).data('app-id');
@@ -81,27 +92,37 @@ $(function () {
         formData += '&csrf_token=' + encodeURIComponent(csrfToken);
 
         Swal.fire({
-            title: t('js_adv_confirm_title'),
-            text: t('js_adv_confirm_text'),
+            title: t('js_adv_confirm_title', 'Sahkan Keputusan Penilaian?'),
+            text: t('js_adv_confirm_text', 'Adakah anda pasti mahu menyimpan keputusan penilaian ini?'),
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: t('js_continue'),
-            cancelButtonText: t('js_cancel')
+            confirmButtonText: t('js_continue', 'Teruskan'),
+            cancelButtonText: t('js_cancel', 'Batal')
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#btnSubmitDecision').prop('disabled', true).html('<i class="ri-loader-4-line spinner"></i> Memproses...');
 
                 $.post('ajax_advisor.php', formData, function (res) {
                     if (res && res.status === 'success') {
-                        Swal.fire(t('js_success'), res.message, 'success').then(() => location.reload());
+                        Swal.fire(t('js_success', 'Berjaya!'), res.message, 'success').then(() => location.reload());
                     } else {
-                        var msg = res ? res.message : t('js_request_failed');
-                        Swal.fire(t('js_error'), msg, 'error');
+                        var msg = res ? res.message : t('js_request_failed', 'Permintaan gagal.');
+                        Swal.fire(t('js_error', 'Ralat'), msg, 'error');
                     }
-                }, 'json').fail(function () {
-                    Swal.fire(t('js_system_error'), t('js_connection_error'), 'error');
+                }, 'json').fail(function (xhr, status, error) {
+                    console.error("AJAX Error Response:", xhr.responseText);
+                    
+                    var errorMsg = t('js_connection_error', 'Gagal berhubung dengan pelayan.');
+                    try {
+                        var jsonErr = JSON.parse(xhr.responseText);
+                        if (jsonErr && jsonErr.message) {
+                            errorMsg = jsonErr.message;
+                        }
+                    } catch (e) {}
+
+                    Swal.fire(t('js_system_error', 'Ralat Sistem'), errorMsg, 'error');
                 }).always(function () {
-                    $('#btnSubmitDecision').prop('disabled', false).html(t('adv_btn_submit'));
+                    $('#btnSubmitDecision').prop('disabled', false).html(t('adv_btn_submit', 'Hantar Keputusan'));
                 });
             }
         });
