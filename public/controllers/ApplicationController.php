@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../classes/Database.php';
+require_once __DIR__ . '/../classes/Mailer.php';
+require_once __DIR__ . '/../classes/NotificationWorkflowService.php';
 require_once __DIR__ . '/../models/ApelqApplication.php';
 require_once __DIR__ . '/../models/ApelqFee.php'; 
 
@@ -158,10 +160,10 @@ class ApplicationController {
         try {
             $studentId = trim((string)($_SESSION['f_stafID'] ?? ''));
             if (empty($studentId) || $applicationId <= 0) {
-                return ['status' => 'error', 'message' => __('submit_err_session', 'Sesi atau ID Permohonan tidak sah.')];
+                return ['status' => 'error', 'message' => 'Sesi atau ID Permohonan tidak sah.'];
             }
 
-            // 1. SEMAKAN COOLING PERIOD (RAYUAN)
+            // COOLING PERIOD (RAYUAN)
             $activeApp = $this->model->getActiveApplication($studentId);
             if ($activeApp && (int)($activeApp['portfolio_attempt_count'] ?? 1) > 1 && !empty($activeApp['portfolio_senate_date'])) {
                 $senateDate = new DateTime($activeApp['portfolio_senate_date']);
@@ -176,19 +178,18 @@ class ApplicationController {
                 }
             }
 
-            // 2. SEKATAN LANTIKAN PEGAWAI (PENASIHAT & PENYELARAS FAKULTI)
+            // BLOCK LANTIKAN PEGAWAI (PENASIHAT)
             $assignees = $this->model->getApplicationAssignees($applicationId);
-            $hasAdvisor = !empty($assignees['advisor_id']);
-            $hasCoordinator = !empty($assignees['coordinator_id']);
+            $advisorId = trim((string)($assignees['advisor_id'] ?? ''));
 
-            if (!$hasAdvisor || !$hasCoordinator) {
+            if (empty($advisorId)) {
                 return [
                     'status' => 'error',
-                    'message' => __('submit_err_no_officers', 'Portfolio tidak boleh dihantar kerana Penasihat atau Penyelaras Fakulti belum dilantik untuk permohonan anda. Sila rujuk Pentadbir APEL.')
+                    'message' => 'Portfolio tidak boleh dihantar kerana Penasihat belum dilantik untuk permohonan anda. Sila rujuk Pentadbir APEL.'
                 ];
             }
 
-            // 3. SEMAKAN CHECKLIST 7 MODUL (MELALUI MODEL)
+            // CHECKLIST 7 MODUL
             $checklist = $this->model->getPortfolioChecklistStatus($applicationId);
             if (!$checklist['all_complete']) {
                 $errors = [];
@@ -206,16 +207,22 @@ class ApplicationController {
                 ];
             }
 
-            // 4. LAKSANA KEMASKINI MELALUI MODEL
             $updated = $this->model->submitPortfolioStatus($applicationId, $studentId);
             if ($updated) {
+                // Hantar notifikasi emel kepada penasihat berserta CC
+                try {
+                    $this->sendPortfolioSubmittedEmailToAdvisor($advisorId, $studentId, $applicationId);
+                } catch (\Throwable $mailErr) {
+                    error_log("Emel notifikasi submit portfolio ke Penasihat gagal: " . $mailErr->getMessage());
+                }
+
                 return [
                     'status' => 'success', 
-                    'message' => __('submit_success_msg', 'Portfolio anda telah berjaya dihantar! Modul kini dikunci untuk semakan Penasihat.')
+                    'message' => 'Portfolio anda telah berjaya dihantar! Modul kini dikunci untuk semakan Penasihat.'
                 ];
             }
 
-            return ['status' => 'error', 'message' => __('submit_err_failed', 'Gagal mengemaskini status permohonan.')];
+            return ['status' => 'error', 'message' => 'Gagal mengemaskini status permohonan.'];
 
         } catch (Throwable $e) {
             return ['status' => 'error', 'message' => 'Ralat Sistem: ' . $e->getMessage()];
@@ -246,6 +253,17 @@ class ApplicationController {
                     WHERE id = ? AND student_id = ?";
             $stmt = $this->pdoApel->prepare($sql);
             $stmt->execute([$applicationId, $studentId]);
+
+            // Hantar emel semula kepada penasihat jika ia adalah hantaran pembetulan (rework)
+            $assignees = $this->model->getApplicationAssignees($applicationId);
+            $advisorId = trim((string)($assignees['advisor_id'] ?? ''));
+            if (!empty($advisorId)) {
+                try {
+                    $this->sendPortfolioSubmittedEmailToAdvisor($advisorId, $studentId, $applicationId);
+                } catch (\Throwable $mailErr) {
+                    error_log("Emel resubmit portfolio ke Penasihat gagal: " . $mailErr->getMessage());
+                }
+            }
 
             return ['status' => 'success', 'message' => 'Portfolio yang dikemaskini telah berjaya dihantar semula!'];
         } catch (Throwable $e) {
@@ -321,5 +339,72 @@ class ApplicationController {
     // get advisor / coordinator
     public function getApplicationAssignees(int $applicationId): ?array {
         return $this->model->getApplicationAssignees($applicationId);
-    }   
+    }
+
+    /* Hantar e-mel kepada Penasihat apabila pelajar menghantar portfolio semakan*/
+    private function sendPortfolioSubmittedEmailToAdvisor(string $advisorStafId, string $studentId, int $applicationId): bool
+    {
+        try {
+            // maklumat staf penasihat
+            $stmtAdv = $this->pdoApel->prepare("SELECT f_nama, f_email FROM tbl_m_user WHERE TRIM(f_stafID) = :sid LIMIT 1");
+            $stmtAdv->execute([':sid' => trim($advisorStafId)]);
+            $advisor = $stmtAdv->fetch(PDO::FETCH_ASSOC);
+
+            $namaPenasihat  = $advisor['f_nama'] ?? $advisorStafId;
+            $emailPenasihat = 'zaila@upnm.edu.my'; // Mode test: ganti $advisor['f_email'] untuk live
+
+            // maklumat pelajar
+            $stmtStu = $this->pdoApel->prepare("SELECT f_nama, f_namajabatan FROM tbl_m_user WHERE TRIM(f_loginID) = :lid OR TRIM(f_stafID) = :sid LIMIT 1");
+            $stmtStu->execute([':lid' => trim($studentId), ':sid' => trim($studentId)]);
+            $student = $stmtStu->fetch(PDO::FETCH_ASSOC);
+
+            $studentName = !empty($student['f_nama']) ? $student['f_nama'] : $studentId;
+            $facultyName = $student['f_namajabatan'] ?? '-';
+
+            // template emel dari pangkalan data
+            $stmtTpl = $this->pdoApel->prepare("SELECT f_subjectTemplate, f_bodyHtml, f_bodyText FROM tbl_m_email_template WHERE f_templateCode = 'APELQ_PORTFOLIO_SUBMITTED' AND (f_status = 'ACTIVE' OR f_status = 'PUBLISHED') LIMIT 1");
+            $stmtTpl->execute();
+            $tpl = $stmtTpl->fetch(PDO::FETCH_ASSOC);
+
+            if (!$tpl) {
+                error_log("sendPortfolioSubmittedEmailToAdvisor: Template APELQ_PORTFOLIO_SUBMITTED tidak ditemui atau tidak aktif.");
+                return false;
+            }
+
+            $actionLink = 'https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+            $placeholders = [
+                'recipient_name' => $namaPenasihat,
+                'student_name'   => $studentName,
+                'student_id'     => $studentId,
+                'application_id' => $applicationId,
+                'faculty_name'   => $facultyName,
+                'submit_date'    => date('d/m/Y H:i'),
+                'action_link'    => $actionLink
+            ];
+
+            $subject  = $this->renderEmailTemplate((string)$tpl['f_subjectTemplate'], $placeholders);
+            $htmlBody = $this->renderEmailTemplate((string)$tpl['f_bodyHtml'], $placeholders);
+            $textBody = !empty($tpl['f_bodyText']) ? $this->renderEmailTemplate((string)$tpl['f_bodyText'], $placeholders) : null;
+
+            $opts = [
+                'cc' => [
+                    'lavindastarz@gmail.com'
+                ]
+            ];
+
+            return Mailer::quickSend($this->pdoApel, $emailPenasihat, $subject, $htmlBody, $textBody, $opts);
+
+        } catch (\Throwable $e) {
+            error_log("sendPortfolioSubmittedEmailToAdvisor Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function renderEmailTemplate(string $templateText, array $placeholders): string
+    {
+        foreach ($placeholders as $key => $value) {
+            $templateText = str_replace(['{{' . $key . '}}', '{' . $key . '}'], (string)$value, $templateText);
+        }
+        return $templateText;
+    }
 }

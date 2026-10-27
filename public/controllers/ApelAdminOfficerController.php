@@ -82,7 +82,7 @@ class ApelAdminOfficerController
                 error_log("Emel Penasihat gagal: " . $e->getMessage());
             }
 
-            return ['status' => 'success', 'message' => 'Penasihat berjaya ditugaskan kepada pelajar.'];
+            return ['status' => 'success', 'message' => 'Penasihat berjaya disetkan kepada pelajar.'];
         }
 
         return ['status' => 'error', 'message' => 'Gagal menyimpan penugasan penasihat.'];
@@ -128,7 +128,7 @@ class ApelAdminOfficerController
         try {
             $officer = $this->model->getOfficerUserByStafId($officerStafId);
             $namaPegawai  = $officer['f_nama'] ?? $officerStafId;
-            $emailPegawai = 'zaila@upnm.edu.my'; // Mode test. Tukar ke (!empty($officer['f_email']) ? $officer['f_email'] : 'zaila@upnm.edu.my') untuk live
+            $emailPegawai = 'zaila@upnm.edu.my'; // Mode test. $officer['f_email'] 
 
             $resolvedFacultyName = trim($facultyName);
             if ($resolvedFacultyName === '') {
@@ -163,7 +163,17 @@ class ApelAdminOfficerController
             $htmlBody = $this->renderEmailTemplate((string)$tpl['f_bodyHtml'], $placeholders);
             $textBody = !empty($tpl['f_bodyText']) ? $this->renderEmailTemplate((string)$tpl['f_bodyText'], $placeholders) : null;
 
-            return Mailer::quickSend($this->pdoMysql, $emailPegawai, $subject, $htmlBody, $textBody, []);
+            // Senarai CC (Boleh tambah banyak emel di dalam array ini)
+            $ccRecipients = [
+                'lavindastarz@gmail.com'
+                // 'emel_seterusnya@upnm.edu.my',
+            ];
+
+            $opts = [
+                'cc' => $ccRecipients
+            ];
+
+            return Mailer::quickSend($this->pdoMysql, $emailPegawai, $subject, $htmlBody, $textBody, $opts);
         } catch (\Throwable $e) {
             error_log("sendCoordinatorAppointmentEmail Error: " . $e->getMessage());
             return false;
@@ -198,7 +208,15 @@ class ApelAdminOfficerController
             $htmlBody = $this->renderEmailTemplate((string)$tpl['f_bodyHtml'], $placeholders);
             $textBody = !empty($tpl['f_bodyText']) ? $this->renderEmailTemplate((string)$tpl['f_bodyText'], $placeholders) : null;
 
-            return Mailer::quickSend($this->pdoMysql, $emailPegawai, $subject, $htmlBody, $textBody, []);
+            $ccRecipients = [
+                'lavindastarz@gmail.com'
+            ];
+
+            $opts = [
+                'cc' => $ccRecipients
+            ];
+
+            return Mailer::quickSend($this->pdoMysql, $emailPegawai, $subject, $htmlBody, $textBody, $opts);
         } catch (\Throwable $e) {
             error_log("sendOfficerAssignmentEmail Error: " . $e->getMessage());
             return false;

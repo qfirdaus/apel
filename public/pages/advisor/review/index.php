@@ -77,7 +77,7 @@ $pendingList = $advisorController->getPendingReviews($advisorStafId);
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary px-4 fw-bold" onclick="window.print()">
+                    <button type="button" class="btn btn-primary px-4 fw-bold" target="_blank" id="btnPrintPdfPreview">
                         <i class="ri-printer-line me-1"></i> Cetak / Simpan PDF
                     </button>
                 </div>

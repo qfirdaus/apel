@@ -49,7 +49,7 @@ class ApelAdminOfficerModel
 
             $gelarNama = trim((string)($syb['gelar_nama'] ?? ''));
             $namaHanya = trim((string)($syb['nama'] ?? ''));
-            $namaPenuh = ($gelarNama !== '' && $namaHanya !== '') ? $gelarNama . ' ' . $namaHanya : ($gelarNama ?: ($namaHanya ?: $stafId));
+            $namaPenuh = ($gelarNama !== '' && $namaHanya !== '') ? $gelarNama : ($gelarNama ?: ($namaHanya ?: $stafId));
             $nokp = trim((string)($syb['nokp'] ?? ''));
             $hashedPass = ($nokp !== '') ? password_hash($nokp, PASSWORD_DEFAULT) : password_hash('123456', PASSWORD_DEFAULT);
 
@@ -59,14 +59,14 @@ class ApelAdminOfficerModel
                             f_jenisID, f_jenis, f_jabatanKod, f_namajabatan, 
                             f_verified_at, f_must_change_password, f_statusID, f_status, 
                             f_groupID, f_groupKod, f_flag, f_insertdt, f_updatedt, f_updateby, 
-                            f_remarks, f_isAutoProvisioned, f_identitySource
+                            f_remarks, f_isAutoProvisioned
                         ) VALUES (
                             :login, :stafID, 'STAF', :nopekerja, :nama, :nickname, 
                             :nokp, :pass, :email, :phone, :jwtKod, :jwt, 
                             :jnsID, :jns, :jbtnKod, :jbtn, 
                             NOW(), 0, :statusID, :status, 
                             :gid, :gkod, 1, NOW(), NOW(), :upby, 
-                            'Auto-provisioned via APEL.Q Role Assign', 1, 'SSO'
+                            'Added via APEL.Q Role Assign', 1
                         )";
             $stmtIns = $this->dbMysql->prepare($insUser);
             $stmtIns->execute([
@@ -176,7 +176,7 @@ class ApelAdminOfficerModel
         }
     }
 
-    /**Set Penasihat Pelajar (Boleh dipanggil oleh Penyelaras Fakulti atau Admin)*/
+    /**Set Penasihat Pelajar*/
     public function assignAdvisorToStudent(int $appId, string $studentId, string $advisorId, string $assignedBy): bool
     {
         try {
@@ -237,9 +237,10 @@ class ApelAdminOfficerModel
                        s.status_student_EN,
                        ass.advisor_id, 
                        u_adv.f_nama AS advisor_name,
-                       fc.coordinator_id,
-                       u_coor.f_nama AS coordinator_name,
-                       ass.assigned_at
+                       ass.assigned_at,
+                       -- Gabungkan semua ID dan Nama Penyelaras jika fakulti ada lebih dari 1 penyelaras
+                       GROUP_CONCAT(DISTINCT fc.coordinator_id SEPARATOR ', ') AS coordinator_id,
+                       GROUP_CONCAT(DISTINCT u_coor.f_nama SEPARATOR ', ') AS coordinator_name
                 FROM apelq_applications a
                 LEFT JOIN tbl_m_user u_stu 
                        ON a.student_id COLLATE utf8mb4_unicode_ci = u_stu.f_loginID
@@ -250,12 +251,15 @@ class ApelAdminOfficerModel
                        ON a.id = ass.application_id
                 LEFT JOIN tbl_m_user u_adv 
                        ON ass.advisor_id COLLATE utf8mb4_unicode_ci = u_adv.f_stafID
-                -- Auto match Penyelaras Fakulti berdasarkan kod fakulti pelajar
+                -- Padanan Penyelaras Fakulti aktif
                 LEFT JOIN apelq_faculty_coordinators fc 
                        ON u_stu.f_jabatanKod = fc.faculty_code AND fc.status = 1
                 LEFT JOIN tbl_m_user u_coor 
                        ON fc.coordinator_id COLLATE utf8mb4_unicode_ci = u_coor.f_stafID
                 {$whereFaculty}
+                GROUP BY a.id, a.student_id, u_stu.f_nama, u_stu.f_jabatanKod, u_stu.f_namajabatan,
+                         a.portfolio_status_id, a.portfolio_submitted_at, s.status_student, 
+                         s.status_student_EN, ass.advisor_id, u_adv.f_nama, ass.assigned_at
                 ORDER BY a.id DESC";
 
         $stmt = $this->dbMysql->prepare($sql);

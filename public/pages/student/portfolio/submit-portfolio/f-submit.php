@@ -3,7 +3,7 @@
     $checklist = $appController->getPortfolioChecklist($appId);
     $assignment = $appController->getApplicationAssignees($appId);
 
-    $isOfficerAssigned = (!empty($assignment['advisor_id']) && !empty($assignment['coordinator_id']));
+    $isOfficerAssigned = (!empty($assignment['advisor_id']));
 
     $studentName = $_SESSION['f_nama'] ?? $_SESSION['nama'] ?? ''; 
     $currentDate = date('d-M-Y');
@@ -29,7 +29,7 @@
     </div>
 </div>
 
-<!-- KOTAK AMARAN APEL: STATUS LANTIKAN PENASIHAT & PENYELARAS -->
+<!-- KOTAK AMARAN APEL: STATUS LANTIKAN PENASIHAT -->
 <?php if (!$isOfficerAssigned): ?>
     <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mb-4 p-3 rounded-3" role="alert">
         <div class="fs-2 text-warning me-3">
@@ -38,7 +38,7 @@
         <div>
             <h6 class="fw-bold mb-1 text-dark">Pelantikan Pegawai Sedang Diproses</h6>
             <p class="mb-0 text-secondary small">
-                Permohonan anda masih belum mempunyai <strong>Penasihat</strong> atau <strong>Penyelaras Fakulti</strong> yang dilantik. 
+                Permohonan anda masih belum mempunyai <strong>Penasihat</strong> yang dilantik. 
                 Sila rujuk <strong>Pentadbir APEL</strong>. Butang penghantaran hanya akan diaktifkan setelah lantikan selesai.
             </p>
         </div>
@@ -49,10 +49,9 @@
             <i class="ri-checkbox-circle-fill"></i>
         </div>
         <div>
-            <h6 class="fw-bold mb-1 text-dark">Pegawai Penilai Telah Dilantik</h6>
+            <h6 class="fw-bold mb-1 text-dark">Pegawai Penasihat Telah Dilantik</h6>
             <p class="mb-0 text-secondary small">
-                Penasihat: <strong><?= h($assignment['advisor_name'] ?? $assignment['advisor_id']) ?></strong> | 
-                Penyelaras Fakulti: <strong><?= h($assignment['coordinator_name'] ?? $assignment['coordinator_id']) ?></strong>
+                Penasihat: <strong><?= h($assignment['advisor_name'] ?? $assignment['advisor_id']) ?></strong> 
             </p>
         </div>
     </div>

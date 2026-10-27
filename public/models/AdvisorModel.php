@@ -21,7 +21,10 @@ class AdvisorModel {
     public function getPendingReviews(string $advisorId): array {
         $sql = "SELECT a.*, 
                        u_stu.f_nama AS student_name,
-                       s.status_student, s.status_student_EN
+                       u_stu.f_namajabatan AS faculty_name,
+                       u_stu.f_jawatan AS program_name, 
+                       s.status_student, 
+                       s.status_student_EN
                 FROM apelq_applications a
                 INNER JOIN apelq_application_assignments ass ON a.id = ass.application_id
                 LEFT JOIN tbl_m_user u_stu ON a.student_id COLLATE utf8mb4_unicode_ci = u_stu.f_loginID
@@ -82,4 +85,32 @@ class AdvisorModel {
         $stmt->execute([$advisorId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     } 
+
+    public function getStudentIdByAppId(int $appId): ?string {
+        $stmt = $this->db->prepare("SELECT student_id FROM apelq_applications WHERE id = ? LIMIT 1");
+        $stmt->execute([$appId]);
+        $res = $stmt->fetchColumn();
+        return $res ? (string)$res : null;
+    } 
+
+    /** Dapatkan maklumat pelajar dan senarai penyelaras fakulti yang aktif */
+    public function getCoordinatorsForApplication(int $appId): array {
+        $sql = "SELECT a.id AS application_id, 
+                       a.student_id, 
+                       u_stu.f_nama AS student_name,
+                       u_stu.f_jabatanKod AS faculty_code,
+                       u_stu.f_namajabatan AS faculty_name,
+                       fc.coordinator_id,
+                       u_coor.f_nama AS coordinator_name,
+                       u_coor.f_email AS coordinator_email
+                FROM apelq_applications a
+                JOIN tbl_m_user u_stu ON a.student_id COLLATE utf8mb4_unicode_ci = u_stu.f_loginID
+                JOIN apelq_faculty_coordinators fc ON u_stu.f_jabatanKod = fc.faculty_code AND fc.status = 1
+                JOIN tbl_m_user u_coor ON fc.coordinator_id COLLATE utf8mb4_unicode_ci = u_coor.f_stafID
+                WHERE a.id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$appId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
 }
