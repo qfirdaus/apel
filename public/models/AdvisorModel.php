@@ -17,16 +17,20 @@ class AdvisorModel {
         $stmt->execute([$userId]);
     }
         
-    /** senarai permohonan untuk semakan penasihat (Status 1: Submitted) */
-    public function getPendingReviews(): array {
+    /** senarai permohonan untuk semakan penasihat by advisor id (Status 1: Submitted) */
+    public function getPendingReviews(string $advisorId): array {
         $sql = "SELECT a.*, 
+                       u_stu.f_nama AS student_name,
                        s.status_student, s.status_student_EN
                 FROM apelq_applications a
+                INNER JOIN apelq_application_assignments ass ON a.id = ass.application_id
+                LEFT JOIN tbl_m_user u_stu ON a.student_id COLLATE utf8mb4_unicode_ci = u_stu.f_loginID
                 LEFT JOIN lp_status s ON s.module_type = 'portfolio' AND s.status_code = a.portfolio_status_id
                 WHERE a.portfolio_status_id = 1
+                  AND ass.advisor_id = :adv_id
                 ORDER BY a.portfolio_submitted_at ASC";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':adv_id' => $advisorId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../models/ApelqApplication.php';
-require_once __DIR__ . '/../models/ApelqFee.php'; // Pastikan ini ada
+require_once __DIR__ . '/../models/ApelqFee.php'; 
 
 class ApplicationController {
     private ApelqApplication $model;
@@ -150,147 +150,76 @@ class ApplicationController {
         }
     }
 
+    public function getPortfolioChecklist(int $applicationId): array {
+        return $this->model->getPortfolioChecklistStatus($applicationId);
+    }
+
     public function submitPortfolio(int $applicationId): array {
         try {
             $studentId = trim((string)($_SESSION['f_stafID'] ?? ''));
-            if (empty($studentId) || $applicationId === 0) {
-                return ['status' => 'error', 'message' => 'Sesi atau ID Permohonan tidak sah.'];
+            if (empty($studentId) || $applicationId <= 0) {
+                return ['status' => 'error', 'message' => __('submit_err_session', 'Sesi atau ID Permohonan tidak sah.')];
             }
 
-            // COOLING PERIOD - Rayuan (Guna portfolio_attempt_count & portfolio_senate_date)
-            $stmtApp = $this->pdoApel->prepare("SELECT portfolio_attempt_count, portfolio_senate_date FROM apelq_applications WHERE id = ?");
-            $stmtApp->execute([$applicationId]);
-            $appData = $stmtApp->fetch(PDO::FETCH_ASSOC);
-
-            // Jika portfolio_attempt_count > 1 bermaksud ini adalah rayuan
-            if ($appData && (int)$appData['portfolio_attempt_count'] > 1 && !empty($appData['portfolio_senate_date'])) {
-                $senateDate = new DateTime($appData['portfolio_senate_date']);
+            // 1. SEMAKAN COOLING PERIOD (RAYUAN)
+            $activeApp = $this->model->getActiveApplication($studentId);
+            if ($activeApp && (int)($activeApp['portfolio_attempt_count'] ?? 1) > 1 && !empty($activeApp['portfolio_senate_date'])) {
+                $senateDate = new DateTime($activeApp['portfolio_senate_date']);
                 $today = new DateTime();
                 $diff = $today->diff($senateDate)->days;
 
                 if ($diff < 30) {
-                    return ['status' => 'error', 'message' => 'Tempoh bertenang (Cooling Period) 30 hari belum tamat. Baki hari: ' . (30 - $diff) . ' hari.'];
+                    return [
+                        'status' => 'error', 
+                        'message' => 'Tempoh bertenang (Cooling Period) 30 hari belum tamat. Baki hari: ' . (30 - $diff) . ' hari.'
+                    ];
                 }
             }
 
-            // CHECKLIST VALIDATIONS
-            $errors = [];
+            // 2. SEKATAN LANTIKAN PEGAWAI (PENASIHAT & PENYELARAS FAKULTI)
+            $assignees = $this->model->getApplicationAssignees($applicationId);
+            $hasAdvisor = !empty($assignees['advisor_id']);
+            $hasCoordinator = !empty($assignees['coordinator_id']);
 
-            // Pengalaman Kerja
-            $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_work_experience WHERE application_id = ?");
-            $stmt->execute([$applicationId]);
-            if ($stmt->fetchColumn() == 0) $errors[] = "Pengalaman Kerja belum diisi.";
-
-            // Aktiviti Pembelajaran Lain (Sama ada ada rekod ATAU flag = 0)
-            $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_other_activities WHERE application_id = ?");
-            $stmt->execute([$applicationId]);
-            $otherCount = $stmt->fetchColumn();
-            
-            $stmtFlag = $this->pdoApel->prepare("SELECT has_other_activities FROM apelq_other_activities_status WHERE application_id = ?");
-            $stmtFlag->execute([$applicationId]);
-            $otherFlag = $stmtFlag->fetchColumn();
-            
-            if ($otherCount == 0 && $otherFlag !== 0) {
-                $errors[] = "Aktiviti Pembelajaran Lain belum diisi (Sila tanda 'Tiada' jika tiada).";
+            if (!$hasAdvisor || !$hasCoordinator) {
+                return [
+                    'status' => 'error',
+                    'message' => __('submit_err_no_officers', 'Portfolio tidak boleh dihantar kerana Penasihat atau Penyelaras Fakulti belum dilantik untuk permohonan anda. Sila rujuk Pentadbir APEL.')
+                ];
             }
 
-            // Pembelajaran Non-Formal
-            $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_training_course WHERE application_id = ?");
-            $stmt->execute([$applicationId]);
-            if ($stmt->fetchColumn() == 0) $errors[] = "Kursus Latihan (Non-Formal) belum diisi.";
+            // 3. SEMAKAN CHECKLIST 7 MODUL (MELALUI MODEL)
+            $checklist = $this->model->getPortfolioChecklistStatus($applicationId);
+            if (!$checklist['all_complete']) {
+                $errors = [];
+                if (!$checklist['work']) $errors[] = "Pengalaman Kerja belum diisi.";
+                if (!$checklist['other']) $errors[] = "Aktiviti Pembelajaran Lain belum diisi (Sila tanda 'Tiada' jika tiada).";
+                if (!$checklist['training']) $errors[] = "Kursus Latihan (Non-Formal) belum diisi.";
+                if (!$checklist['language']) $errors[] = "Kemahiran Bahasa belum diisi.";
+                if (!$checklist['reflection']) $errors[] = "Refleksi Kendiri belum diisi.";
+                if (!$checklist['referees']) $errors[] = "Maklumat 2 orang Perujuk tidak lengkap.";
+                if (!$checklist['documents']) $errors[] = "Dokumen sokongan wajib belum dimuat naik.";
 
-            // Kemahiran Bahasa
-            $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_language WHERE application_id = ?");
-            $stmt->execute([$applicationId]);
-            if ($stmt->fetchColumn() == 0) $errors[] = "Kemahiran Bahasa belum diisi.";
-
-            // Refleksi Kendiri
-            $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_self_reflection WHERE application_id = ?");
-            $stmt->execute([$applicationId]);
-            if ($stmt->fetchColumn() == 0) $errors[] = "Refleksi Kendiri belum diisi.";
-
-            // Referees (Mesti 2 orang)
-            $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_referees WHERE application_id = ?");
-            $stmt->execute([$applicationId]);
-            if ($stmt->fetchColumn() < 2) $errors[] = "Maklumat 2 orang Perujuk tidak lengkap.";
-
-            // Dokumen Sokongan
-            $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_student_documents WHERE application_id = ? AND file_path IS NOT NULL");
-            $stmt->execute([$applicationId]);
-            if ($stmt->fetchColumn() == 0) $errors[] = "Dokumen sokongan wajib belum dimuat naik.";
-
-            // JIKA ADA ERROR PADA CHECKLIST
-            if (!empty($errors)) {
                 return [
                     'status' => 'error', 
                     'message' => 'Sila lengkapkan bahagian berikut sebelum menghantar:<br><ul class="text-start mt-2 mb-0"><li>' . implode('</li><li>', $errors) . '</li></ul>'
                 ];
             }
 
-            // Lengkap, STATUS 1 (DIHANTAR)
-            // portfolio_status_id dan portfolio_submitted_at
-            $updateSql = "UPDATE apelq_applications SET portfolio_status_id = 1, portfolio_submitted_at = NOW() WHERE id = ? AND student_id = ?";
-            $updateStmt = $this->pdoApel->prepare($updateSql);
-            $updateStmt->execute([$applicationId, $studentId]);
+            // 4. LAKSANA KEMASKINI MELALUI MODEL
+            $updated = $this->model->submitPortfolioStatus($applicationId, $studentId);
+            if ($updated) {
+                return [
+                    'status' => 'success', 
+                    'message' => __('submit_success_msg', 'Portfolio anda telah berjaya dihantar! Modul kini dikunci untuk semakan Penasihat.')
+                ];
+            }
 
-            return ['status' => 'success', 'message' => 'Portfolio anda telah berjaya dihantar! Modul kini dikunci untuk penilaian.'];
+            return ['status' => 'error', 'message' => __('submit_err_failed', 'Gagal mengemaskini status permohonan.')];
 
         } catch (Throwable $e) {
             return ['status' => 'error', 'message' => 'Ralat Sistem: ' . $e->getMessage()];
         }
-    } 
-    
-    public function getPortfolioChecklist(int $applicationId): array {
-        $status = [
-            'work' => false, 'other' => false, 'training' => false, 'language' => false, 
-            'reflection' => false, 'referees' => false, 'documents' => false, 'all_complete' => false
-        ];
-
-        if ($applicationId <= 0) return $status;
-
-        // 1. Work Experience
-        $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_work_experience WHERE application_id = ?");
-        $stmt->execute([$applicationId]);
-        $status['work'] = ($stmt->fetchColumn() > 0);
-
-        // 2. Other Activities (Ada data atau flag 'Tiada')
-        $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_other_activities WHERE application_id = ?");
-        $stmt->execute([$applicationId]);
-        $otherCount = $stmt->fetchColumn();
-        
-        $stmtFlag = $this->pdoApel->prepare("SELECT has_other_activities FROM apelq_other_activities_status WHERE application_id = ?");
-        $stmtFlag->execute([$applicationId]);
-        $otherFlag = $stmtFlag->fetchColumn();
-        $status['other'] = ($otherCount > 0 || $otherFlag === 0); 
-
-        // 3. Training/Course
-        $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_training_course WHERE application_id = ?");
-        $stmt->execute([$applicationId]);
-        $status['training'] = ($stmt->fetchColumn() > 0);
-
-        // 4. Language Competency
-        $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_language WHERE application_id = ?");
-        $stmt->execute([$applicationId]);
-        $status['language'] = ($stmt->fetchColumn() > 0);
-
-        // 5. Self-Assessment/Reflection
-        $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_self_reflection WHERE application_id = ?");
-        $stmt->execute([$applicationId]);
-        $status['reflection'] = ($stmt->fetchColumn() > 0);
-
-        // 6. Referees (Mesti 2 orang)
-        $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_referees WHERE application_id = ?");
-        $stmt->execute([$applicationId]);
-        $status['referees'] = ($stmt->fetchColumn() >= 2);
-
-        // 7. Upload Other Documents
-        $stmt = $this->pdoApel->prepare("SELECT COUNT(*) FROM apelq_student_documents WHERE application_id = ? AND file_path IS NOT NULL");
-        $stmt->execute([$applicationId]);
-        $status['documents'] = ($stmt->fetchColumn() > 0);
-
-        $status['all_complete'] = ($status['work'] && $status['other'] && $status['training'] && $status['language'] && $status['reflection'] && $status['referees'] && $status['documents']);
-
-        return $status;
     }
     
     public function getAdditionalDocuments(int $applicationId): array {
@@ -388,4 +317,9 @@ class ApplicationController {
     public function getPortfolioPdfData(int $applicationId): array {
         return $this->model->getFullPortfolioDetails($applicationId);
     }    
+
+    // get advisor / coordinator
+    public function getApplicationAssignees(int $applicationId): ?array {
+        return $this->model->getApplicationAssignees($applicationId);
+    }   
 }

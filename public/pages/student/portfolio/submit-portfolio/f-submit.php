@@ -1,8 +1,11 @@
 <?php
     $appId = (int)($activeApp['id'] ?? 0);
     $checklist = $appController->getPortfolioChecklist($appId);
-    
-    $studentName = $_SESSION['f_nama'] ?? $_SESSION['nama'] ; 
+    $assignment = $appController->getApplicationAssignees($appId);
+
+    $isOfficerAssigned = (!empty($assignment['advisor_id']) && !empty($assignment['coordinator_id']));
+
+    $studentName = $_SESSION['f_nama'] ?? $_SESSION['nama'] ?? ''; 
     $currentDate = date('d-M-Y');
 
     function getStatusIcon($isComplete) {
@@ -25,6 +28,35 @@
         <h4 class="text-dark fw-bold mb-1"><?= h(__('submit_title')) ?></h4>
     </div>
 </div>
+
+<!-- KOTAK AMARAN APEL: STATUS LANTIKAN PENASIHAT & PENYELARAS -->
+<?php if (!$isOfficerAssigned): ?>
+    <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mb-4 p-3 rounded-3" role="alert">
+        <div class="fs-2 text-warning me-3">
+            <i class="ri-error-warning-fill"></i>
+        </div>
+        <div>
+            <h6 class="fw-bold mb-1 text-dark">Pelantikan Pegawai Sedang Diproses</h6>
+            <p class="mb-0 text-secondary small">
+                Permohonan anda masih belum mempunyai <strong>Penasihat</strong> atau <strong>Penyelaras Fakulti</strong> yang dilantik. 
+                Sila rujuk <strong>Pentadbir APEL</strong>. Butang penghantaran hanya akan diaktifkan setelah lantikan selesai.
+            </p>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4 p-3 rounded-3" role="alert">
+        <div class="fs-2 text-success me-3">
+            <i class="ri-checkbox-circle-fill"></i>
+        </div>
+        <div>
+            <h6 class="fw-bold mb-1 text-dark">Pegawai Penilai Telah Dilantik</h6>
+            <p class="mb-0 text-secondary small">
+                Penasihat: <strong><?= h($assignment['advisor_name'] ?? $assignment['advisor_id']) ?></strong> | 
+                Penyelaras Fakulti: <strong><?= h($assignment['coordinator_name'] ?? $assignment['coordinator_id']) ?></strong>
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
 
 <!-- Portfolio Checklist Card -->
 <div class="card border border-dark-subtle rounded-3 mb-4 shadow-none">
@@ -122,7 +154,10 @@
 <form id="formSubmitPortfolio">
     <input type="hidden" name="action" value="submit_portfolio">
     <div class="d-flex justify-content-end pt-3 mt-2">
-        <button type="submit" id="btnSubmitPortfolio" class="btn btn-primary btn-lg px-5 shadow fw-bold rounded-pill" <?= $checklist['all_complete'] ? '' : 'disabled' ?>>
+        <button type="submit" 
+                id="btnSubmitPortfolio" 
+                class="btn btn-primary btn-lg px-5 shadow fw-bold rounded-pill" 
+                <?= ($checklist['all_complete'] && $isOfficerAssigned) ? '' : 'disabled' ?>>
             <i class="ri-send-plane-fill me-2"></i> <?= h(__('submit_btn_submit')) ?>
         </button>
     </div>

@@ -508,3 +508,188 @@
     background: linear-gradient(135deg, #fffbe6 0%, #fff 100%);
     border-left: 5px solid #f59e0b;
 }
+
+/* ====================================================================
+   MODAL PENUGASAN PEGAWAI
+   Guna Bootstrap .modal-dialog-centered + .modal-dialog-scrollable.
+   Header & footer sentiasa kelihatan; hanya bahagian body yang boleh di-scroll,
+   jadi butang Simpan tidak lagi terlindung pada skrin kecil.
+   (Hack lama .modal:before / inline-block dibuang kerana menghalang scroll.)
+==================================================================== */
+#modalAssignOfficers .modal-dialog {
+    max-height: calc(100% - 2rem);
+}
+
+#modalAssignOfficers .modal-content {
+    max-height: calc(100vh - 2rem);
+}
+
+/* <form> membalut .modal-body & .modal-footer, jadi ia mesti jadi flex container */
+#modalAssignOfficers form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#modalAssignOfficers .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+#modalAssignOfficers .modal-footer {
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   REKA BENTUK TEMA MODEN SELECT2 MULTI-SELECT APEL.Q
+   ========================================================= */
+
+/* 1. Kotak Bekas Pilihan (Main Container) */
+.select2-container--default .select2-selection--multiple {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    min-height: 42px !important;
+    padding: 3px 6px !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #8b1538 !important;
+    box-shadow: 0 0 0 0.2rem rgba(139, 21, 56, 0.15) !important;
+    outline: 0 !important;
+}
+
+/* 2. Lencana / Tag Pilihan Staf (Pill Badge) */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #fce7ed !important; /* Warna tema subtle */
+    border: 1px solid #f3b6c8 !important;
+    color: #8b1538 !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    border-radius: 20px !important;
+    padding: 3px 10px !important;
+    margin-top: 4px !important;
+    margin-right: 5px !important;
+    display: inline-flex !important;
+    flex-direction: row-reverse !important; /* Memindahkan butang pangkah (x) ke sebelah kanan */
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+/* 3. Butang Pangkah (Remove/Delete Button 'x' di Sebelah Kanan) */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #8b1538 !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    margin-right: 0 !important;
+    margin-left: 2px !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 4px !important;
+    line-height: 1 !important;
+    border-radius: 50% !important;
+    float: none !important;
+    position: static !important;
+    transition: all 0.2s ease !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    background-color: #8b1538 !important;
+    color: #ffffff !important;
+}
+
+/* 4. Ruang Teks Carian (Search Input) */
+.select2-container--default .select2-search--inline .select2-search__field {
+    font-size: 0.88rem !important;
+    margin-top: 5px !important;
+    color: #374151 !important;
+    padding-left: 4px !important;
+}
+
+/* 5. Kotak Menu Dropdown */
+.select2-dropdown {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    z-index: 1060 !important;
+}
+
+/* 6. Item Senarai Pilihan Dropdown */
+.select2-container--default .select2-results__option {
+    padding: 8px 12px !important;
+    font-size: 0.85rem !important;
+}
+
+/* Item Yang Telah Dipilih (Tukar kelabu ke warna subtle + tanda centang) */
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: #fff1f4 !important; /* Warna tema subtle */
+    color: #8b1538 !important;
+    font-weight: 600 !important;
+    position: relative;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"]::after {
+    content: "✓";
+    float: right;
+    font-weight: bold;
+    color: #8b1538;
+}
+
+/* Item Yang Disorot Kursor (Hover) */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #8b1538 !important;
+    color: #ffffff !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected]::after {
+    color: #ffffff !important;
+}
+
+/* Kad Maklumat Setiap Staf Terpilih (Multiple) */
+.coord-info-card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #8b1538 !important; /* Warna tema UPNM */
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+}
+
+.coord-info-card:hover {
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.coord-info-card .staff-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.coord-info-card .info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.78rem;
+}
+
+.coord-info-card .info-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.coord-info-card .info-label {
+    color: #64748b;
+    font-weight: 600;
+}
+
+.coord-info-card .info-value {
+    color: #0f172a;
+    font-weight: 500;
+}

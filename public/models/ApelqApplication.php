@@ -8,6 +8,15 @@ class ApelqApplication {
         $this->db = $db;
     }
 
+    // FUNGSI TRIGGER AUDIT DB
+    private function setAuditUser(?string $userId = null): void {
+        if (empty($userId)) {
+            $userId = (string)($_SESSION['f_stafID'] ?? 'Sistem');
+        }
+        $stmt = $this->db->prepare("SET @app_user = ?");
+        $stmt->execute([$userId]);
+    }    
+
     public function getActiveApplication(string $studentId): ?array {
         $sql = "SELECT a.*,
                        s.status_student,
@@ -143,4 +152,96 @@ class ApelqApplication {
         return $details;
     }  
 
+    // get advisor / coordinator
+    public function getApplicationAssignees(int $applicationId): ?array {
+        if ($applicationId <= 0) {
+            return null;
+        }
+
+        $sql = "SELECT a.*, 
+                       u_adv.f_nama AS advisor_name,
+                       u_coor.f_nama AS coordinator_name
+                FROM apelq_application_assignments a
+                LEFT JOIN tbl_m_user u_adv ON a.advisor_id = u_adv.f_stafID
+                LEFT JOIN tbl_m_user u_coor ON a.coordinator_id = u_coor.f_stafID
+                WHERE a.application_id = ?
+                LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$applicationId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+    
+    /** checklist 7 modul portfolio */
+    public function getPortfolioChecklistStatus(int $applicationId): array {
+        $status = [
+            'work' => false, 'other' => false, 'training' => false, 'language' => false, 
+            'reflection' => false, 'referees' => false, 'documents' => false, 'all_complete' => false
+        ];
+
+        if ($applicationId <= 0) return $status;
+
+        // 1. Pengalaman Kerja
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM apelq_work_experience WHERE application_id = ?");
+        $stmt->execute([$applicationId]);
+        $status['work'] = ($stmt->fetchColumn() > 0);
+
+        // 2. Aktiviti Lain (Data wujud ATAU status = 0 'Tiada')
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM apelq_other_activities WHERE application_id = ?");
+        $stmt->execute([$applicationId]);
+        $otherCount = (int)$stmt->fetchColumn();
+
+        $stmtFlag = $this->db->prepare("SELECT has_other_activities FROM apelq_other_activities_status WHERE application_id = ?");
+        $stmtFlag->execute([$applicationId]);
+        $otherFlag = $stmtFlag->fetchColumn();
+        $status['other'] = ($otherCount > 0 || $otherFlag === 0);
+
+        // 3. Kursus Latihan
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM apelq_training_course WHERE application_id = ?");
+        $stmt->execute([$applicationId]);
+        $status['training'] = ($stmt->fetchColumn() > 0);
+
+        // 4. Kemahiran Bahasa
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM apelq_language WHERE application_id = ?");
+        $stmt->execute([$applicationId]);
+        $status['language'] = ($stmt->fetchColumn() > 0);
+
+        // 5. Refleksi Kendiri
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM apelq_self_reflection WHERE application_id = ?");
+        $stmt->execute([$applicationId]);
+        $status['reflection'] = ($stmt->fetchColumn() > 0);
+
+        // 6. Perujuk (Wajib sekurang-kurangnya 2 orang)
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM apelq_referees WHERE application_id = ?");
+        $stmt->execute([$applicationId]);
+        $status['referees'] = ($stmt->fetchColumn() >= 2);
+
+        // 7. Dokumen Sokongan
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM apelq_student_documents WHERE application_id = ? AND file_path IS NOT NULL");
+        $stmt->execute([$applicationId]);
+        $status['documents'] = ($stmt->fetchColumn() > 0);
+
+        $status['all_complete'] = (
+            $status['work'] && $status['other'] && $status['training'] && 
+            $status['language'] && $status['reflection'] && $status['referees'] && $status['documents']
+        );
+
+        return $status;
+    }
+
+    /** Kemaskini status permohonan ke Status 1 (Dihantar) dengan audit trigger @app_use  */
+    public function submitPortfolioStatus(int $applicationId, string $studentId): bool {
+        try {
+            $this->setAuditUser($studentId);
+
+            $sql = "UPDATE apelq_applications 
+                    SET portfolio_status_id = 1, 
+                        portfolio_submitted_at = NOW() 
+                    WHERE id = ? AND student_id = ?";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([$applicationId, $studentId]);
+        } catch (Throwable $e) {
+            error_log("ApelqApplication::submitPortfolioStatus Error: " . $e->getMessage());
+            return false;
+        }
+    }  
 }

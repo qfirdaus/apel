@@ -5,9 +5,10 @@ require_once __DIR__ . '/../../../includes/init.php';
 require_login();
 require_once __DIR__ . '/../../../includes/functions-page.php';
 
-$PAGE_TITLE = __('advisor_title', 'Semakan Penasihat Akademik');
-$pageHeading = __('advisor_title', 'Semakan Penasihat Akademik');
+$PAGE_TITLE = __('advisor_title');
+$pageHeading = __('advisor_title');
 $csrfToken = (string)($_SESSION['csrf_token'] ?? '');
+$advisorStafId = (string)($_SESSION['f_stafID'] ?? '');
 
 $NEED_DATERANGE  = false; 
 $NEED_VECTORMAP  = false;
@@ -18,7 +19,7 @@ include __DIR__ . '/../../../includes/header.php';
 include __DIR__ . '/../../../controllers/AdvisorController.php';
 
 $advisorController = new AdvisorController();
-$pendingList = $advisorController->getPendingReviews();
+$pendingList = $advisorController->getPendingReviews($advisorStafId);
 ?>
 
 <body data-topbar-color="light" data-menu-color="dark" data-layout="vertical" class="loading profile-page">

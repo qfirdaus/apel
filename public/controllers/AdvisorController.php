@@ -19,8 +19,11 @@ class AdvisorController {
     }
 
     /** senarai permohonan yang menunggu semakan penasihat (Status 1: Submitted)*/
-    public function getPendingReviews(): array {
-        return $this->model->getPendingReviews();
+    public function getPendingReviews(string $advisorId): array {
+        if (empty($advisorId)) {
+            return [];
+        }
+        return $this->model->getPendingReviews($advisorId);
     }
 
     /** history */
