@@ -1,3 +1,14 @@
+<!-- ROLE INDICATOR -->
+<div class="role-indicator-wrapper">
+    <span class="role-indicator-label">
+        <i class="ri-shield-user-line"></i> Mod Peranan
+    </span>
+    <span class="role-indicator-name">
+        <span class="role-dot"></span>
+        <?= h($roleInfo['name'] ?? 'Penasihat') ?>
+    </span>
+</div>
+
 <div class="dt-standard">
     <table class="table table-hover table-bordered align-middle w-100 text-center shadow-sm" id="tblAdvisorPending">
         <thead class="table-light text-uppercase text-secondary" style="font-size: 0.78rem; letter-spacing: 0.5px;">
@@ -32,7 +43,9 @@
                                 </strong>
                                 <div class="text-muted small">
                                     <span class="me-2"><i class="ri-barcode-line me-1"></i><?= h($studentId) ?></span>
-                                    <span class="badge bg-light text-secondary border">Cubaan #<?= $attempt ?></span>
+                                    <span class="badge bg-light text-secondary border">
+                                        <?= ($attempt == 1) ? 'Penghantaran Pertama' : 'Penghantaran Kali Ke-' . ($attempt - 1) ?>
+                                    </span>
                                 </div>
                                 <div class="mt-1" style="font-size: 0.75rem;">
                                     <span class="text-primary fw-semibold"><i class="ri-book-open-line me-1"></i><?= h($programName) ?></span><br>
@@ -45,12 +58,12 @@
                     <!-- TARIKH PENGHANTARAN -->
                     <td>
                         <div class="fw-bold text-dark">
-                            <i class="ri-calendar-event-line text-muted me-1"></i>
+                            <i class="ri-calendar-event-line text-primary me-1"></i>
                             <?= !empty($row['portfolio_submitted_at']) ? date('d-M-Y', strtotime($row['portfolio_submitted_at'])) : '-' ?>
                         </div>
-                        <small class="text-muted">
+                        <!-- <small class="text-muted">
                             <?= !empty($row['portfolio_submitted_at']) ? date('h:i A', strtotime($row['portfolio_submitted_at'])) : '' ?>
-                        </small>
+                        </small> -->
                     </td>
 
                     <!-- STATUS -->
@@ -65,7 +78,7 @@
                         <div class="d-flex justify-content-center gap-1">
                             <!-- Butang Lihat PDF Portfolio -->
                             <button type="button" 
-                                    class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1 fw-bold btn-view-pdf" 
+                                    class="btn btn-sm btn-outline-danger btn-view-pdf" 
                                     data-app-id="<?= (int)$row['id'] ?>" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#modalPreviewPdf"
@@ -75,7 +88,7 @@
 
                             <!-- Butang Buka Modal Keputusan -->
                             <button type="button" 
-                                    class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold btn-action-review d-inline-flex align-items-center shadow-sm" 
+                                    class="btn btn-sm btn-outline-primary btn-action-review d-inline-flex align-items-center shadow-sm" 
                                     data-app-id="<?= (int)$row['id'] ?>" 
                                     data-student-id="<?= h($row['student_id']) ?>"
                                     title="Semak Portfolio">
@@ -95,7 +108,3 @@
         </tbody>
     </table>
 </div>
-
-<?php 
-    include __DIR__ . '/modal-assessment.php'; 
-?>

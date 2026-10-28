@@ -693,3 +693,55 @@
     color: #0f172a;
     font-weight: 500;
 }
+
+/* ========================================================
+   ROLE INDICATOR TAG (EXECUTIVE DEEP NAVY - TWO TONE)
+   ======================================================== */
+.role-indicator-wrapper {
+    display: inline-flex;
+    align-items: center;
+    background: #0f172a; /* Slate / Deep Navy */
+    border: 1px solid #1e293b;
+    border-radius: 50px;
+    padding: 3px 5px 3px 12px;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.role-indicator-label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #94a3b8; /* Teks kelabu slate lembut */
+    margin-right: 8px;
+}
+
+.role-indicator-label i {
+    font-size: 0.85rem;
+    margin-right: 5px;
+    color: #cbd5e1;
+}
+
+/* Lencana Peranan - Tona Biru Lembut Eksekutif */
+.role-indicator-name {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: #0f172a;
+    background: #e2e8f0; /* Silver Slate yang terang & bersih */
+    border-radius: 50px;
+    padding: 3px 12px;
+    letter-spacing: 0.2px;
+}
+
+.role-indicator-name .role-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background-color: #2563eb; /* Titik biru profesional */
+}

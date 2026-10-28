@@ -1,3 +1,14 @@
+<!-- ROLE INDICATOR -->
+<div class="role-indicator-wrapper">
+    <span class="role-indicator-label">
+        <i class="ri-shield-user-line"></i> Mod Peranan
+    </span>
+    <span class="role-indicator-name">
+        <span class="role-dot"></span>
+        <?= h($roleInfo['name'] ?? 'Pentadbir') ?>
+    </span>
+</div>
+
 <div class="d-flex justify-content-end mb-3">
     <button type="button" 
             class="btn btn-primary px-3 shadow-sm d-inline-flex align-items-center" 

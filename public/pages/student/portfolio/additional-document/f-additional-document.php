@@ -39,7 +39,7 @@
                                 <small class="text-muted"><?= h($doc['original_file_name']) ?></small>
                             </td>
                             <td class="text-start"><?= !empty($doc['document_remarks']) ? nl2br(h($doc['document_remarks'])) : '-' ?></td>
-                            <td class="text-center"><?= date('d-M-Y h:i A', strtotime($doc['uploaded_at'])) ?></td>
+                            <td class="text-center"><?= date('d-M-Y', strtotime($doc['uploaded_at'])) ?></td>
                             <td class="text-center col-action">
                                 <div class="d-flex justify-content-center gap-1">
                                     <a href="uploads/<?= h($doc['file_path']) ?>" target="_blank" class="btn btn-sm btn-outline-info" title="Lihat Dokumen">

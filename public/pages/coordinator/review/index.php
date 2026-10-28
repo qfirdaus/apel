@@ -20,6 +20,7 @@ require_once __DIR__ . '/../../../controllers/CoordinatorController.php';
 
 $coordinatorController = new CoordinatorController();
 $pendingList = $coordinatorController->getPendingReviews($coordStafId);
+$roleInfo = $coordinatorController->getActiveRoleInfo();
 ?>
 
 <body data-topbar-color="light" data-menu-color="dark" data-layout="vertical" class="loading profile-page">
@@ -77,7 +78,7 @@ $pendingList = $coordinatorController->getPendingReviews($coordStafId);
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary px-4 fw-bold" onclick="window.print()">
+                    <button type="button" class="btn btn-primary px-4 fw-bold" id="btnPrintPdfPreview">
                         <i class="ri-printer-line me-1"></i> Cetak / Simpan PDF
                     </button>
                 </div>
@@ -93,7 +94,7 @@ $pendingList = $coordinatorController->getPendingReviews($coordStafId);
 
     <script src="<?= base_url('assets/js/helpers/datatables-standard.js') ?>" defer></script>
     <script src="<?= base_url('assets/js/pages/pages-main.js') ?>"></script> 
-    <script src="<?= base_url('assets/js/pages/coordinator-review.js') ?>" defer></script>
+    <script src="<?= base_url('assets/js/pages/coordinator-review.js') ?>?v=<?= time() ?>" defer></script>
 
     <link href="<?= base_url('assets/css/pages/profile.css') ?>?v=<?= h((string)time()) ?>" rel="stylesheet">    
     <link rel="stylesheet" href="<?= h(base_url('assets/css/pages/portfolio.css')) ?>?v=<?= h((string)time()) ?>">

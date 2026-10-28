@@ -20,6 +20,7 @@ include __DIR__ . '/../../../includes/header.php';
 $advisorId = (string)($_SESSION['f_stafID'] ?? $_SESSION['user_id'] ?? '');
 $advisorController = new AdvisorController();
 $historyList = $advisorController->getReviewHistory($advisorId);
+$roleInfo    = $advisorController->getActiveRoleInfo();
 ?>
 
 <body data-topbar-color="light" data-menu-color="dark" data-layout="vertical" class="loading profile-page">
@@ -77,7 +78,7 @@ $historyList = $advisorController->getReviewHistory($advisorId);
                 </div>
                 <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary px-4 fw-bold" onclick="window.print()">
+                    <button type="button" class="btn btn-primary px-4 fw-bold" id="btnPrintPdfPreview">
                         <i class="ri-printer-line me-1"></i> Cetak / Simpan PDF
                     </button>
                 </div>

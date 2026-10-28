@@ -29,7 +29,13 @@ include __DIR__ . '/../../../includes/header.php';
 
 $controller = new ApelAdminOfficerController();
 
-// Tarik senarai permohonan dan senarai penasihat sahaja
+try {
+    $roleInfo = $controller->getActiveRoleInfo();
+} catch (\Throwable $e) {
+    error_log("Ralat roleInfo: " . $e->getMessage());
+    $roleInfo = [];
+}
+
 $applications = [];
 $advisors     = [];
 
@@ -39,6 +45,7 @@ try {
 } catch (\Throwable $e) {
     error_log("Ralat memuatkan data Admin Assign: " . $e->getMessage());
 }
+
 ?>
 
 <body data-topbar-color="light" data-menu-color="dark" data-layout="vertical" class="loading profile-page">

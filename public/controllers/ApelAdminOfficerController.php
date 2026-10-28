@@ -28,6 +28,10 @@ class ApelAdminOfficerController
         $this->model = new ApelAdminOfficerModel($this->pdoMysql, $pdoSybase);
     }
 
+    public function getActiveRoleInfo(): array {
+        return $this->model->getActiveRoleInfo();
+    }    
+
     public function getApplications(?string $facultyCode = null): array
     {
         return $this->model->getApplicationsForAssignment($facultyCode);

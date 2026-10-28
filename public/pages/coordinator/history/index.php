@@ -20,6 +20,7 @@ require_once __DIR__ . '/../../../controllers/CoordinatorController.php';
 
 $coordinatorController = new CoordinatorController();
 $historyList = $coordinatorController->getReviewHistory($coordStafId);
+$roleInfo    = $coordinatorController->getActiveRoleInfo();
 ?>
 
 <body data-topbar-color="light" data-menu-color="dark" data-layout="vertical" class="loading profile-page">
@@ -30,6 +31,9 @@ $historyList = $coordinatorController->getReviewHistory($coordStafId);
         <div class="content-page">
             <div class="content">
                 <div class="container-fluid">
+                    <!-- HIDDEN CSRF TOKEN UNTUK AJAX PDF PREVIEW -->
+                    <input type="hidden" id="csrfToken" name="csrf_token" value="<?= h($csrfToken) ?>">
+
                     <div class="row mb-3 mt-3">
                         <div class="col-12">
                             <div class="page-title-box d-flex justify-content-between align-items-center flex-wrap">
@@ -58,10 +62,40 @@ $historyList = $coordinatorController->getReviewHistory($coordStafId);
         </div>
     </div>
 
+    <!-- MODAL PREVIEW PORTFOLIO PDF (DIPERLUKAN UNTUK BUTANG LIHAT PDF) -->
+    <div class="modal fade" id="modalPreviewPdf" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold text-dark"><i class="ri-file-pdf-fill text-danger me-2"></i> Ringkasan Portfolio APEL.Q</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body p-4" id="pdfPreviewContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted">Memuatkan maklumat portfolio...</p>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary px-4 fw-bold" id="btnPrintPdfPreview">
+                        <i class="ri-printer-line me-1"></i> Cetak / Simpan PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php 
       include __DIR__ . '/../../../includes/script.php';  
       include __DIR__ . '/../translate-js.php'; 
     ?>
+
     <script src="<?= base_url('assets/js/helpers/datatables-standard.js') ?>" defer></script>
+    <script src="<?= base_url('assets/js/pages/pages-main.js') ?>"></script> 
+    <script src="<?= base_url('assets/js/pages/coordinator-review.js') ?>?v=<?= time() ?>" defer></script>
+
+    <link href="<?= base_url('assets/css/pages/profile.css') ?>?v=<?= h((string)time()) ?>" rel="stylesheet">    
+    <link rel="stylesheet" href="<?= h(base_url('assets/css/pages/portfolio.css')) ?>?v=<?= h((string)time()) ?>">
 </body>
 </html>

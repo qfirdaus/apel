@@ -21,6 +21,45 @@ class ApelAdminOfficerModel
         $stmt->execute([$userId]);
     }
 
+    /** get current role */
+    public function getActiveRoleInfo(): array 
+    {
+        $groupId   = (int)($_SESSION['f_groupID'] ?? 0);
+        $groupCode = trim((string)($_SESSION['f_groupKod'] ?? ''));
+
+        try {
+            $stmt = $this->dbMysql->prepare("SELECT f_groupID, f_groupKod, f_groupName, f_badge_class, f_color 
+                                        FROM tbl_m_group 
+                                        WHERE f_groupID = :gid OR f_groupKod = :gkod 
+                                        LIMIT 1");
+            $stmt->execute([
+                ':gid'  => $groupId,
+                ':gkod' => $groupCode
+            ]);
+            $group = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($group && !empty($group['f_groupName'])) {
+                return [
+                    'id'    => (int)$group['f_groupID'],
+                    'code'  => (string)$group['f_groupKod'],
+                    'name'  => (string)$group['f_groupName'],
+                    'badge' => !empty($group['f_badge_class']) ? (string)$group['f_badge_class'] : 'bg-primary-subtle text-primary border border-primary-subtle',
+                    'color' => !empty($group['f_color']) ? (string)$group['f_color'] : '#3b82f6'
+                ];
+            }
+        } catch (\Throwable $e) {
+            error_log("AdvisorModel::getActiveRoleInfo Error: " . $e->getMessage());
+        }
+
+        return [
+            'id'    => $groupId,
+            'code'  => $groupCode,
+            'name'  => !empty($groupCode) ? $groupCode : 'Penasihat Portfolio',
+            'badge' => 'bg-primary-subtle text-primary border border-primary-subtle',
+            'color' => '#3b82f6'
+        ];
+    }
+
     /** Pastikan pengguna wujud di tbl_m_user dan set role ke tbl_ref_access (Multiple Roles)  */
     public function ensureUserRoleAccess(string $stafId, int $groupId, string $groupKod, string $adminId): void
     {

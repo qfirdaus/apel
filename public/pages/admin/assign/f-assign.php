@@ -1,3 +1,14 @@
+<!-- ROLE INDICATOR -->
+<div class="role-indicator-wrapper">
+    <span class="role-indicator-label">
+        <i class="ri-shield-user-line"></i> Mod Peranan
+    </span>
+    <span class="role-indicator-name">
+        <span class="role-dot"></span>
+        <?= h($roleInfo['name'] ?? 'Pentadbir') ?>
+    </span>
+</div>
+
 <div class="dt-standard">
     <table class="table table-hover table-bordered align-middle w-100 text-center shadow-sm" id="tblAdminAssign">
         <thead class="table-light text-uppercase text-secondary" style="font-size: 0.78rem; letter-spacing: 0.5px;">

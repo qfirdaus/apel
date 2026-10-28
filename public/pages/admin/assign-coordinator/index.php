@@ -25,6 +25,7 @@ $controller = new ApelAdminOfficerController();
 $coordinatorList = $controller->getFacultyCoordinators();
 $faculties       = $controller->getFaculties();
 $academicStaff   = $controller->getAdvisors(); // Senarai staf akademik Sybase
+$roleInfo        = $controller->getActiveRoleInfo();
 ?>
 
 <body data-topbar-color="light" data-menu-color="dark" data-layout="vertical" class="loading profile-page">

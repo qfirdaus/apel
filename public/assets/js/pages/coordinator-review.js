@@ -6,33 +6,41 @@ $(function () {
         return Object.prototype.hasOwnProperty.call(TEKS, key) ? TEKS[key] : fallback;
     }
 
-    // Inisialisasi DataTable untuk senarai tugasan menunggu Penyelaras
+    // Inisialisasi DataTable Penyelaras 
     if ($.fn.DataTable && $('#tblCoordinatorPending').length) {
-        $('#tblCoordinatorPending').DataTable({
-            pageLength: 10,
-            autoWidth: false,
-            ordering: true,
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: t('dt_search', 'Cari...')
-            }
-        });
+        if (!$.fn.DataTable.isDataTable('#tblCoordinatorPending')) {
+            $('#tblCoordinatorPending').DataTable({
+                pageLength: 10,
+                autoWidth: false,
+                ordering: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: t('dt_search', 'Cari...'),
+                    emptyTable: "Tiada portfolio pelajar yang menunggu perakuan buat masa ini.",
+                    zeroRecords: "Tiada rekod padanan ditemui."
+                }
+            });
+        }
     }
 
-    // Inisialisasi DataTable untuk sejarah semakan Penyelaras
+    // Inisialisasi DataTable Sejarah Penyelaras
     if ($.fn.DataTable && $('#tblCoordinatorHistory').length) {
-        $('#tblCoordinatorHistory').DataTable({
-            pageLength: 10,
-            autoWidth: false,
-            ordering: true,
-            language: {
-                search: "_INPUT_",
-                searchPlaceholder: t('dt_search', 'Cari...')
-            }
-        });
+        if (!$.fn.DataTable.isDataTable('#tblCoordinatorHistory')) {
+            $('#tblCoordinatorHistory').DataTable({
+                pageLength: 10,
+                autoWidth: false,
+                ordering: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: t('dt_search', 'Cari...'),
+                    emptyTable: "Tiada sejarah perakuan portfolio dijumpai.",
+                    zeroRecords: "Tiada rekod padanan ditemui."
+                }
+            });
+        }
     }
 
-    // 1. Buka Modal Keputusan Perakuan Penyelaras
+    // Modal Keputusan Perakuan Penyelaras
     $(document).on('click', '.btn-action-coord-review', function (e) {
         e.preventDefault();
 
@@ -51,11 +59,12 @@ $(function () {
         }
     });
 
-    // 2. Butang Pratonton Portfolio PDF
+    // Portfolio PDF (AJAX Modal)
     $(document).on('click', '.btn-view-pdf', function (e) {
         e.preventDefault();
 
         var appId = $(this).data('app-id');
+        var csrfToken = $('#csrfToken').val();
         var $previewContainer = $('#pdfPreviewContent');
 
         $previewContainer.html(
@@ -70,21 +79,23 @@ $(function () {
             type: 'POST',
             data: {
                 action: 'get_portfolio_pdf_details',
-                app_id: appId
+                app_id: appId,
+                csrf_token: csrfToken
             },
             dataType: 'json',
             success: function (res) {
-                if (res.status === 'success' && res.html) {
+                if (res && res.status === 'success' && res.html) {
                     $previewContainer.html(res.html);
                 } else {
                     $previewContainer.html(
                         '<div class="alert alert-danger my-3 text-center">' +
-                            (res.message || t('err_load_pdf', 'Gagal memuatkan dokumen portfolio.')) +
+                            ((res && res.message) ? res.message : t('err_load_pdf', 'Gagal memuatkan dokumen portfolio.')) +
                         '</div>'
                     );
                 }
             },
-            error: function () {
+            error: function (xhr) {
+                console.error("AJAX Error:", xhr.responseText);
                 $previewContainer.html(
                     '<div class="alert alert-danger my-3 text-center">' +
                         t('err_network', 'Ralat pelayan semasa memuatkan ringkasan portfolio.') +
@@ -94,7 +105,62 @@ $(function () {
         });
     });
 
-    // 3. Hantar Keputusan Perakuan (Submit Form)
+    // Cetak Dokumen Bersih Penuh (Iframe)
+    $(document).on('click', '#btnPrintPdfPreview', function (e) {
+        e.preventDefault();
+
+        var $content = $('#pdfPreviewContent');
+        if (!$content.length || $content.find('.spinner-border').length) {
+            Swal.fire({
+                icon: 'warning',
+                title: t('title_attention', 'Perhatian'),
+                text: 'Sila tunggu dokumen selesai dimuatkan.'
+            });
+            return;
+        }
+
+        var htmlData = $content.html();
+        if (!htmlData || $.trim(htmlData) === '') {
+            Swal.fire({
+                icon: 'error',
+                title: t('title_error', 'Ralat'),
+                text: 'Tiada kandungan dokumen untuk dicetak.'
+            });
+            return;
+        }
+
+        // Padam iframe cetakan lama jika wujud
+        $('#printFrame').remove();
+
+        // Bina iframe tersembunyi
+        var $iframe = $('<iframe id="printFrame" style="position: absolute; top: -9999px; left: -9999px; width: 0; height: 0; border: 0;"></iframe>');
+        $('body').append($iframe);
+
+        var doc = $iframe[0].contentWindow.document;
+        doc.open();
+        doc.write('<!DOCTYPE html><html><head><title>Portfolio APEL Q</title>');
+        doc.write('<link rel="stylesheet" href="../../../assets/css/bootstrap.min.css">');
+        doc.write('<style>');
+        doc.write('@page { size: A4 portrait; margin: 12mm; }');
+        doc.write('body { font-family: "Segoe UI", Arial, sans-serif; color: #111; background: #fff !important; margin: 0; padding: 15px; }');
+        doc.write('.apel-doc-container { padding: 0 !important; width: 100% !important; }');
+        doc.write('table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 15px !important; }');
+        doc.write('th, td { border: 1px solid #cbd5e1 !important; padding: 6px 8px !important; }');
+        doc.write('.apel-section-header { background-color: #0f172a !important; color: #ffffff !important; padding: 6px 10px !important; margin-top: 15px !important; font-weight: bold !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }');
+        doc.write('</style>');
+        doc.write('</head><body>');
+        doc.write(htmlData);
+        doc.write('</body></html>');
+        doc.close();
+
+        // Cetak dokumen dalam iframe
+        setTimeout(function () {
+            $iframe[0].contentWindow.focus();
+            $iframe[0].contentWindow.print();
+        }, 350);
+    });
+
+    // Hantar Keputusan Perakuan Penyelaras
     $('#formCoordinatorReview').on('submit', function (e) {
         e.preventDefault();
 
@@ -107,7 +173,6 @@ $(function () {
             formData.append('csrf_token', csrf);
         }
 
-        // Semakan: Rework wajib ada catatan
         if (decision === 'rework' && remarks === '') {
             Swal.fire({
                 icon: 'warning',
@@ -151,7 +216,7 @@ $(function () {
                     contentType: false,
                     dataType: 'json',
                     success: function (res) {
-                        if (res.status === 'success') {
+                        if (res && res.status === 'success') {
                             Swal.fire({
                                 icon: 'success',
                                 title: t('title_success', 'Berjaya'),
@@ -169,7 +234,7 @@ $(function () {
                                 window.location.reload();
                             }, 1500);
                         } else {
-                            Swal.fire(t('title_error', 'Ralat'), res.message || t('err_default', 'Gagal memproses permohonan.'), 'error');
+                            Swal.fire(t('title_error', 'Ralat'), (res ? res.message : t('err_default', 'Gagal memproses permohonan.')), 'error');
                         }
                     },
                     error: function (xhr) {

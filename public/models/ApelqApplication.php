@@ -21,11 +21,52 @@ class ApelqApplication {
         $sql = "SELECT a.*,
                        s.status_student,
                        s.status_student_EN,
-                       (SELECT remarks FROM apelq_advisor_reviews WHERE application_id = a.id ORDER BY id DESC LIMIT 1) AS advisor_remarks
+                       rev.reviewer_role AS latest_reviewer_role,
+                       rev.reviewer_id AS latest_reviewer_id,
+                       rev.reviewer_name AS latest_reviewer_name,
+                       rev.remarks AS latest_rework_remarks,
+                       rev.created_at AS latest_reviewed_at
                 FROM apelq_applications a
                 LEFT JOIN lp_status s
                        ON s.module_type = 'portfolio'
                       AND s.status_code = a.portfolio_status_id
+                -- Ambil HANYA 1 ulasan semakan terkini (sama ada dari Penasihat atau Penyelaras)
+                LEFT JOIN (
+                    SELECT 
+                        sub.application_id,
+                        sub.reviewer_role,
+                        sub.reviewer_id,
+                        u.f_nama AS reviewer_name,
+                        sub.remarks,
+                        sub.created_at
+                    FROM (
+                        SELECT 
+                            application_id,
+                            'ADVISOR' AS reviewer_role,
+                            advisor_id AS reviewer_id,
+                            remarks,
+                            created_at
+                        FROM apelq_advisor_reviews
+                        UNION ALL
+                        SELECT 
+                            application_id,
+                            'COORDINATOR' AS reviewer_role,
+                            coordinator_id AS reviewer_id,
+                            remarks,
+                            created_at
+                        FROM apelq_coordinator_reviews
+                    ) sub
+                    LEFT JOIN tbl_m_user u ON sub.reviewer_id COLLATE utf8mb4_unicode_ci = u.f_stafID
+                    INNER JOIN (
+                        SELECT application_id, MAX(created_at) AS max_created
+                        FROM (
+                            SELECT application_id, created_at FROM apelq_advisor_reviews
+                            UNION ALL
+                            SELECT application_id, created_at FROM apelq_coordinator_reviews
+                        ) all_rev
+                        GROUP BY application_id
+                    ) latest_t ON sub.application_id = latest_t.application_id AND sub.created_at = latest_t.max_created
+                ) rev ON rev.application_id = a.id
                 WHERE a.student_id = ?
                 LIMIT 1";
         $stmt = $this->db->prepare($sql);
@@ -46,11 +87,52 @@ class ApelqApplication {
         $sql = "SELECT a.*,
                        s.status_student,
                        s.status_student_EN,
-                       (SELECT remarks FROM apelq_advisor_reviews WHERE application_id = a.id ORDER BY id DESC LIMIT 1) AS advisor_remarks
+                       rev.reviewer_role AS latest_reviewer_role,
+                       rev.reviewer_id AS latest_reviewer_id,
+                       rev.reviewer_name AS latest_reviewer_name,
+                       rev.remarks AS latest_rework_remarks,
+                       rev.created_at AS latest_reviewed_at
                 FROM apelq_applications a
                 LEFT JOIN lp_status s
                        ON s.module_type = 'portfolio'
                       AND s.status_code = a.portfolio_status_id
+                -- Ambil ulasan terkini (Penasihat atau Penyelaras)
+                LEFT JOIN (
+                    SELECT 
+                        sub.application_id,
+                        sub.reviewer_role,
+                        sub.reviewer_id,
+                        u.f_nama AS reviewer_name,
+                        sub.remarks,
+                        sub.created_at
+                    FROM (
+                        SELECT 
+                            application_id,
+                            'ADVISOR' AS reviewer_role,
+                            advisor_id AS reviewer_id,
+                            remarks,
+                            created_at
+                        FROM apelq_advisor_reviews
+                        UNION ALL
+                        SELECT 
+                            application_id,
+                            'COORDINATOR' AS reviewer_role,
+                            coordinator_id AS reviewer_id,
+                            remarks,
+                            created_at
+                        FROM apelq_coordinator_reviews
+                    ) sub
+                    LEFT JOIN tbl_m_user u ON sub.reviewer_id COLLATE utf8mb4_unicode_ci = u.f_stafID
+                    INNER JOIN (
+                        SELECT application_id, MAX(created_at) AS max_created
+                        FROM (
+                            SELECT application_id, created_at FROM apelq_advisor_reviews
+                            UNION ALL
+                            SELECT application_id, created_at FROM apelq_coordinator_reviews
+                        ) all_rev
+                        GROUP BY application_id
+                    ) latest_t ON sub.application_id = latest_t.application_id AND sub.created_at = latest_t.max_created
+                ) rev ON rev.application_id = a.id
                 WHERE a.student_id = ?
                 ORDER BY a.portfolio_attempt_count DESC";
         $stmt = $this->db->prepare($sql);
@@ -66,7 +148,7 @@ class ApelqApplication {
         }
 
         return $results;
-    }   
+    }
 
     public function getAdditionalDocuments(int $applicationId): array {
         $sql = "SELECT * FROM apelq_additional_documents 
@@ -159,11 +241,9 @@ class ApelqApplication {
         }
 
         $sql = "SELECT a.*, 
-                       u_adv.f_nama AS advisor_name,
-                       u_coor.f_nama AS coordinator_name
-                FROM apelq_application_assignments a
-                LEFT JOIN tbl_m_user u_adv ON a.advisor_id = u_adv.f_stafID
-                LEFT JOIN tbl_m_user u_coor ON a.coordinator_id = u_coor.f_stafID
+                       u_adv.f_nama AS advisor_name
+                FROM apelq_application_advisors a
+                LEFT JOIN tbl_m_user u_adv ON a.advisor_id COLLATE utf8mb4_unicode_ci = u_adv.f_stafID
                 WHERE a.application_id = ?
                 LIMIT 1";
         $stmt = $this->db->prepare($sql);

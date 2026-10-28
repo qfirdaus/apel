@@ -20,6 +20,7 @@ include __DIR__ . '/../../../controllers/AdvisorController.php';
 
 $advisorController = new AdvisorController();
 $pendingList = $advisorController->getPendingReviews($advisorStafId);
+$roleInfo = $advisorController->getActiveRoleInfo();
 ?>
 
 <body data-topbar-color="light" data-menu-color="dark" data-layout="vertical" class="loading profile-page">
@@ -86,6 +87,7 @@ $pendingList = $advisorController->getPendingReviews($advisorStafId);
     </div>
 
     <?php 
+      include __DIR__ . '/modal-assessment.php'; 
       include __DIR__ . '/../../../includes/script.php';  
       include __DIR__ . '/../translate-js.php'; 
     ?>

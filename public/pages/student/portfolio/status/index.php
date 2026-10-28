@@ -98,32 +98,55 @@ $statusText = $currentApp['status_student_display'] ?? 'Draf';
                                                     <p class="text-muted small mb-0">Pelajar melengkapkan dan menghantar portfolio.</p>
                                                     <?php if (!empty($currentApp['portfolio_submitted_at'])): ?>
                                                         <div class="mt-2">
-                                                            <span class="badge bg-light text-secondary border"><i class="ri-calendar-line me-1"></i> <?= date('d-M-Y h:i A', strtotime($currentApp['portfolio_submitted_at'])) ?></span>
+                                                            <span class="badge bg-light text-info border fw-bold"><i class="ri-calendar-line me-1"></i> <?= date('d-M-Y', strtotime($currentApp['portfolio_submitted_at'])) ?></span>
                                                         </div>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
 
                                             <!-- Step 2: Semakan Penasihat -->
+                                            <?php 
+                                                $reviewerRole = $currentApp['latest_reviewer_role'] ?? 'ADVISOR';
+                                                $reviewerTitle = ($reviewerRole === 'COORDINATOR') ? 'Penyelaras Fakulti' : 'Penasihat Portfolio';
+                                                $reviewerName = !empty($currentApp['latest_reviewer_name']) ? $currentApp['latest_reviewer_name'] : ($currentApp['latest_reviewer_id'] ?? '');
+                                                $reworkRemarks = $currentApp['latest_rework_remarks'] ?? '';
+                                            ?>                                             
                                             <div class="timeline-step-item">
                                                 <div class="timeline-step-icon <?= ($statusId > 1 && $statusId !== 2) ? 'completed shadow-sm' : ($statusId === 1 ? 'active' : ($statusId === 2 ? 'rework bg-warning text-white border-warning shadow-sm' : 'pending')) ?>">
                                                     <?= ($statusId > 1 && $statusId !== 2) ? '<i class="ri-check-line"></i>' : ($statusId === 2 ? '<i class="ri-error-warning-line"></i>' : '2') ?>
                                                 </div>
                                                 <div class="ps-3">
-                                                    <h6 class="fw-bold mb-1 <?= $statusId === 1 ? 'text-primary' : ($statusId === 2 ? 'text-warning-emphasis' : ($statusId > 1 ? 'text-dark' : 'text-muted')) ?> fs-6">Semakan Penasihat</h6>
-                                                    <p class="text-muted small mb-0">Penasihat menyemak kelayakan dokumen.</p>
+                                                    <h6 class="fw-bold mb-1 <?= $statusId === 1 ? 'text-primary' : ($statusId === 2 ? 'text-warning-emphasis' : ($statusId > 1 ? 'text-dark' : 'text-muted')) ?> fs-6">
+                                                        Semakan & Perakuan
+                                                    </h6>
+                                                    <p class="text-muted small mb-0">
+                                                        <?= ($statusId === 2) ? 'Arahan pindaan dikeluarkan untuk pembetulan.' : 'Penasihat & Penyelaras Fakulti menyemak dokumen portfolio.' ?>
+                                                    </p>
                                                     
                                                     <?php if ($statusId === 2): ?>
-                                                        <!-- Kotak catatan diberi warna latar bg-warning-subtle supaya tak tenggelam -->
                                                         <div class="alert alert-warning mt-3 mb-0 p-3 border-0 border-start border-warning border-4 rounded-3 shadow-sm bg-warning-subtle">
                                                             <div class="d-flex align-items-start">
                                                                 <div class="flex-shrink-0 me-2">
                                                                     <i class="ri-feedback-fill text-warning fs-5"></i>
                                                                 </div>
                                                                 <div class="flex-grow-1">
-                                                                    <h6 class="fw-bold text-dark mb-1" style="font-size: 0.8rem;">Catatan Penasihat:</h6>
-                                                                    <div class="text-dark mb-0 lh-sm" style="font-size: 0.8rem;">
-                                                                        <?= !empty($currentApp['advisor_remarks']) ? nl2br(h($currentApp['advisor_remarks'])) : '<span class="text-muted fst-italic">Tiada catatan diberikan.</span>' ?>
+                                                                    <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap">
+                                                                        <h6 class="fw-bold text-dark mb-0" style="font-size: 0.82rem;">
+                                                                            Catatan Pindaan (<?= h($reviewerTitle) ?>):
+                                                                        </h6>
+                                                                        <?php if (!empty($currentApp['latest_reviewed_at'])): ?>
+                                                                            <small class="text-info fw-bold" style="font-size: 0.72rem;">
+                                                                                <i class="ri-time-line me-1"></i><?= date('d-M-Y', strtotime($currentApp['latest_reviewed_at'])) ?>
+                                                                            </small>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                    <?php if (!empty($reviewerName)): ?>
+                                                                        <div class="text-muted small mb-1" style="font-size: 0.74rem;">
+                                                                            Oleh: <strong class="text-secondary"><?= h($reviewerName) ?></strong>
+                                                                        </div>
+                                                                    <?php endif; ?>
+                                                                    <div class="text-dark mb-0 lh-sm p-2 bg-white rounded border border-warning-subtle" style="font-size: 0.8rem;">
+                                                                        <?= !empty($reworkRemarks) ? nl2br(h($reworkRemarks)) : '<span class="text-muted fst-italic">Tiada catatan diberikan.</span>' ?>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -198,7 +221,7 @@ $statusText = $currentApp['status_student_display'] ?? 'Draf';
                                                             <td class="text-center">
                                                                 <?php if ($sId >= 1): ?>
                                                                     <button type="button" 
-                                                                            class="btn btn-sm btn-outline-danger rounded-pill px-2 py-1 fw-bold btn-view-pdf" 
+                                                                            class="btn btn-sm btn-outline-danger btn-view-pdf" 
                                                                             data-app-id="<?= $appId ?>" 
                                                                             data-bs-toggle="modal" 
                                                                             data-bs-target="#modalPreviewPdf"
@@ -212,12 +235,14 @@ $statusText = $currentApp['status_student_display'] ?? 'Draf';
                                                             <td class="text-center align-middle">
                                                                 <?php if ($sId === 2): ?>
                                                                     <?php 
-                                                                        $tooltipText = !empty($app['advisor_remarks']) ? h($app['advisor_remarks']) : 'Tiada catatan diberikan.';
+                                                                        $rRemarks = !empty($app['latest_rework_remarks']) ? $app['latest_rework_remarks'] : 'Tiada catatan diberikan.';
+                                                                        $rRole = ($app['latest_reviewer_role'] ?? '') === 'COORDINATOR' ? 'Penyelaras' : 'Penasihat';
+                                                                        $tooltipText = "[Pindaan {$rRole}] " . $rRemarks;
                                                                     ?>
-                                                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill fw-bold" 
+                                                                    <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-1 rounded-pill fw-bold" 
                                                                         data-bs-toggle="tooltip" 
                                                                         data-bs-placement="top" 
-                                                                        title="<?= $tooltipText ?>" 
+                                                                        title="<?= h($tooltipText) ?>" 
                                                                         style="cursor: help;">
                                                                         <?= $sDisplay ?> <i class="ri-feedback-fill text-warning ms-1"></i>
                                                                     </span>
