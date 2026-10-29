@@ -61,6 +61,16 @@ if (!str_contains($assets, '#userDTApel .group-chip')
 ) {
     throw new RuntimeException('APEL group chips must provide an explicit readable colour treatment.');
 }
+foreach (['au-modal-tabs', 'form-section-title', 'modal-footer', 'is-edit-mode'] as $modalContract) {
+    if (!str_contains($panel . $assets, $modalContract)) {
+        throw new RuntimeException('APEL add/edit modal must follow Student Access layout: ' . $modalContract);
+    }
+}
+foreach (['width:680', 'reverseButtons:true', 'apelImpersonationMode'] as $confirmationContract) {
+    if (!str_contains($assets, $confirmationContract)) {
+        throw new RuntimeException('APEL confirmations must follow Student Access interaction layout: ' . $confirmationContract);
+    }
+}
 
 foreach (['CREATE', 'UPDATE', 'DELETE'] as $auditType) {
     if (!str_contains($action, "$auditType', 'SUCCESS'")) {

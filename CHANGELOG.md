@@ -13,6 +13,8 @@ This changelog follows a release-style summary based on major project milestones
   responsive controls and action styling with the Student Access table.
 - Kept secondary user information in the existing modal so the list remains
   compact and readable.
+- Standardised APEL Add, Edit, View As and Delete dialogs with the Student
+  Access modal structure, spacing, controls and confirmation layout.
 
 ### Fixed
 - Deferred APEL Access initialisation until shared Bootstrap, DataTables and

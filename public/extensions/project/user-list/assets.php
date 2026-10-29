@@ -19,11 +19,60 @@
   border-color:rgba(148,163,184,.28);
   color:#e2e8f0;
 }
+#apelUserModal{z-index:11020!important}
+#apelUserModal .modal-dialog{max-width:780px;position:relative;z-index:1}
+#apelUserModal .modal-content{border:0;border-radius:8px;box-shadow:none!important;outline:0!important;overflow:hidden}
+#apelUserModal .modal-header{background:linear-gradient(135deg,#28a745 0%,#20c997 100%);color:#fff;border-bottom:0;padding:1rem 1.35rem}
+#apelUserModal.is-edit-mode .modal-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+#apelUserModal .modal-title{color:#fff;font-weight:600;font-size:1.05rem;letter-spacing:.2px}
+#apelUserModal .modal-header .btn-close{filter:invert(1);opacity:.9}
+#apelUserModal .modal-body{padding:1rem 1.35rem}
+#apelUserModal .modal-footer{padding:.95rem 1.35rem;background:#f8f9fa;border-top:1px solid rgba(0,0,0,.08)}
+#apelUserModal .modal-footer .btn{padding:.5rem 1.05rem;font-weight:600;border-radius:8px}
+#apelUserModal .au-modal-tabs{display:flex;gap:.5rem;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid #e9ecef}
+#apelUserModal .au-modal-tabs .nav-link{border:1px solid #dbe4f0;background:#f8fafc;color:#475569;border-radius:8px;padding:.55rem .95rem;font-size:.875rem;font-weight:600}
+#apelUserModal .au-modal-tabs .nav-link.active{color:#fff;border-color:#28a745;background:linear-gradient(135deg,#28a745 0%,#20c997 100%);box-shadow:0 8px 20px rgba(32,201,151,.18)}
+#apelUserModal.is-edit-mode .au-modal-tabs .nav-link.active{border-color:#667eea;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);box-shadow:0 8px 20px rgba(102,126,234,.18)}
+#apelUserModal .au-tab-pane{padding-top:.15rem}
+#apelUserModal .form-section{margin-bottom:1rem;padding-bottom:.9rem;border-bottom:2px solid #e9ecef}
+#apelUserModal .form-section:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+#apelUserModal .form-section-title{font-size:.8rem;font-weight:700;color:#495057;text-transform:uppercase;letter-spacing:.9px;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid #28a745;display:flex;align-items:center}
+#apelUserModal.is-edit-mode .form-section-title{border-bottom-color:#667eea}
+#apelUserModal .form-section-title i{color:#28a745}
+#apelUserModal.is-edit-mode .form-section-title i{color:#667eea}
+#apelUserModal .form-label{font-weight:600;color:#495057;margin-bottom:.55rem;font-size:.9rem;display:flex;align-items:center}
+#apelUserModal .form-label i{margin-right:.4rem;font-size:1rem}
+#apelUserModal .form-control,#apelUserModal .form-select{min-height:38px;height:38px;padding:.375rem .75rem;font-size:.875rem;line-height:1.5;border-width:1px;border-radius:8px}
+#apelUserModal #apelUserError{margin-top:0;border-radius:8px;border-left:4px solid #dc3545}
+[data-bs-theme="dark"] #apelUserModal .modal-footer{background:#111827}
+[data-bs-theme="dark"] #apelUserModal .form-label,[data-bs-theme="dark"] #apelUserModal .form-section-title{color:#e5e7eb}
+[data-bs-theme="dark"] #apelUserModal .au-modal-tabs{border-bottom-color:#334155}
+[data-bs-theme="dark"] #apelUserModal .au-modal-tabs .nav-link{background:#1e293b;border-color:#334155;color:#cbd5e1}
 </style>
 <script>
 function initApelUserList(){
   const csrf = <?= json_encode((string)($GLOBALS['csrf'] ?? ''), JSON_UNESCAPED_SLASHES) ?>;
   const endpoint = <?= json_encode(base_url('extensions/project/user-list/action.php'), JSON_UNESCAPED_SLASHES) ?>;
+  const labels = <?= json_encode([
+    'addTitle' => (string)__('apelUser_modal_add_title'),
+    'editTitle' => (string)__('apelUser_modal_edit_title'),
+    'required' => (string)__('apelUser_required_error'),
+    'deleteTitle' => (string)__('apelUser_delete_title'),
+    'deleteMessage' => (string)__('apelUser_delete_message'),
+    'deleteWarning' => (string)__('apelUser_delete_warning'),
+    'deleteYes' => (string)__('userList_delete_confirm_yes'),
+    'cancel' => (string)__('userList_modal_btn_cancel'),
+    'viewTitle' => (string)__('impersonation_start_title'),
+    'viewText' => (string)__('impersonation_start_text'),
+    'modeLabel' => (string)__('impersonation_mode_label'),
+    'viewOnly' => (string)__('impersonation_mode_view_only'),
+    'supportAction' => (string)__('impersonation_mode_support_action'),
+    'modeHelp' => (string)__('impersonation_mode_help'),
+    'reasonLabel' => (string)__('impersonation_reason_label'),
+    'reasonPlaceholder' => (string)__('impersonation_reason_placeholder'),
+    'reasonRequired' => (string)__('impersonation_reason_required'),
+    'viewStart' => (string)__('impersonation_start_button'),
+  ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
   const tabButton = document.getElementById('tab-apel-access-tab');
   const modalElement = document.getElementById('apelUserModal');
   if (!tabButton || !modalElement) return;
@@ -43,30 +92,32 @@ function initApelUserList(){
 
   const byId = id => document.getElementById(id);
   const showError = message => { const el=byId('apelUserError'); el.textContent=message; el.classList.remove('d-none'); };
+  const selectInfoTab = () => bootstrap.Tab.getOrCreateInstance(byId('apel-info-tab')).show();
+  const setModalMode = editing => {modalElement.classList.toggle('is-edit-mode',editing);byId('apelUserModalTitleText').textContent=editing?labels.editTitle:labels.addTitle;byId('apelUserModalIcon').className=(editing?'ri-user-settings-line':'ri-user-add-line')+' me-2';selectInfoTab();};
   const clearForm = () => { byId('apelUserError').classList.add('d-none'); byId('apelUserId').value='0'; byId('apelIdentifier').value=''; byId('apelIdentifier').readOnly=false; byId('apelName').value=''; byId('apelEmail').value=''; byId('apelUnit').value=''; byId('apelGroup').value=''; byId('apelAccess').value='1'; };
-  document.addEventListener('click',function(event){if(event.target.closest('#apelAddUserBtn')){clearForm();modal?.show();}});
+  document.addEventListener('click',function(event){if(event.target.closest('#apelAddUserBtn')){clearForm();setModalMode(false);modal?.show();}});
   document.addEventListener('click', async function(event){
     const viewAs=event.target.closest('.apel-view-as-user');
     if(viewAs){
-      const reasonResult=window.Swal?await Swal.fire({icon:'warning',title:'Lihat sebagai pengguna APEL?',html:`<div class="text-start"><strong>${escapeText(viewAs.dataset.userName||viewAs.dataset.loginId||'Pengguna APEL')}</strong><p class="text-muted mb-0 mt-2">Nyatakan sebab sokongan atau semakan.</p></div>`,input:'textarea',inputPlaceholder:'Sebab diperlukan',inputAttributes:{maxlength:'500'},showCancelButton:true,confirmButtonText:'Mulakan View As',cancelButtonText:'Batal',preConfirm:value=>{const clean=String(value||'').trim();if(!clean){Swal.showValidationMessage('Sebab wajib diisi.');return false;}return clean;}}):{isConfirmed:false};
+      const reasonResult=window.Swal?await Swal.fire({icon:'warning',title:labels.viewTitle,width:680,html:`<div class="text-start small"><div class="mb-2">${escapeText(labels.viewText)}</div><div><strong>${escapeText(viewAs.dataset.userName||viewAs.dataset.loginId||'APEL')}</strong> <span class="text-muted">(${escapeText(viewAs.dataset.loginId||'')})</span></div><div class="mt-3"><label class="form-label fw-semibold mb-1">${escapeText(labels.modeLabel)}</label><select class="form-select" id="apelImpersonationMode"><option value="view_only" selected>${escapeText(labels.viewOnly)}</option><option value="support_action">${escapeText(labels.supportAction)}</option></select><div class="form-text">${escapeText(labels.modeHelp)}</div></div></div>`,input:'textarea',inputLabel:labels.reasonLabel,inputPlaceholder:labels.reasonPlaceholder,inputAttributes:{maxlength:'500'},showCancelButton:true,confirmButtonText:labels.viewStart,cancelButtonText:labels.cancel,confirmButtonColor:'#f59e0b',preConfirm:value=>{const clean=String(value||'').trim();if(!clean){Swal.showValidationMessage(labels.reasonRequired);return false;}return clean;}}):{isConfirmed:false};
       if(!reasonResult.isConfirmed)return;
       try{
-        const form=new FormData();form.set('csrf_token',csrf);form.set('target_login_id',viewAs.dataset.loginId||'');form.set('reason',String(reasonResult.value||'').trim());form.set('mode','view_only');
+        const form=new FormData();form.set('csrf_token',csrf);form.set('target_login_id',viewAs.dataset.loginId||'');form.set('reason',String(reasonResult.value||'').trim());form.set('mode',String(document.getElementById('apelImpersonationMode')?.value||'view_only'));
         const response=await fetch(<?= json_encode(base_url('ajax/impersonation-start.php'), JSON_UNESCAPED_SLASHES) ?>,{method:'POST',body:form,credentials:'same-origin',headers:{'X-Requested-With':'XMLHttpRequest'}});const data=await response.json().catch(()=>({}));if(!response.ok||data.success!==true)throw new Error(data.message||'View As gagal dimulakan.');window.location.href=data.redirect||<?= json_encode(base_url('pages/dashboard.php'), JSON_UNESCAPED_SLASHES) ?>;
       }catch(error){if(window.Swal)await Swal.fire({icon:'error',title:'Tindakan gagal',text:error.message||'View As gagal dimulakan.'});}
       return;
     }
     const edit=event.target.closest('.apel-edit-user');
-    if(edit){clearForm();const u=JSON.parse(edit.dataset.user||'{}');byId('apelUserId').value=u.f_userID||0;byId('apelIdentifier').value=u.f_loginID||u.f_stafID||'';byId('apelIdentifier').readOnly=true;byId('apelName').value=u.f_nama||'';byId('apelEmail').value=u.f_email||'';byId('apelUnit').value=u.f_namajabatan||'';byId('apelGroup').value=u.f_groupID||'';byId('apelAccess').value=String(u.f_flag??1);modal?.show();return;}
+    if(edit){clearForm();setModalMode(true);const u=JSON.parse(edit.dataset.user||'{}');byId('apelUserId').value=u.f_userID||0;byId('apelIdentifier').value=u.f_loginID||u.f_stafID||'';byId('apelIdentifier').readOnly=true;byId('apelName').value=u.f_nama||'';byId('apelEmail').value=u.f_email||'';byId('apelUnit').value=u.f_namajabatan||'';byId('apelGroup').value=u.f_groupID||'';byId('apelAccess').value=String(u.f_flag??1);modal?.show();return;}
     const del=event.target.closest('.apel-delete-user');
     if(!del)return;
-    const confirmResult=window.Swal?await Swal.fire({icon:'warning',title:'Padam pengguna APEL?',text:`${del.dataset.userName||'Rekod ini'} akan dipadam daripada senarai APEL.`,showCancelButton:true,confirmButtonText:'Padam',cancelButtonText:'Batal',confirmButtonColor:'#dc3545'}):{isConfirmed:confirm('Padam pengguna ini?')};
+    const confirmResult=window.Swal?await Swal.fire({icon:'warning',title:labels.deleteTitle,html:`<p>${escapeText(labels.deleteMessage)}</p><p><strong>${escapeText(del.dataset.userName||'APEL')}</strong></p><p class="text-danger"><small>${escapeText(labels.deleteWarning)}</small></p>`,showCancelButton:true,confirmButtonText:labels.deleteYes,cancelButtonText:labels.cancel,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',reverseButtons:true}):{isConfirmed:confirm(labels.deleteTitle)};
     if(!confirmResult.isConfirmed)return;
     await send({action:'delete',userID:Number(del.dataset.userId||0)});
   });
   byId('apelSaveUser')?.addEventListener('click', async function(){
     const payload={action:Number(byId('apelUserId').value)>0?'update':'create',userID:Number(byId('apelUserId').value||0),identifier:byId('apelIdentifier').value.trim(),name:byId('apelName').value.trim(),email:byId('apelEmail').value.trim(),unit:byId('apelUnit').value.trim(),groupID:Number(byId('apelGroup').value||0),flag:Number(byId('apelAccess').value)};
-    if(!payload.identifier||!payload.name||!payload.groupID){showError('ID APEL, nama dan kumpulan wajib diisi.');return;}
+    if(!payload.identifier||!payload.name||!payload.groupID){showError(labels.required);return;}
     await send(payload);
   });
   async function send(payload){
