@@ -19,6 +19,9 @@ This changelog follows a release-style summary based on major project milestones
   SweetAlert assets are available, restoring Add, View As, Edit and Delete
   action behaviour.
 - Added visible action error feedback and same-origin request credentials.
+- Corrected the View As confirmation JavaScript syntax that prevented every
+  APEL action handler from being registered, and restored readable Group chip
+  contrast in light and dark themes.
 
 ### Added
 - Added bilingual APEL user-list labels and regression checks for the tab,

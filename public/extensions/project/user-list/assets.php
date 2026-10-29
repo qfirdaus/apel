@@ -9,6 +9,16 @@
 #userDTApel th.col-group,#userDTApel td.col-group{width:15%;text-align:left}
 #userDTApel th.col-akses,#userDTApel td.col-akses{width:10%;text-align:left}
 #userDTApel th.col-actions,#userDTApel td.col-actions{width:10%;text-align:center}
+#userDTApel .group-chip{
+  background:rgba(71,85,105,.12);
+  border-color:rgba(71,85,105,.2);
+  color:#334155;
+}
+[data-bs-theme="dark"] #userDTApel .group-chip{
+  background:rgba(148,163,184,.18);
+  border-color:rgba(148,163,184,.28);
+  color:#e2e8f0;
+}
 </style>
 <script>
 function initApelUserList(){
@@ -38,7 +48,7 @@ function initApelUserList(){
   document.addEventListener('click', async function(event){
     const viewAs=event.target.closest('.apel-view-as-user');
     if(viewAs){
-      const reasonResult=window.Swal?await Swal.fire({icon:'warning',title:'Lihat sebagai pengguna APEL?',html:`<div class="text-start"><strong>${escapeText(viewAs.dataset.userName||viewAs.dataset.loginId||'Pengguna APEL')}</strong><p class="text-muted mb-0 mt-2">Nyatakan sebab sokongan atau semakan.</p></div>`,input:'textarea',inputPlaceholder:'Sebab diperlukan',inputAttributes:{maxlength:'500'},showCancelButton:true,confirmButtonText:'Mulakan View As',cancelButtonText:'Batal',preConfirm:value=>{const clean=String(value||'').trim();if(!clean){Swal.showValidationMessage('Sebab wajib diisi.');return false;}return clean;}}:{isConfirmed:false};
+      const reasonResult=window.Swal?await Swal.fire({icon:'warning',title:'Lihat sebagai pengguna APEL?',html:`<div class="text-start"><strong>${escapeText(viewAs.dataset.userName||viewAs.dataset.loginId||'Pengguna APEL')}</strong><p class="text-muted mb-0 mt-2">Nyatakan sebab sokongan atau semakan.</p></div>`,input:'textarea',inputPlaceholder:'Sebab diperlukan',inputAttributes:{maxlength:'500'},showCancelButton:true,confirmButtonText:'Mulakan View As',cancelButtonText:'Batal',preConfirm:value=>{const clean=String(value||'').trim();if(!clean){Swal.showValidationMessage('Sebab wajib diisi.');return false;}return clean;}}):{isConfirmed:false};
       if(!reasonResult.isConfirmed)return;
       try{
         const form=new FormData();form.set('csrf_token',csrf);form.set('target_login_id',viewAs.dataset.loginId||'');form.set('reason',String(reasonResult.value||'').trim());form.set('mode','view_only');

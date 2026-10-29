@@ -53,6 +53,14 @@ if (!str_contains($assets, "document.addEventListener('DOMContentLoaded',initApe
 ) {
     throw new RuntimeException('APEL actions must initialise after deferred framework assets.');
 }
+if (!str_contains($assets, "}}):{isConfirmed:false}")) {
+    throw new RuntimeException('APEL View As confirmation must close Swal.fire before its fallback branch.');
+}
+if (!str_contains($assets, '#userDTApel .group-chip')
+    || !str_contains($assets, 'color:#334155')
+) {
+    throw new RuntimeException('APEL group chips must provide an explicit readable colour treatment.');
+}
 
 foreach (['CREATE', 'UPDATE', 'DELETE'] as $auditType) {
     if (!str_contains($action, "$auditType', 'SUCCESS'")) {
