@@ -4,6 +4,26 @@ declare(strict_types=1);
 require_once __DIR__ . '/apel-user-ownership.php';
 
 return [
+    'tabs' => [
+        [
+            'slot' => 'nav.after_student',
+            'render' => static function (): void {
+                require __DIR__ . '/user-list/nav.php';
+            },
+        ],
+        [
+            'slot' => 'panel.after_student',
+            'render' => static function (): void {
+                require __DIR__ . '/user-list/panel.php';
+            },
+        ],
+        [
+            'slot' => 'assets.footer',
+            'render' => static function (): void {
+                require __DIR__ . '/user-list/assets.php';
+            },
+        ],
+    ],
     'query_filters' => [
         'student.list' => static function (PDO $pdo, array $context): array {
             if (!apel_user_ownership_table_exists($pdo)) {
