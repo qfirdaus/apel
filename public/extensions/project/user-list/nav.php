@@ -3,6 +3,6 @@
   <button class="nav-link" id="tab-apel-access-tab" data-bs-toggle="tab"
     data-bs-target="#tab-apel-access" type="button" role="tab"
     aria-controls="tab-apel-access" aria-selected="false">
-    <i class="ri-graduation-cap-fill me-1"></i> APEL
+    <i class="ri-graduation-cap-fill me-1"></i> <?= h((string)__('apelUser_tab_access')) ?>
   </button>
 </li>

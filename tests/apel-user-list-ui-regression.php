@@ -4,10 +4,11 @@ declare(strict_types=1);
 $root = dirname(__DIR__);
 $registrationFile = $root . '/public/extensions/project/user-list.php';
 $panelFile = $root . '/public/extensions/project/user-list/panel.php';
+$navFile = $root . '/public/extensions/project/user-list/nav.php';
 $assetsFile = $root . '/public/extensions/project/user-list/assets.php';
 $actionFile = $root . '/public/extensions/project/user-list/action.php';
 
-foreach ([$registrationFile, $panelFile, $assetsFile, $actionFile] as $file) {
+foreach ([$registrationFile, $panelFile, $navFile, $assetsFile, $actionFile] as $file) {
     if (!is_file($file)) {
         throw new RuntimeException('Missing APEL user-list component: ' . $file);
     }
@@ -15,6 +16,7 @@ foreach ([$registrationFile, $panelFile, $assetsFile, $actionFile] as $file) {
 
 $registration = file_get_contents($registrationFile) ?: '';
 $panel = file_get_contents($panelFile) ?: '';
+$nav = file_get_contents($navFile) ?: '';
 $assets = file_get_contents($assetsFile) ?: '';
 $action = file_get_contents($actionFile) ?: '';
 
@@ -37,6 +39,19 @@ foreach (['user-sync-student.php', 'user-add-student.php', 'studentSearch', 'v21
 
 if (!str_contains($assets, 'pageLength:10')) {
     throw new RuntimeException('APEL table must default to 10 rows per page.');
+}
+if (!str_contains($nav, "__('apelUser_tab_access')")) {
+    throw new RuntimeException('APEL tab label must use the bilingual project translation key.');
+}
+if (!str_contains($panel, 'user-access-table user-access-table--sixcol')
+    || substr_count($panel, 'class="col-') < 12
+) {
+    throw new RuntimeException('APEL table must follow the Student Access six-column layout contract.');
+}
+if (!str_contains($assets, "document.addEventListener('DOMContentLoaded',initApelUserList")
+    || !str_contains($assets, 'bootstrap.Modal.getOrCreateInstance')
+) {
+    throw new RuntimeException('APEL actions must initialise after deferred framework assets.');
 }
 
 foreach (['CREATE', 'UPDATE', 'DELETE'] as $auditType) {

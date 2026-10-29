@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'apelUser_tab_access' => 'APEL Access',
+    'apelUser_col_name_id' => 'Name / APEL ID',
+    'apelUser_col_unit_program' => 'Unit / Programme',
+    'apelUser_add_button' => 'Add APEL User',
+
     // ===== Informal Learning (index.php) =====
     'informal_title' => 'Informal Learning',
     'informal_subtitle' => 'Learning that takes place continuously through life and work experiences. It is often unintentional learning.',

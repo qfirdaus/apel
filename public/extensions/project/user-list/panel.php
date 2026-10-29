@@ -43,25 +43,22 @@ try {
 ?>
 <div class="tab-pane fade" id="tab-apel-access" role="tabpanel"
   aria-labelledby="tab-apel-access-tab" tabindex="0">
-  <div class="card apel-user-card">
-    <div class="card-header d-flex align-items-center justify-content-between gap-3 flex-wrap">
-      <div>
-        <h5 class="mb-1">Pengguna APEL</h5>
-        <p class="text-muted mb-0">Rekod pelajar milik APEL. Tiada sambungan atau sync ke sumber Pelajar IQS Framework.</p>
-      </div>
-      <button type="button" class="btn btn-primary" id="apelAddUserBtn">
-        <i class="ri-user-add-line me-1"></i> Tambah pengguna APEL
-      </button>
-    </div>
-    <div class="card-body">
+  <div class="row">
+    <div class="col-12">
+      <div class="card apel-user-card">
+        <div class="card-body">
       <?php if ($apelLoadError !== ''): ?>
         <div class="alert alert-danger mb-3"><?= h($apelLoadError) ?></div>
       <?php endif; ?>
       <div class="table-responsive dt-standard">
-        <table class="table table-bordered align-middle apel-user-table" id="userDTApel">
+        <table class="table table-bordered align-middle user-access-table user-access-table--sixcol apel-user-table" id="userDTApel">
           <thead><tr>
-            <th class="apel-col-no">Bil.</th><th>Nama / ID APEL</th><th>E-mel</th>
-            <th>Unit / Program</th><th>Kumpulan</th><th>Akses</th><th class="apel-col-actions">Tindakan</th>
+            <th class="col-bil"><?= h((string)__('userList_col_no')) ?></th>
+            <th class="col-nama"><?= h((string)__('apelUser_col_name_id')) ?></th>
+            <th class="col-jabatan"><?= h((string)__('apelUser_col_unit_program')) ?></th>
+            <th class="col-group"><?= h((string)__('userList_col_group')) ?></th>
+            <th class="col-akses"><?= h((string)__('userList_col_access')) ?></th>
+            <th class="col-actions"><?= h((string)__('userList_col_actions')) ?></th>
           </tr></thead>
           <tbody>
           <?php foreach ($apelUsers as $index => $apelUser):
@@ -69,22 +66,21 @@ try {
               $enabled = (int)$apelUser['f_flag'] === 1;
           ?>
             <tr data-user-id="<?= (int)$apelUser['f_userID'] ?>">
-              <td><?= $index + 1 ?></td>
-              <td><span class="apel-ellipsis" title="<?= h($apelUser['f_nama'] . ' (' . $apelId . ')') ?>"><?= h($apelUser['f_nama']) ?> <small>(<?= h($apelId) ?>)</small></span></td>
-              <td><span class="apel-ellipsis" title="<?= h($apelUser['f_email']) ?>"><?= h($apelUser['f_email'] ?: '-') ?></span></td>
-              <td><span class="apel-ellipsis" title="<?= h($apelUser['f_namajabatan']) ?>"><?= h($apelUser['f_namajabatan'] ?: '-') ?></span></td>
-              <td><span class="badge bg-light text-dark"><?= h($apelUser['f_groupName'] ?: '-') ?></span></td>
-              <td><span class="badge <?= $enabled ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' ?>"><?= $enabled ? 'Dibenarkan' : 'Disekat' ?></span></td>
-              <td>
+              <td class="col-bil"><?= $index + 1 ?></td>
+              <td class="col-nama"><div class="user-name-shell"><span class="truncate-1line cell-tooltip-text" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= h($apelUser['f_nama'] . ' (' . $apelId . ')') ?>"><?= h($apelUser['f_nama']) ?> (<?= h($apelId) ?>)</span></div></td>
+              <td class="col-jabatan"><span class="truncate-1line cell-tooltip-text" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= h($apelUser['f_namajabatan']) ?>"><?= h($apelUser['f_namajabatan'] ?: '-') ?></span></td>
+              <td class="col-group"><span class="cell-inline"><span class="group-chip cell-tooltip-text" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= h($apelUser['f_groupName'] ?: '-') ?>"><?= h($apelUser['f_groupName'] ?: '-') ?></span></span></td>
+              <td class="col-akses"><span class="access-chip <?= $enabled ? 'is-allowed' : 'is-blocked' ?> cell-tooltip-text" data-bs-toggle="tooltip" data-bs-placement="top" title="<?= h($enabled ? (string)__('userList_access_granted') : (string)__('userList_access_blocked')) ?>"><?= h($enabled ? (string)__('userList_access_granted') : (string)__('userList_access_blocked')) ?></span></td>
+              <td class="col-actions">
                 <?php if ($apelCanViewAs && $enabled && $apelId !== ''): ?>
-                <button type="button" class="btn btn-outline-warning btn-sm apel-view-as-user"
+                <button type="button" class="btn btn-outline-warning btn-sm icon-btn apel-view-as-user"
                   data-login-id="<?= h($apelId) ?>" data-user-name="<?= h($apelUser['f_nama']) ?>"
                   title="Lihat sebagai pengguna APEL"><i class="ri-eye-line"></i></button>
                 <?php endif; ?>
-                <button type="button" class="btn btn-outline-primary btn-sm apel-edit-user"
+                <button type="button" class="btn btn-outline-primary btn-sm icon-btn apel-edit-user<?= $apelCanViewAs && $enabled && $apelId !== '' ? ' ms-1' : '' ?>"
                   data-user='<?= h(json_encode($apelUser, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>'
                   title="Edit pengguna APEL"><i class="ri-pencil-line"></i></button>
-                <button type="button" class="btn btn-outline-danger btn-sm apel-delete-user"
+                <button type="button" class="btn btn-outline-danger btn-sm icon-btn apel-delete-user ms-1"
                   data-user-id="<?= (int)$apelUser['f_userID'] ?>" data-user-name="<?= h($apelUser['f_nama']) ?>"
                   title="Padam pengguna APEL"><i class="ri-delete-bin-line"></i></button>
               </td>
@@ -92,6 +88,8 @@ try {
           <?php endforeach; ?>
           </tbody>
         </table>
+      </div>
+        </div>
       </div>
     </div>
   </div>

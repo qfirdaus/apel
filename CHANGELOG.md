@@ -6,6 +6,26 @@ This changelog follows a release-style summary based on major project milestones
 
 ## [Unreleased]
 
+## [1.11.3] - 2026-10-30
+
+### Changed
+- Renamed the project-owned user-list tab to `APEL Access` in English and
+  `Akses APEL` in Malay.
+- Matched the APEL Access table structure, column sizing, spacing, pagination,
+  responsive controls and action styling with the Student Access table.
+- Kept secondary user information in the existing modal so the list remains
+  compact and readable.
+
+### Fixed
+- Deferred APEL Access initialisation until shared Bootstrap, DataTables and
+  SweetAlert assets are available, restoring Add, View As, Edit and Delete
+  action behaviour.
+- Added visible action error feedback and same-origin request credentials.
+
+### Added
+- Added bilingual APEL user-list labels and regression checks for the tab,
+  six-column table contract and deferred asset initialisation.
+
 ## [1.11.2] - 2026-10-30
 
 ### Added

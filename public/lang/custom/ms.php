@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'apelUser_tab_access' => 'Akses APEL',
+    'apelUser_col_name_id' => 'Nama / ID APEL',
+    'apelUser_col_unit_program' => 'Unit / Program',
+    'apelUser_add_button' => 'Tambah Pengguna APEL',
+
     // ===== Informal Learning (index.php) =====
     'informal_title' => 'Pembelajaran Informal',
     'informal_subtitle' => 'Pembelajaran yang berlaku secara berterusan melalui pengalaman hidup dan pekerjaan. Ia selalunya pembelajaran yang tidak disengajakan.',
