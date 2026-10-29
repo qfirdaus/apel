@@ -1,12 +1,15 @@
 # APEL Access staging deployment
 
-Release: `1.11.3`  
-Date: `2026-10-30`  
+Framework baseline: `1.11.2` (no downstream version release)
+
+Date: `2026-10-30`
+
 Target: `iqs@172.16.2.153:/var/www/apel`
 
 This record preserves the commands used to validate, publish and deploy the
-APEL Access user-list update. It contains no credentials or environment
-secrets.
+APEL Access user-list update. APEL is a downstream project, so this change does
+not increment the IQS Framework release version. The record contains no
+credentials or environment secrets.
 
 ## Local validation
 
@@ -33,7 +36,7 @@ git add VERSION README.md CHANGELOG.md docs/APEL_ACCESS_STAGING_DEPLOYMENT.md \
   public/extensions/project/user-list/panel.php \
   public/lang/custom/en.php public/lang/custom/ms.php \
   tests/apel-user-list-ui-regression.php
-git commit -m "Release APEL 1.11.3 access administration fixes"
+git commit -m "Fix APEL access administration workflow"
 git push origin main
 ```
 

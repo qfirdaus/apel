@@ -6,8 +6,6 @@ This changelog follows a release-style summary based on major project milestones
 
 ## [Unreleased]
 
-## [1.11.3] - 2026-10-30
-
 ### Changed
 - Renamed the project-owned user-list tab to `APEL Access` in English and
   `Akses APEL` in Malay.

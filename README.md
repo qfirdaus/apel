@@ -6,15 +6,9 @@ README ini hanya mendokumenkan ciri yang wujud dalam kod semasa projek ini.
 
 ## Version
 
-- Current version: `1.11.3`
+- Current version: `1.11.1`
 - Release history: [CHANGELOG.md](./CHANGELOG.md)
 - Version file: [VERSION](./VERSION)
-
-## Version 1.11.3 APEL Access Administration
-
-- Renamed the project user-list tab to **APEL Access** / **Akses APEL**.
-- Standardised its table layout with Student Access and restored deferred action controls.
-- Added bilingual labels and regression coverage for the project-owned user workflow.
 - Runtime fallback: [public/configuration/settings.php](./public/configuration/settings.php)
 
 ## Runtime Baseline
