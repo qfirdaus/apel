@@ -1,11 +1,11 @@
 <!-- ROLE INDICATOR -->
 <div class="role-indicator-wrapper">
     <span class="role-indicator-label">
-        <i class="ri-shield-user-line"></i> Mod Peranan
+        <i class="ri-shield-user-line"></i> <?= h(__('admin_assign_role_mode')) ?>
     </span>
     <span class="role-indicator-name">
         <span class="role-dot"></span>
-        <?= h($roleInfo['name'] ?? 'Pentadbir') ?>
+        <?= h($roleInfo['name'] ?? __('admin_assign_role_default')) ?>
     </span>
 </div>
 
@@ -73,27 +73,27 @@
                     <td>
                         <?php if ($statusId === 0): ?>
                             <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 rounded-pill fw-medium">
-                                <i class="ri-draft-line me-1"></i> Draf Penyediaan
+                                <i class="ri-draft-line me-1"></i> <?= h(__('admin_status_draft')) ?>
                             </span>
                         <?php elseif ($statusId === 1): ?>
                             <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill fw-medium">
-                                <i class="ri-send-plane-line me-1"></i> Dihantar (Dalam Proses)
+                                <i class="ri-send-plane-line me-1"></i> <?= h(__('admin_status_submitted')) ?>
                             </span>
                         <?php elseif ($statusId === 2): ?>
                             <span class="badge bg-warning-subtle text-danger border border-warning-subtle px-2 py-1 rounded-pill fw-medium">
-                                <i class="ri-arrow-go-back-line me-1"></i> Pindaan / Kemaskini
+                                <i class="ri-arrow-go-back-line me-1"></i> <?= h(__('admin_status_amend')) ?>
                             </span>
                         <?php elseif ($statusId === 3): ?>
                             <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 rounded-pill fw-medium">
-                                <i class="ri-check-line me-1"></i> Disokong Penasihat
+                                <i class="ri-check-line me-1"></i> <?= h(__('admin_status_supported')) ?>
                             </span>
                         <?php elseif ($statusId === 4): ?>
                             <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill fw-medium">
-                                <i class="ri-shield-check-line me-1"></i> Diperaku Penyelaras
+                                <i class="ri-shield-check-line me-1"></i> <?= h(__('admin_status_endorsed')) ?>
                             </span>
                         <?php else: ?>
                             <span class="badge bg-light text-dark border px-2 py-1 rounded-pill fw-medium">
-                                <?= h($statusText ?: 'Proses Semakan') ?>
+                                <?= h($statusText ?: __('admin_status_review')) ?>
                             </span>
                         <?php endif; ?>
                     </td>
@@ -110,7 +110,7 @@
                             </div>
                         <?php else: ?>
                             <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded-pill fw-bold">
-                                <i class="ri-close-circle-line me-1"></i> Belum Dilantik
+                                <i class="ri-close-circle-line me-1"></i> <?= h(__('admin_not_appointed')) ?>
                             </span>
                         <?php endif; ?>
                     </td>
@@ -132,7 +132,7 @@
                             </div>
                         <?php else: ?>
                             <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded-pill fw-bold">
-                                <i class="ri-close-circle-line me-1"></i> Belum Dilantik
+                                <i class="ri-close-circle-line me-1"></i> <?= h(__('admin_not_appointed')) ?>
                             </span>
                         <?php endif; ?>
                     </td>
@@ -144,20 +144,13 @@
                                 data-app-id="<?= (int)$row['application_id'] ?>"
                                 data-student-id="<?= h($studentId) ?>"
                                 data-advisor-id="<?= h($advId) ?>"
-                                data-coordinator-name="<?= h($coorRawNames !== '' ? $coorRawNames : 'Belum Ditentukan') ?>"
-                                title="<?= $hasAdvisor ? 'Kemaskini Lantikan Penasihat' : 'Lantik Penasihat' ?>">
+                                data-coordinator-name="<?= h($coorRawNames !== '' ? $coorRawNames : __('admin_coordinator_undetermined')) ?>"
+                                title="<?= h($hasAdvisor ? __('admin_tip_update_advisor') : __('admin_tip_assign_advisor')) ?>">
                             <i class="<?= $hasAdvisor ? 'ri-edit-line' : 'ri-user-add-line' ?> me-1"></i> 
                         </button>
                     </td>
                 </tr>
-            <?php endforeach; else: ?>
-                <tr>
-                    <td colspan="6" class="text-center py-4 text-muted">
-                        <i class="ri-inbox-line fs-2 d-block mb-1 text-secondary"></i>
-                        Tiada permohonan APEL.Q dijumpai buat masa ini.
-                    </td>
-                </tr>
-            <?php endif; ?>
+            <?php endforeach; endif; ?>
         </tbody>
     </table>
 </div>

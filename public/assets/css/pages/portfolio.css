@@ -745,3 +745,298 @@
     margin-right: 6px;
     background-color: #2563eb; /* Titik biru profesional */
 }
+
+/* ========================================================
+   REKA BENTUK MODEN EKSEKUTIF KORPORAT - MODUL PERIBADI
+   ======================================================== */
+
+.corporate-profile-container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Bingkai Foto Profil */
+.hero-profile-card {
+    border: 1px solid #f1f5f9 !important;
+}
+
+.profile-photo-frame {
+    width: 105px;
+    height: 130px;
+    border-radius: 12px;
+    border: 2px solid #ffffff;
+    outline: 1px solid #e2e8f0;
+    overflow: hidden;
+    background-color: #f8fafc;
+}
+
+.profile-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Lencana Tona Lembut Korporat */
+.badge-corp-primary {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #bfdbfe !important;
+    font-weight: 600;
+}
+
+.badge-corp-success {
+    background-color: #f0fdf4 !important;
+    color: #15803d !important;
+    border: 1px solid #bbf7d0 !important;
+    font-weight: 600;
+}
+
+.icon-chip {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+/* Grid Data Paparan (Two-Column Specification Rows) */
+.corp-data-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background-color: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Aturan Baris Data Dua Lajur - Penjajaran Bermula dari Kiri */
+.corp-data-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease;
+}
+
+.corp-data-row:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+.corp-data-row:last-child {
+    border-bottom: none;
+}
+
+.corp-data-row:hover {
+    background-color: #f8fafc;
+}
+
+/* Label ditetapkan lebar 38% supaya sejajar */
+.corp-data-label {
+    width: 38%;
+    min-width: 140px;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: #64748b;
+    text-align: left;
+    margin: 0;
+}
+
+/* Nilai data bermula rapat dari kiri (text-align: left) */
+.corp-data-value {
+    width: 62%;
+    font-size: 0.87rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: left !important; /* Data bermula dari kiri */
+    padding-left: 10px;
+    word-break: break-word;
+}
+
+/* Borang Alamat & Input */
+.section-panel-card {
+    border: 1px solid #f1f5f9 !important;
+}
+
+.section-column-title {
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 6px;
+}
+
+.form-label-custom {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.corp-input {
+    height: 42px !important;
+    border-radius: 8px !important;
+    border: 1px solid #d1d5db !important;
+    font-size: 0.86rem !important;
+    color: #1e293b !important;
+    padding: 8px 12px !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+
+.corp-input:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+    background-color: #ffffff !important;
+}
+
+.corp-addon {
+    border-color: #d1d5db !important;
+    border-radius: 8px 0 0 8px !important;
+    height: 42px !important;
+}
+
+/* Butang Simpan Korporat */
+.btn-corp-primary {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 0.87rem;
+    border: none !important;
+    transition: all 0.2s ease;
+}
+
+.btn-corp-primary:hover {
+    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.3) !important;
+    transform: translateY(-1px);
+}
+
+/* Standardisasi Select2 Mengikut Ketinggian Input */
+.section-panel-card .select2-container .select2-selection--single {
+    height: 42px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    background-color: #ffffff !important;
+}
+
+.section-panel-card .select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 0.86rem !important;
+    color: #1e293b !important;
+    line-height: normal !important;
+    padding-left: 0 !important;
+}
+
+.section-panel-card .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+    right: 10px !important;
+}
+
+/* ========================================================
+   GAYA KORPORAT EKSEKUTIF - MODUL PERIBADI & ALAMAT
+   ======================================================== */
+
+.corporate-profile-container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* 1. Label Horizontal (Sebelah Kiri) */
+.form-label-horizontal {
+    font-size: 0.83rem !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    margin-bottom: 0 !important;
+    letter-spacing: -0.1px;
+}
+
+/* 2. Kotak Paparan Maklumat Peribadi (Read-Only Field Box) */
+.corp-display-box {
+    min-height: 42px !important;
+    background-color: #f8fafc !important; /* Latar kelabu lembut */
+    border: 1px solid #e2e8f0 !important;  /* Bingkai seragam dengan input */
+    border-radius: 8px !important;
+    padding: 8px 14px !important;
+    font-size: 0.86rem !important;
+    color: #1e293b !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    text-align: left !important;            /* Mula tepat dari sebelah kiri */
+    width: 100% !important;
+    word-break: break-word;
+    transition: all 0.15s ease-in-out;
+}
+
+.corp-display-box:hover {
+    background-color: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* 3. Input Borang Maklumat Alamat */
+.corp-input {
+    height: 42px !important;
+    border-radius: 8px !important;
+    border: 1px solid #cbd5e1 !important;
+    font-size: 0.86rem !important;
+    color: #1e293b !important;
+    padding: 8px 12px !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+
+.corp-input:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+}
+
+.corp-addon {
+    border-color: #cbd5e1 !important;
+    border-radius: 8px 0 0 8px !important;
+    height: 42px !important;
+}
+
+/* 4. Penyelarasan Ketinggian Select2 (42px) */
+.section-panel-card .select2-container .select2-selection--single {
+    height: 42px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    background-color: #ffffff !important;
+}
+
+.section-panel-card .select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 0.86rem !important;
+    color: #1e293b !important;
+    line-height: normal !important;
+    padding-left: 0 !important;
+}
+
+.section-panel-card .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+    right: 10px !important;
+}
+
+/* 5. Butang Simpan Korporat */
+.btn-corp-primary {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 0.87rem;
+    border: none !important;
+    transition: all 0.2s ease;
+}
+
+.btn-corp-primary:hover {
+    box-shadow: 0 4px 14px rgba(29, 78, 216, 0.28) !important;
+    transform: translateY(-1px);
+}

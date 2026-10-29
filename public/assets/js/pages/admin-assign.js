@@ -20,12 +20,14 @@ $(function () {
     }
 
     // DataTable
-    if ($.fn.DataTable && $('#tblAdminAssign').length) {
-        $('#tblAdminAssign').DataTable({
-            pageLength: 10,
-            autoWidth: false
-        });
-    }
+    $('#tblAdminAssign').DataTable({
+        pageLength: 10,
+        autoWidth: false,
+        language: {
+            emptyTable: t('js_no_files_found'),
+            zeroRecords: t('js_no_files_found')
+        }
+    });
 
     // Fungsi Papar / Sorok Kad Maklumat Staf
     function updateCardDisplay(selectId, cardId) {
@@ -101,8 +103,8 @@ $(function () {
 
         $('#assign_app_id').val(appId);
         $('#assign_student_id').val(studentId);
-        $('#display_student_id').text(studentId + ' (ID Permohonan: #' + appId + ')');
-        $('#display_coordinator_name').text(coordinatorName || 'Belum Ditetapkan');
+        $('#display_student_id').text(t('js_assign_student_display', { student: studentId, id: appId }));
+        $('#display_coordinator_name').text(coordinatorName || t('js_assign_coordinator_unset'));
 
         var modalEl = document.getElementById('modalAssignOfficers');
         var modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -132,17 +134,17 @@ $(function () {
         formData.append('csrf_token', csrfToken);
 
         Swal.fire({
-            title: 'Pengesahan',
-            text: 'Adakah anda pasti untuk menyimpan pelantikan ini?',
+            title: t('js_assign_confirm_title'),
+            text: t('js_assign_confirm_text'),
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Ya, Simpan',
-            cancelButtonText: 'Batal',
+            confirmButtonText: t('js_save_btn'),
+            cancelButtonText: t('js_cancel'),
             reverseButtons: true
         }).then(function (result) {
             if (result.isConfirmed) {
                 Swal.fire({
-                    title: 'Menyimpan...',
+                    title: t('js_saving_title'),
                     allowOutsideClick: false,
                     didOpen: function () { Swal.showLoading(); }
                 });
@@ -158,8 +160,8 @@ $(function () {
                         if (res.status === 'success') {
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Berjaya',
-                                text: res.message || 'Pelantikan berjaya disimpan!',
+                                title: t('js_success'),
+                                text: res.message || t('js_assign_saved'),
                                 timer: 2000,
                                 showConfirmButton: false
                             });
@@ -168,12 +170,12 @@ $(function () {
                                 window.location.reload();
                             }, 2000);
                         } else {
-                            Swal.fire('Ralat', res.message, 'error');
+                            Swal.fire(t('js_error'), res.message, 'error');
                         }
                     },
                     error: function (xhr) {
                         console.error("AJAX Error:", xhr.responseText);
-                        Swal.fire('Ralat Sistem', 'Gagal berhubung dengan pelayan.', 'error');
+                        Swal.fire(t('js_system_error'), t('js_server_unreachable'), 'error');
                     }
                 });
             }

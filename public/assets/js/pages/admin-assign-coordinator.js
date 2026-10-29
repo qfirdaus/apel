@@ -1,6 +1,19 @@
 $(function () {
     'use strict';
 
+    // Teks bahasa dihantar dari PHP (lihat translate-js.php -> window.TEKS_BAHASA)
+    // t('kunci') = ambil teks ikut bahasa semasa
+    var TEKS = window.TEKS_BAHASA || {};
+    function t(key, params) {
+        var text = Object.prototype.hasOwnProperty.call(TEKS, key) ? TEKS[key] : key;
+        if (params) {
+            Object.keys(params).forEach(function (p) {
+                text = text.split('{' + p + '}').join(params[p]);
+            });
+        }
+        return text;
+    }
+
     if ($.fn.modal && $.fn.modal.Constructor) {
         $.fn.modal.Constructor.prototype._enforceFocus = function () {};
     }
@@ -17,14 +30,14 @@ $(function () {
         $('#select_faculty_code').select2({
             dropdownParent: $('#modalAddFacultyCoordinator'),
             width: '100%',
-            placeholder: '-- Sila Pilih Fakulti --'
+            placeholder: t('js_coord_choose_faculty')
         });
 
         // Dropdown Berbilang Penyelaras
         $('#select_coord_staf_id').select2({
             dropdownParent: $('#modalAddFacultyCoordinator'),
             width: '100%',
-            placeholder: 'Taip nama atau ID staf untuk cari dan pilih...',
+            placeholder: t('js_coord_search_staff'),
             closeOnSelect: false,    
             allowClear: true
         });
@@ -73,11 +86,11 @@ $(function () {
                         '</div>' +
                         '<div class="d-flex flex-wrap gap-3" style="font-size: 0.78rem;">' +
                             '<div>' +
-                                '<span class="text-muted fw-bold"><i class="ri-building-line text-success me-1"></i>DEPARTMENT:</span> ' +
+                                '<span class="text-muted fw-bold"><i class="ri-building-line text-success me-1"></i>' + t('js_coord_department_label') + '</span> ' +
                                 '<span class="text-secondary fw-semibold">' + dept + '</span>' +
                             '</div>' +
                             '<div>' +
-                                '<span class="text-muted fw-bold"><i class="ri-briefcase-line text-primary me-1"></i>POSITION:</span> ' +
+                                '<span class="text-muted fw-bold"><i class="ri-briefcase-line text-primary me-1"></i>' + t('js_coord_position_label') + '</span> ' +
                                 '<span class="text-secondary fw-semibold">' + pos + '</span>' +
                             '</div>' +
                         '</div>' +
@@ -135,15 +148,15 @@ $(function () {
         }
 
         Swal.fire({
-            title: 'Pengesahan',
-            text: 'Lantik staf yang dipilih sebagai Penyelaras bagi fakulti ini?',
+            title: t('js_assign_confirm_title'),
+            text: t('js_coord_confirm_text'),
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Ya, Lantik',
-            cancelButtonText: 'Batal'
+            confirmButtonText: t('js_coord_confirm_btn'),
+            cancelButtonText: t('js_cancel')
         }).then(function (result) {
             if (result.isConfirmed) {
-                Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: function () { Swal.showLoading(); } });
+                Swal.fire({ title: t('js_saving_title'), allowOutsideClick: false, didOpen: function () { Swal.showLoading(); } });
 
                 $.ajax({
                     url: 'ajax_assign_coordinator.php',
@@ -154,14 +167,14 @@ $(function () {
                     dataType: 'json',
                     success: function (res) {
                         if (res.status === 'success') {
-                            Swal.fire('Berjaya', res.message, 'success');
+                            Swal.fire(t('js_success'), res.message, 'success');
                             setTimeout(function () { window.location.reload(); }, 1200);
                         } else {
-                            Swal.fire('Ralat', res.message, 'error');
+                            Swal.fire(t('js_error'), res.message, 'error');
                         }
                     },
                     error: function () {
-                        Swal.fire('Ralat', 'Gagal berhubung dengan pelayan.', 'error');
+                        Swal.fire(t('js_system_error'), t('js_server_unreachable'), 'error');
                     }
                 });
             }
@@ -176,12 +189,12 @@ $(function () {
         var csrfToken = $('#csrfToken').val();
 
         Swal.fire({
-            title: 'Gugurkan Penyelaras?',
-            text: 'Adakah anda pasti untuk menggugurkan ' + name + ' sebagai Penyelaras bagi ' + faculty + '?',
+            title: t('js_coord_remove_title'),
+            text: t('js_coord_remove_text', { name: name, faculty: faculty }),
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Ya, Gugurkan',
-            cancelButtonText: 'Batal',
+            confirmButtonText: t('js_coord_remove_btn'),
+            cancelButtonText: t('js_cancel'),
             confirmButtonColor: '#d33'
         }).then(function (res) {
             if (res.isConfirmed) {
@@ -192,10 +205,10 @@ $(function () {
                     dataType: 'json',
                     success: function (r) {
                         if (r.status === 'success') {
-                            Swal.fire('Berjaya', r.message, 'success');
+                            Swal.fire(t('js_success'), r.message, 'success');
                             setTimeout(function () { window.location.reload(); }, 1200);
                         } else {
-                            Swal.fire('Ralat', r.message, 'error');
+                            Swal.fire(t('js_error'), r.message, 'error');
                         }
                     }
                 });

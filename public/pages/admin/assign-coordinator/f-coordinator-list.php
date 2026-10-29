@@ -1,11 +1,11 @@
 <!-- ROLE INDICATOR -->
 <div class="role-indicator-wrapper">
     <span class="role-indicator-label">
-        <i class="ri-shield-user-line"></i> Mod Peranan
+        <i class="ri-shield-user-line"></i> <?= h(__('admin_assign_role_mode')) ?>
     </span>
     <span class="role-indicator-name">
         <span class="role-dot"></span>
-        <?= h($roleInfo['name'] ?? 'Pentadbir') ?>
+        <?= h($roleInfo['name'] ?? __('admin_assign_role_default')) ?>
     </span>
 </div>
 
@@ -14,7 +14,7 @@
             class="btn btn-primary px-3 shadow-sm d-inline-flex align-items-center" 
             data-bs-toggle="modal" 
             data-bs-target="#modalAddFacultyCoordinator">
-        <i class="ri-user-add-line me-1"></i> Tambah Rekod
+        <i class="ri-user-add-line me-1"></i> <?= h(__('work_btn_add')) ?>
     </button>
 </div>
 
@@ -22,11 +22,11 @@
     <table class="table table-striped table-bordered align-middle w-100 text-center" id="tblFacultyCoordinators">
         <thead class="bg-light">
             <tr>
-                <th width="5%">BIL</th>
-                <th width="20%" class="text-start">FAKULTI / JABATAN</th>
-                <th width="45%" class="text-start">NAMA PENYELARAS</th>
-                <th width="15%">TARIKH DILANTIK</th>
-                <th width="15%">TINDAKAN</th>
+                <th width="5%"><?= h(__('th_no')) ?></th>
+                <th width="20%" class="text-start"><?= h(__('coord_th_faculty')) ?></th>
+                <th width="45%" class="text-start"><?= h(__('coord_th_name')) ?></th>
+                <th width="15%"><?= h(__('coord_th_date')) ?></th>
+                <th width="15%"><?= h(__('th_action')) ?></th>
             </tr>
         </thead>
         <tbody>
@@ -48,7 +48,7 @@
                                 data-id="<?= (int)$row['id'] ?>"
                                 data-name="<?= h($row['coordinator_name'] ?? $row['coordinator_id']) ?>"
                                 data-faculty="<?= h($row['faculty_name'] ?? $row['faculty_code']) ?>"
-                                title="Gugurkan Lantikan">
+                                title="<?= h(__('coord_tip_remove')) ?>">
                             <i class="ri-delete-bin-line me-1"></i> 
                         </button>
                     </td>

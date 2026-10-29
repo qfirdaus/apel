@@ -4,9 +4,9 @@
             
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="ri-community-line me-1"></i> <span>Lantik Penyelaras Fakulti</span>
+                    <i class="ri-community-line me-1"></i> <span><?= h(__('coord_modal_title')) ?></span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= h(__('work_btn_close')) ?>"></button>
             </div>
 
             <form id="formAddFacultyCoordinator">
@@ -17,10 +17,10 @@
                     <!-- PILIH FAKULTI -->
                     <div class="mb-3">
                         <label class="form-label fw-bold text-dark mb-1">
-                            Fakulti / Pusat Pengajian <span class="text-danger">*</span>
+                            <?= h(__('coord_label_faculty')) ?> <span class="text-danger">*</span>
                         </label>
                         <select name="faculty_code" id="select_faculty_code" class="form-select select2" required style="width: 100%;">
-                            <option value="">-- Sila Pilih Fakulti --</option>
+                            <option value=""><?= h(__('coord_choose_faculty')) ?></option>
                             <?php foreach ($faculties as $fac): ?>
                                 <option value="<?= h($fac['faculty_code']) ?>" data-name="<?= h($fac['faculty_name']) ?>">
                                     <?= h($fac['faculty_name']) ?> 
@@ -32,7 +32,7 @@
                     <!-- PILIH RAMAI PEGAWAI PENYELARAS (MULTIPLE SELECT) -->
                     <div class="mb-3">
                         <label class="form-label fw-bold text-dark mb-1">
-                            Pegawai Penyelaras (Boleh pilih lebih dari seorang) <span class="text-danger">*</span>
+                            <?= h(__('coord_label_officers')) ?> <span class="text-danger">*</span>
                         </label>
                         <select name="staf_ids[]" id="select_coord_staf_id" class="form-select select2" multiple="multiple" required style="width: 100%;">
                             <?php foreach ($academicStaff as $staf): 
@@ -50,7 +50,7 @@
 
                         <div id="container_coord_cards" class="mt-3 d-none">
                             <small class="text-muted fw-bold text-uppercase d-block mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
-                                <i class="ri-id-card-line me-1"></i> Maklumat Pegawai Terpilih:
+                                <i class="ri-id-card-line me-1"></i> <?= h(__('coord_selected_info')) ?>
                             </small>
                             <div id="list_coord_cards" class="d-flex flex-column gap-2" style="max-height: 220px; overflow-y: auto;"></div>
                         </div>
@@ -58,13 +58,13 @@
 
                     <div class="alert alert-info py-2 px-3 small border-0 mb-0">
                         <i class="ri-information-line me-1"></i> 
-                        Semua staf yang dipilih akan didaftarkan sebagai <strong>Penyelaras APEL.Q</strong> bagi fakulti ini dan diberikan peranan <strong>ADM-COORDINATOR</strong> secara automatik.
+                        <?= __('coord_alert_info') ?>
                     </div>
                 </div>
 
                 <div class="modal-footer bg-light px-4 py-3">
-                    <button type="button" class="btn btn-secondary px-4 fw-medium" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary px-4 fw-bold" id="btnSaveCoord">Simpan Pelantikan</button>
+                    <button type="button" class="btn btn-secondary px-4 fw-medium" data-bs-dismiss="modal"><?= h(__('js_cancel')) ?></button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold" id="btnSaveCoord"><?= h(__('coord_btn_save')) ?></button>
                 </div>
             </form>
 

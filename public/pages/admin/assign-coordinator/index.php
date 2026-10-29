@@ -77,6 +77,9 @@ $roleInfo        = $controller->getActiveRoleInfo();
     <?php 
       include __DIR__ . '/modal-assign-coordinator.php';
       include __DIR__ . '/../../../includes/script.php';  
+      if (file_exists(__DIR__ . '/../translate-js.php')) {
+          include __DIR__ . '/../translate-js.php'; 
+      }
     ?>
 
     <?php if ($NEED_SELECT2): ?>

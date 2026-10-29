@@ -227,8 +227,8 @@ class ApelAdminOfficerModel
                 $this->ensureUserRoleAccess($advisorId, 34, 'ADM-ADVISOR', $assignedBy);
             }
 
-            // Simpan advisor_id sahaja (coordinator tidak perlu disimpan setiap student kerana auto-match by fakulti)
-            $sql = "INSERT INTO apelq_application_assignments (
+            // Simpan advisor_id 
+            $sql = "INSERT INTO apelq_application_advisors (
                         application_id, student_id, advisor_id, assigned_by, assigned_at
                     ) VALUES (
                         :app_id, :student_id, :adv_id, :assigned_by, NOW()
@@ -286,7 +286,7 @@ class ApelAdminOfficerModel
                 LEFT JOIN lp_status s 
                        ON s.module_type = 'portfolio' 
                       AND s.status_code = a.portfolio_status_id
-                LEFT JOIN apelq_application_assignments ass 
+                LEFT JOIN apelq_application_advisors ass 
                        ON a.id = ass.application_id
                 LEFT JOIN tbl_m_user u_adv 
                        ON ass.advisor_id COLLATE utf8mb4_unicode_ci = u_adv.f_stafID

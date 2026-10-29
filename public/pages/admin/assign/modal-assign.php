@@ -5,9 +5,9 @@
             
             <div class="modal-header">
                 <h5 class="modal-title">
-                    <i class="ri-user-settings-line me-1"></i> <span>Penugasan Penasihat Pelajar APEL.Q</span>
+                    <i class="ri-user-settings-line me-1"></i> <span><?= h(__('admin_assign_modal_title')) ?></span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= h(__('work_btn_close')) ?>"></button>
             </div>
 
             <form id="formAssignOfficers">
@@ -20,11 +20,11 @@
                     <div class="alert alert-light border mb-3 rounded-3">
                         <div class="row">
                             <div class="col-md-7">
-                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.72rem;">Pelajar:</small>
+                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.72rem;"><?= h(__('admin_assign_label_student')) ?></small>
                                 <strong class="text-dark fs-6" id="display_student_id">-</strong>
                             </div>
                             <div class="col-md-5 border-start">
-                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.72rem;">Penyelaras Fakulti (Automatik):</small>
+                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.72rem;"><?= h(__('admin_assign_label_coordinator')) ?></small>
                                 <strong class="text-primary" id="display_coordinator_name">-</strong>
                             </div>
                         </div>
@@ -33,10 +33,10 @@
                     <!-- PILIH PENASIHAT -->
                     <div class="mb-3">
                         <label class="form-label fw-bold text-dark mb-1">
-                            <i class="ri-user-star-line text-primary me-1"></i> Penasihat Pelajar <span class="text-danger">*</span>
+                            <i class="ri-user-star-line text-primary me-1"></i> <?= h(__('admin_assign_label_advisor')) ?> <span class="text-danger">*</span>
                         </label>
                         <select name="advisor_id" id="assign_advisor_id" class="form-select select2" required style="width: 100%;">
-                            <option value="">-- Sila Pilih Penasihat --</option>
+                            <option value=""><?= h(__('admin_assign_choose_advisor')) ?></option>
                             <?php foreach ($advisors as $adv): ?>
                                 <option value="<?= h($adv['f_stafID']) ?>"
                                         data-dept="<?= h(trim((string)($adv['f_namajabatan'] ?? '')) ?: '-') ?>"
@@ -51,14 +51,14 @@
                             <div class="d-flex align-items-start mb-2">
                                 <div class="text-success me-2 fs-5"><i class="ri-building-line"></i></div>
                                 <div>
-                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 0.72rem;">Department</small>
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 0.72rem;"><?= h(__('admin_label_department')) ?></small>
                                     <div class="fw-bold text-dark info-dept">-</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-start">
                                 <div class="text-success me-2 fs-5"><i class="ri-briefcase-line"></i></div>
                                 <div>
-                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 0.72rem;">Position</small>
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 0.72rem;"><?= h(__('admin_label_position')) ?></small>
                                     <div class="fw-bold text-dark info-pos">-</div>
                                 </div>
                             </div>
@@ -68,10 +68,10 @@
 
                 <div class="modal-footer bg-light px-4 py-3">
                     <button type="button" class="btn btn-secondary px-4 fw-medium" data-bs-dismiss="modal">
-                        Batal
+                        <?= h(__('js_cancel')) ?>
                     </button>
                     <button type="submit" class="btn btn-primary px-4 fw-bold" id="btnSaveAssignment">
-                        Simpan Penasihat
+                        <?= h(__('admin_assign_btn_save')) ?>
                     </button>
                 </div>
             </form>

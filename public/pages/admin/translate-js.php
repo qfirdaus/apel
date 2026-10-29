@@ -54,6 +54,24 @@ $kunciUntukJs = [
     'js_fin_reject_required',
     'js_fin_reason_title',
     'js_fin_process_failed',
+
+    // Admin Assign
+    'js_assign_student_display',
+    'js_assign_coordinator_unset',
+    'js_assign_confirm_title',
+    'js_assign_confirm_text',
+    'js_assign_saved',
+
+    // Admin Coordinator
+    'js_coord_choose_faculty',
+    'js_coord_search_staff',
+    'js_coord_department_label',
+    'js_coord_position_label',
+    'js_coord_confirm_text',
+    'js_coord_confirm_btn',
+    'js_coord_remove_title',
+    'js_coord_remove_text',
+    'js_coord_remove_btn',
 ];
 
 // Ambil teks sebenar (ikut bahasa semasa) bagi setiap kunci

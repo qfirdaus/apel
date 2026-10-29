@@ -16,8 +16,8 @@ require_once __DIR__ . '/../../../includes/functions-page.php';
 require_once __DIR__ . '/../../../controllers/ApelAdminOfficerController.php';
 
 // Paparan Halaman (GET)
-$PAGE_TITLE  = __('admin_assign_title', 'Penugasan Pegawai APEL.Q');
-$pageHeading = __('admin_assign_title', 'Penugasan Pegawai APEL.Q');
+$PAGE_TITLE  = __('admin_assign_title');
+$pageHeading = __('admin_assign_title');
 $csrfToken   = (string)($_SESSION['csrf_token'] ?? '');
 
 $NEED_DATERANGE  = false;
@@ -36,14 +36,16 @@ try {
     $roleInfo = [];
 }
 
-$applications = [];
-$advisors     = [];
-
 try {
     $applications = $controller->getApplications();
-    $advisors     = $controller->getAdvisors();
 } catch (\Throwable $e) {
-    error_log("Ralat memuatkan data Admin Assign: " . $e->getMessage());
+    error_log("Ralat memuatkan Applications: " . $e->getMessage());
+}
+
+try {
+    $advisors = $controller->getAdvisors();
+} catch (\Throwable $e) {
+    error_log("Ralat memuatkan Advisors (Sybase): " . $e->getMessage());
 }
 
 ?>
@@ -67,7 +69,7 @@ try {
                                 </div>
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="../dashboard.php"><i class="ri-home-4-line me-1"></i> Utama</a></li>
+                                        <li class="breadcrumb-item"><a href="../../dashboard.php"><i class="ri-home-4-line me-1"></i> <?= __('breadcrumb_home') ?></a></li>
                                         <li class="breadcrumb-item active"><?= h($pageHeading) ?></li>
                                     </ol>
                                 </div>
