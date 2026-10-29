@@ -49,4 +49,8 @@ if (!str_contains($action, "'target_type' => 'apel_user'")) {
     throw new RuntimeException('APEL changes must use a dedicated audit target.');
 }
 
+if (!str_contains($panel, 'apel-view-as-user') || !str_contains($assets, 'impersonation-start.php')) {
+    throw new RuntimeException('APEL users must retain the protected generic View As workflow.');
+}
+
 echo "APEL user-list UI regression PASS\n";

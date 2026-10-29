@@ -5,6 +5,7 @@ $apelPdo = $GLOBALS['dbMySQL'] ?? null;
 $apelUsers = [];
 $apelGroups = [];
 $apelLoadError = '';
+$apelCanViewAs = (bool)($GLOBALS['isSuperAdmin'] ?? false);
 
 try {
     if (!$apelPdo instanceof PDO || !apel_user_ownership_table_exists($apelPdo)) {
@@ -75,6 +76,11 @@ try {
               <td><span class="badge bg-light text-dark"><?= h($apelUser['f_groupName'] ?: '-') ?></span></td>
               <td><span class="badge <?= $enabled ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' ?>"><?= $enabled ? 'Dibenarkan' : 'Disekat' ?></span></td>
               <td>
+                <?php if ($apelCanViewAs && $enabled && $apelId !== ''): ?>
+                <button type="button" class="btn btn-outline-warning btn-sm apel-view-as-user"
+                  data-login-id="<?= h($apelId) ?>" data-user-name="<?= h($apelUser['f_nama']) ?>"
+                  title="Lihat sebagai pengguna APEL"><i class="ri-eye-line"></i></button>
+                <?php endif; ?>
                 <button type="button" class="btn btn-outline-primary btn-sm apel-edit-user"
                   data-user='<?= h(json_encode($apelUser, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) ?>'
                   title="Edit pengguna APEL"><i class="ri-pencil-line"></i></button>
