@@ -62,7 +62,9 @@ if (!str_contains($assets, '#userDTApel .group-chip')
     throw new RuntimeException('APEL group chips must provide an explicit readable colour treatment.');
 }
 if (!str_contains($assets, "customClass:'apel-user-tooltip'")
-    || !str_contains($assets, 'white-space:nowrap')
+    || !str_contains($assets, 'white-space:nowrap!important')
+    || !str_contains($assets, 'width:max-content')
+    || !str_contains($assets, 'getInstance(el)?.dispose()')
 ) {
     throw new RuntimeException('APEL table tooltips must remain on one line.');
 }
