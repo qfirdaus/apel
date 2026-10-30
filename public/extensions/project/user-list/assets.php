@@ -24,6 +24,7 @@
 #apelUserModal{z-index:11020!important}
 #apelSyncLogModal{z-index:11020!important}
 #apelSyncLogModal .modal-content{border:0;border-radius:10px;overflow:hidden}
+#apelSyncLogModal .apel-sync-log-dialog{margin-top:1rem;margin-bottom:1rem;align-items:flex-start}
 #apelSyncLogModal .modal-header{background:linear-gradient(135deg,#2563eb 0%,#0891b2 100%);color:#fff;border-bottom:0}
 #apelSyncLogModal .modal-title{color:#fff;font-weight:700}
 #apelSyncLogModal .modal-header .btn-close{filter:invert(1);opacity:.9}

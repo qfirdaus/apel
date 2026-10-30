@@ -12,6 +12,8 @@ $contracts = [
     [$assets, 'apelAddUserBtn', 'Add APEL Student button is missing.'],
     [$panel, 'apelSyncLogModal', 'Synchronization log modal is missing.'],
     [$panel, 'apelSyncLogTable', 'Synchronization log DataTable is missing.'],
+    [$panel, 'apel-sync-log-dialog', 'Synchronization log modal must use its top-aligned dialog layout.'],
+    [$assets, '#apelSyncLogModal .apel-sync-log-dialog{margin-top:1rem', 'Synchronization log modal must remain top-aligned.'],
     [$assets, 'ordering:false', 'Synchronization log sorting controls must be disabled.'],
     [$action, "\$action === 'manual_sync'", 'Manual synchronization endpoint is missing.'],
     [$action, "\$action === 'sync_logs'", 'Synchronization log endpoint is missing.'],

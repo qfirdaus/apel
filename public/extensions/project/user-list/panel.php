@@ -95,7 +95,7 @@ try {
   </div>
 
   <div class="modal fade" id="apelSyncLogModal" tabindex="-1" aria-hidden="true" aria-labelledby="apelSyncLogModalTitle">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable apel-sync-log-dialog"><div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="apelSyncLogModalTitle"><i class="ri-history-line me-2"></i><?= h((string)__('apelUser_cron_log_title')) ?></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= h((string)__('userList_modal_btn_close')) ?>"></button>
