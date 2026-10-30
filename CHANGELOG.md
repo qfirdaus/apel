@@ -12,6 +12,8 @@ This changelog follows a release-style summary based on major project milestones
   DataTable, while keeping scheduled execution enabled only on staging.
 
 ### Changed
+- Gave the APEL Access navigation tab a distinct teal treatment across default,
+  hover, active and dark-mode states.
 - Top-aligned the APEL Student Sync Log modal with a consistent viewport gap.
 - Changed scheduled APEL synchronization to exit as `SKIPPED=no_changes` when
   its comparison finds no create, update, ownership, reactivation or

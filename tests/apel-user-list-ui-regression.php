@@ -43,6 +43,11 @@ if (!str_contains($assets, 'pageLength:10')) {
 if (!str_contains($nav, "__('apelUser_tab_access')")) {
     throw new RuntimeException('APEL tab label must use the bilingual project translation key.');
 }
+if (!str_contains($assets, '#tab-apel-access-tab.active')
+    || !str_contains($assets, 'linear-gradient(135deg,#0f766e 0%,#14b8a6 100%)')
+) {
+    throw new RuntimeException('APEL Access tab must use its distinct teal colour treatment.');
+}
 if (!str_contains($panel, 'user-access-table user-access-table--sixcol')
     || substr_count($panel, 'class="col-') < 12
 ) {

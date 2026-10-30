@@ -1,5 +1,10 @@
 <?php declare(strict_types=1); ?>
 <style>
+#tab-apel-access-tab{border-color:rgba(13,148,136,.24);background:rgba(20,184,166,.08);color:#0f766e}
+#tab-apel-access-tab:hover,#tab-apel-access-tab:focus{border-color:rgba(13,148,136,.42);background:rgba(20,184,166,.14);color:#0f766e}
+#tab-apel-access-tab.active{border-color:#0d9488!important;background:linear-gradient(135deg,#0f766e 0%,#14b8a6 100%)!important;color:#fff!important;box-shadow:0 5px 14px rgba(13,148,136,.24)!important}
+#tab-apel-access-tab.active i{color:#fff!important}
+[data-bs-theme="dark"] #tab-apel-access-tab:not(.active){border-color:rgba(45,212,191,.3);background:rgba(20,184,166,.14);color:#5eead4}
 #tab-apel-access .apel-user-card{margin-bottom:0}
 #userDTApel{width:100%}
 #userDTApel th,#userDTApel td{vertical-align:middle;white-space:nowrap}
