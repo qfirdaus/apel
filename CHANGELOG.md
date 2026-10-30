@@ -28,6 +28,8 @@ This changelog follows a release-style summary based on major project milestones
   Access modal structure, spacing, controls and confirmation layout.
 
 ### Fixed
+- Kept APEL table cell tooltips on a single line with content-based width,
+  scoped only to the APEL user list.
 - Removed the internal status code from the Manual Sync confirmation, replaced
   the disabled `proc_open` dependency with the shared in-process sync runner,
   and removed the malformed duplicate sorting-indicator row from Cronjob Log.
