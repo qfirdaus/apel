@@ -6,6 +6,11 @@ This changelog follows a release-style summary based on major project milestones
 
 ## [Unreleased]
 
+### Added
+- Added administrator controls to run the status-02 APEL student sync manually
+  and inspect timestamped cron/manual execution history in a latest-first
+  DataTable, while keeping scheduled execution enabled only on staging.
+
 ### Changed
 - Renamed the project-owned user-list tab to `APEL Access` in English and
   `Akses APEL` in Malay.
@@ -17,6 +22,9 @@ This changelog follows a release-style summary based on major project milestones
   Access modal structure, spacing, controls and confirmation layout.
 
 ### Fixed
+- Removed the internal status code from the Manual Sync confirmation, replaced
+  the disabled `proc_open` dependency with the shared in-process sync runner,
+  and removed the malformed duplicate sorting-indicator row from Cronjob Log.
 - Deferred APEL Access initialisation until shared Bootstrap, DataTables and
   SweetAlert assets are available, restoring Add, View As, Edit and Delete
   action behaviour.
@@ -28,6 +36,10 @@ This changelog follows a release-style summary based on major project milestones
 ### Added
 - Added bilingual APEL user-list labels and regression checks for the tab,
   six-column table contract and deferred asset initialisation.
+- Added a project-owned OneID student profile sync for
+  `apelq_student_profiles` status `02`, including dry-run support, permanent
+  APEL ownership, safe status reconciliation, audit summaries, locking,
+  regression coverage and a staggered staging cron schedule.
 
 ## [1.11.2] - 2026-10-30
 

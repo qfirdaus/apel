@@ -10,6 +10,7 @@ node_modules/
 
 # Runtime files
 *.log
+storage/locks/*.lock
 *.sqlite
 /.last_update_check
 app/cache/

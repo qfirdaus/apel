@@ -20,6 +20,13 @@
   color:#e2e8f0;
 }
 #apelUserModal{z-index:11020!important}
+#apelSyncLogModal{z-index:11020!important}
+#apelSyncLogModal .modal-content{border:0;border-radius:10px;overflow:hidden}
+#apelSyncLogModal .modal-header{background:linear-gradient(135deg,#2563eb 0%,#0891b2 100%);color:#fff;border-bottom:0}
+#apelSyncLogModal .modal-title{color:#fff;font-weight:700}
+#apelSyncLogModal .modal-header .btn-close{filter:invert(1);opacity:.9}
+#apelSyncLogTable th,#apelSyncLogTable td{text-align:center;vertical-align:middle;white-space:nowrap}
+#apelSyncLogTable th:first-child,#apelSyncLogTable td:first-child{text-align:left}
 #apelUserModal .modal-dialog{max-width:780px;position:relative;z-index:1}
 #apelUserModal .modal-content{border:0;border-radius:8px;box-shadow:none!important;outline:0!important;overflow:hidden}
 #apelUserModal .modal-header{background:linear-gradient(135deg,#28a745 0%,#20c997 100%);color:#fff;border-bottom:0;padding:1rem 1.35rem}
@@ -72,6 +79,19 @@ function initApelUserList(){
     'reasonPlaceholder' => (string)__('impersonation_reason_placeholder'),
     'reasonRequired' => (string)__('impersonation_reason_required'),
     'viewStart' => (string)__('impersonation_start_button'),
+    'syncConfirmTitle' => (string)__('apelUser_sync_confirm_title'),
+    'syncConfirmText' => (string)__('apelUser_sync_confirm_text'),
+    'syncConfirmButton' => (string)__('apelUser_sync_confirm_button'),
+    'syncRunning' => (string)__('apelUser_sync_running'),
+    'syncSuccess' => (string)__('apelUser_sync_success'),
+    'cronLogEmpty' => (string)__('apelUser_cron_log_empty'),
+    'triggerCron' => (string)__('apelUser_trigger_cron'),
+    'triggerManual' => (string)__('apelUser_trigger_manual'),
+    'close' => (string)__('userList_modal_btn_close'),
+    'syncStatusSuccess' => (string)__('apelUser_sync_status_success'),
+    'syncStatusFailed' => (string)__('apelUser_sync_status_failed'),
+    'syncSummary' => (string)__('apelUser_sync_summary'),
+    'syncErrorTitle' => (string)__('apelUser_sync_error_title'),
   ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
   const tabButton = document.getElementById('tab-apel-access-tab');
   const modalElement = document.getElementById('apelUserModal');
@@ -83,6 +103,8 @@ function initApelUserList(){
     const table=jQuery('#userDTApel').DataTable({pageLength:10,lengthChange:true,lengthMenu:[10,25,50,100,200],ordering:true,order:[[1,'asc']],autoWidth:false,scrollX:false,retrieve:true,dom:'<"row mb-2"<"col-sm-12 col-md-6 dt-top-left"l><"col-sm-12 col-md-6 d-flex justify-content-md-end dt-top-right"f>>t<"dt-bottom-row mt-2 d-flex justify-content-between align-items-center"<"dt-info-left"i><"dt-paging-right d-flex justify-content-end"p>>',language:{lengthMenu:<?= json_encode((string)__('userList_dt_length_menu')) ?>,search:'',info:<?= json_encode((string)__('userList_dt_info')) ?>,infoEmpty:<?= json_encode((string)__('userList_dt_info_empty')) ?>,emptyTable:<?= json_encode((string)__('userList_no_records')) ?>,paginate:{previous:<?= json_encode((string)__('userList_dt_paginate_prev')) ?>,next:<?= json_encode((string)__('userList_dt_paginate_next')) ?>},zeroRecords:<?= json_encode((string)__('userList_dt_zero_records')) ?>},columnDefs:[{targets:0,orderable:false,searchable:false,width:56},{targets:5,orderable:false,searchable:false,width:110}],rowCallback:function(row,data,displayIndex){const info=this.api().page.info();jQuery('td:eq(0)',row).text(info.start+displayIndex+1);},drawCallback:function(){document.querySelectorAll('#userDTApel [data-bs-toggle="tooltip"]').forEach(el=>bootstrap.Tooltip.getOrCreateInstance(el));}});
     if(window.DataTableStandard?.decorate)window.DataTableStandard.decorate('#userDTApel',{searchPlaceholder:<?= json_encode((string)__('userList_search_placeholder')) ?>});
     const topRight=jQuery('#userDTApel_wrapper .dt-top-right').addClass('align-items-center gap-2 flex-nowrap');
+    if(!document.getElementById('apelManualSyncBtn'))topRight.append(jQuery('<button type="button" class="btn btn-primary" id="apelManualSyncBtn"><i class="ri-refresh-line me-1"></i><?= h((string)__('apelUser_manual_sync_button')) ?></button>'));
+    if(!document.getElementById('apelSyncLogBtn'))topRight.append(jQuery('<button type="button" class="btn btn-outline-primary" id="apelSyncLogBtn"><i class="ri-history-line me-1"></i><?= h((string)__('apelUser_cron_log_button')) ?></button>'));
     if(!document.getElementById('apelAddUserBtn'))topRight.append(jQuery('<button type="button" class="btn btn-success" id="apelAddUserBtn"><i class="ri-user-add-line me-1"></i><?= h((string)__('apelUser_add_button')) ?></button>'));
     table.columns.adjust().draw(false);
     tableStarted = true;
@@ -96,6 +118,24 @@ function initApelUserList(){
   const setModalMode = editing => {modalElement.classList.toggle('is-edit-mode',editing);byId('apelUserModalTitleText').textContent=editing?labels.editTitle:labels.addTitle;byId('apelUserModalIcon').className=(editing?'ri-user-settings-line':'ri-user-add-line')+' me-2';selectInfoTab();};
   const clearForm = () => { byId('apelUserError').classList.add('d-none'); byId('apelUserId').value='0'; byId('apelIdentifier').value=''; byId('apelIdentifier').readOnly=false; byId('apelName').value=''; byId('apelEmail').value=''; byId('apelUnit').value=''; byId('apelGroup').value=''; byId('apelAccess').value='1'; };
   document.addEventListener('click',function(event){if(event.target.closest('#apelAddUserBtn')){clearForm();setModalMode(false);modal?.show();}});
+  document.addEventListener('click',async function(event){
+    if(event.target.closest('#apelManualSyncBtn')){
+      const result=window.Swal?await Swal.fire({icon:'question',title:labels.syncConfirmTitle,text:labels.syncConfirmText,showCancelButton:true,confirmButtonText:labels.syncConfirmButton,cancelButtonText:labels.cancel,confirmButtonColor:'#2563eb'}):{isConfirmed:confirm(labels.syncConfirmTitle)};
+      if(!result.isConfirmed)return;
+      if(window.Swal)Swal.fire({title:labels.syncRunning,allowOutsideClick:false,didOpen:()=>Swal.showLoading()});
+      try{
+        const data=await postAction({action:'manual_sync'});
+        const run=data.run||{};
+        const summary=labels.syncSummary.replace('{created}',run.created||0).replace('{updated}',run.updated||0).replace('{deactivated}',run.deactivated||0);
+        if(window.Swal)await Swal.fire({icon:'success',title:labels.syncSuccess,text:summary});
+        location.reload();
+      }catch(error){if(window.Swal)await Swal.fire({icon:'error',title:labels.syncErrorTitle,text:error.message||labels.syncErrorTitle});else alert(error.message||labels.syncErrorTitle);}
+      return;
+    }
+    if(event.target.closest('#apelSyncLogBtn')){
+      await openSyncLog();
+    }
+  });
   document.addEventListener('click', async function(event){
     const viewAs=event.target.closest('.apel-view-as-user');
     if(viewAs){
@@ -122,6 +162,33 @@ function initApelUserList(){
   });
   async function send(payload){
     try{const response=await fetch(endpoint,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-Token':csrf,'X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({...payload,csrf_token:csrf})});const data=await response.json().catch(()=>({}));if(!response.ok||data.error)throw new Error(data.message||'Tindakan gagal.');modal?.hide();if(window.Swal)await Swal.fire({icon:'success',title:'Berjaya',text:data.message||'Perubahan disimpan.',timer:1400,showConfirmButton:false});location.reload();}catch(error){if(modalElement.classList.contains('show'))showError(error.message||'Tindakan gagal.');else if(window.Swal)await Swal.fire({icon:'error',title:'Tindakan gagal',text:error.message||'Tindakan gagal.'});else alert(error.message||'Tindakan gagal.');}
+  }
+  async function postAction(payload){
+    const response=await fetch(endpoint,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-Token':csrf,'X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({...payload,csrf_token:csrf})});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||data.error)throw new Error(data.message||'Request failed.');
+    return data;
+  }
+  async function openSyncLog(){
+    const logModalElement=byId('apelSyncLogModal');
+    const errorElement=byId('apelSyncLogError');
+    errorElement.classList.add('d-none');
+    try{
+      const data=await postAction({action:'sync_logs'});
+      const rows=(data.runs||[]).map(run=>{
+        const errors=Number(run.errors||0);
+        return [run.run_at||'-',run.trigger==='manual'?labels.triggerManual:labels.triggerCron,errors===0?labels.syncStatusSuccess:labels.syncStatusFailed,run.source||0,run.created||0,run.updated||0,run.deactivated||0,`${run.duration_ms||0} ms`];
+      });
+      if(window.jQuery&&jQuery.fn.DataTable){
+        if(jQuery.fn.DataTable.isDataTable('#apelSyncLogTable'))jQuery('#apelSyncLogTable').DataTable().destroy();
+        jQuery('#apelSyncLogTable tbody').empty();
+        const options={data:rows,pageLength:10,lengthMenu:[10,25,50,100],ordering:false,autoWidth:false,scrollX:true,language:{emptyTable:labels.cronLogEmpty,search:'',lengthMenu:<?= json_encode((string)__('userList_dt_length_menu')) ?>,info:<?= json_encode((string)__('userList_dt_info')) ?>,infoEmpty:<?= json_encode((string)__('userList_dt_info_empty')) ?>,paginate:{previous:<?= json_encode((string)__('userList_dt_paginate_prev')) ?>,next:<?= json_encode((string)__('userList_dt_paginate_next')) ?>}},columnDefs:[{targets:0,render:function(value,type){if(type!=='display')return value;const parsed=new Date(value);return Number.isNaN(parsed.getTime())?escapeText(value):escapeText(parsed.toLocaleString());}},{targets:2,render:function(value,type){if(type!=='display')return value;const ok=value===labels.syncStatusSuccess;return `<span class="badge ${ok?'bg-success':'bg-danger'}">${escapeText(value)}</span>`;}}]};
+        const table=jQuery('#apelSyncLogTable').DataTable(window.DataTableStandard?.options?window.DataTableStandard.options(options):options);
+        if(window.DataTableStandard?.decorate)window.DataTableStandard.decorate('#apelSyncLogTable',{searchPlaceholder:<?= json_encode((string)__('userList_search_placeholder')) ?>});
+        bootstrap.Modal.getOrCreateInstance(logModalElement).show();
+        logModalElement.addEventListener('shown.bs.modal',()=>table.columns.adjust(),{once:true});
+      }
+    }catch(error){errorElement.textContent=error.message||'Unable to load sync log.';errorElement.classList.remove('d-none');bootstrap.Modal.getOrCreateInstance(logModalElement).show();}
   }
   function escapeText(value){const node=document.createElement('div');node.textContent=String(value||'');return node.innerHTML;}
 }

@@ -94,6 +94,34 @@ try {
     </div>
   </div>
 
+  <div class="modal fade" id="apelSyncLogModal" tabindex="-1" aria-hidden="true" aria-labelledby="apelSyncLogModalTitle">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable"><div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="apelSyncLogModalTitle"><i class="ri-history-line me-2"></i><?= h((string)__('apelUser_cron_log_title')) ?></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= h((string)__('userList_modal_btn_close')) ?>"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger d-none" id="apelSyncLogError"></div>
+        <div class="table-responsive dt-standard">
+          <table class="table table-bordered align-middle w-100" id="apelSyncLogTable">
+            <thead><tr>
+              <th><?= h((string)__('apelUser_log_time')) ?></th>
+              <th><?= h((string)__('apelUser_log_trigger')) ?></th>
+              <th><?= h((string)__('apelUser_log_status')) ?></th>
+              <th><?= h((string)__('apelUser_log_source')) ?></th>
+              <th><?= h((string)__('apelUser_log_created')) ?></th>
+              <th><?= h((string)__('apelUser_log_updated')) ?></th>
+              <th><?= h((string)__('apelUser_log_deactivated')) ?></th>
+              <th><?= h((string)__('apelUser_log_duration')) ?></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="ri-close-line me-1"></i><?= h((string)__('userList_modal_btn_close')) ?></button></div>
+    </div></div>
+  </div>
+
   <div class="modal fade" id="apelUserModal" tabindex="-1" aria-hidden="true" aria-labelledby="apelUserModalTitle">
     <div class="modal-dialog"><div class="modal-content">
       <div class="modal-header">
