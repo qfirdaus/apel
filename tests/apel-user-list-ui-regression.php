@@ -44,8 +44,9 @@ if (!str_contains($nav, "__('apelUser_tab_access')")) {
     throw new RuntimeException('APEL tab label must use the bilingual project translation key.');
 }
 if (!str_contains($assets, '#tab-apel-access-tab.active')
-    || !str_contains($assets, 'rgba(var(--bs-primary-rgb),.11)')
+    || !str_contains($assets, 'rgba(var(--bs-primary-rgb),.17)')
     || !str_contains($assets, 'color:var(--bs-primary)')
+    || !str_contains($assets, 'background:var(--bs-primary)!important')
 ) {
     throw new RuntimeException('APEL Access tab must use a soft theme-primary colour treatment.');
 }

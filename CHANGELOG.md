@@ -12,6 +12,8 @@ This changelog follows a release-style summary based on major project milestones
   DataTable, while keeping scheduled execution enabled only on staging.
 
 ### Changed
+- Increased the soft theme-aware APEL Access active-tab contrast and added a
+  solid primary icon tile with a white icon for clearer recognition.
 - Softened the APEL Access tab treatment and changed it from a fixed teal
   palette to the active theme's primary colour variables.
 - Top-aligned the APEL Student Sync Log modal with a consistent viewport gap.
