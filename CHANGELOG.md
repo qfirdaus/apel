@@ -12,12 +12,8 @@ This changelog follows a release-style summary based on major project milestones
   DataTable, while keeping scheduled execution enabled only on staging.
 
 ### Changed
-- Highlighted the active APEL Access tab with a clearer soft tint mixed from
-  the current theme primary colour and body background.
-- Increased the soft theme-aware APEL Access active-tab contrast and added a
-  solid primary icon tile with a white icon for clearer recognition.
-- Softened the APEL Access tab treatment and changed it from a fixed teal
-  palette to the active theme's primary colour variables.
+- Changed the APEL Access tab from theme-primary blue to a distinct soft amber
+  palette with a high-contrast dark icon glyph in light and dark modes.
 - Top-aligned the APEL Student Sync Log modal with a consistent viewport gap.
 - Changed scheduled APEL synchronization to exit as `SKIPPED=no_changes` when
   its comparison finds no create, update, ownership, reactivation or
