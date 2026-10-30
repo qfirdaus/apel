@@ -342,6 +342,30 @@ try {
     }
 
     $durationMs = (int)round((microtime(true) - $startedAt) * 1000);
+    $changeCount = array_sum(array_map(
+        static fn(string $field): int => (int)($stats[$field] ?? 0),
+        ['created', 'updated', 'ownership_created', 'ownership_updated', 'reactivated', 'deactivated']
+    ));
+    $skipNoChanges = !$dryRun && $trigger === 'cron' && $stats['errors'] === 0 && $changeCount === 0;
+    if ($skipNoChanges) {
+        echo "APEL_STUDENT_SYNC_RUN_AT={$runAt}\n";
+        echo "APEL_STUDENT_SYNC_TRIGGER=cron\n";
+        echo "APEL_STUDENT_SYNC_SKIPPED=no_changes\n";
+        echo "APEL_STUDENT_SYNC_DURATION_MS={$durationMs}\n";
+        if (defined('APEL_SYNC_INTERNAL_RUN')) {
+            $GLOBALS['APEL_SYNC_INTERNAL_RESULT'] = [
+                'success' => true,
+                'skipped' => true,
+                'reason' => 'no_changes',
+                'run_at' => $runAt,
+                'trigger' => $trigger,
+                'stats' => $stats,
+                'duration_ms' => $durationMs,
+            ];
+            return;
+        }
+        exit(0);
+    }
     if (!$dryRun) {
         $audit('SYNC', $stats['errors'] === 0 ? 'SUCCESS' : 'PARTIAL', date('YmdHis'), 'APEL Student Profile Sync', [
             'stats' => $stats,

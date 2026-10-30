@@ -1,5 +1,12 @@
 <?php declare(strict_types=1); ?>
 <style>
+#tab-apel-access-tab{--apel-tab-rgb:245,158,11;border-color:rgba(var(--apel-tab-rgb),.24);background:rgba(var(--apel-tab-rgb),.07);color:#92400e}
+#tab-apel-access-tab:hover,#tab-apel-access-tab:focus{border-color:rgba(var(--apel-tab-rgb),.4);background:rgba(var(--apel-tab-rgb),.13);color:#78350f}
+#tab-apel-access-tab.active{border-color:rgba(var(--apel-tab-rgb),.58)!important;background-color:color-mix(in srgb,rgb(var(--apel-tab-rgb)) 22%,var(--bs-body-bg))!important;color:#78350f!important;font-weight:700!important;box-shadow:inset 0 -3px 0 rgba(var(--apel-tab-rgb),.9),0 5px 14px rgba(var(--apel-tab-rgb),.17)!important}
+#tab-apel-access-tab.active>i.ri-graduation-cap-fill{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:28px!important;height:28px!important;flex:0 0 28px!important;font-family:"remixicon"!important;font-size:16px!important;line-height:1!important;color:#422006!important;background-color:rgb(var(--apel-tab-rgb))!important;border-radius:7px!important;opacity:1!important;box-shadow:0 3px 8px rgba(var(--apel-tab-rgb),.28)!important}
+#tab-apel-access-tab.active>i.ri-graduation-cap-fill::before{display:block!important;color:#422006!important;font-family:"remixicon"!important;font-size:16px!important;line-height:1!important;opacity:1!important}
+[data-bs-theme="dark"] #tab-apel-access-tab{border-color:rgba(var(--apel-tab-rgb),.3);background:rgba(var(--apel-tab-rgb),.1);color:#fbbf24}
+[data-bs-theme="dark"] #tab-apel-access-tab.active{background-color:color-mix(in srgb,rgb(var(--apel-tab-rgb)) 27%,var(--bs-body-bg))!important;color:#fde68a!important}
 #tab-apel-access .apel-user-card{margin-bottom:0}
 #userDTApel{width:100%}
 #userDTApel th,#userDTApel td{vertical-align:middle;white-space:nowrap}
@@ -14,6 +21,8 @@
   border-color:rgba(71,85,105,.2);
   color:#334155;
 }
+.apel-user-tooltip{--bs-tooltip-max-width:none!important;max-width:none!important}
+.apel-user-tooltip .tooltip-inner{display:block;width:max-content;max-width:none!important;white-space:nowrap!important;text-align:left}
 [data-bs-theme="dark"] #userDTApel .group-chip{
   background:rgba(148,163,184,.18);
   border-color:rgba(148,163,184,.28);
@@ -22,6 +31,7 @@
 #apelUserModal{z-index:11020!important}
 #apelSyncLogModal{z-index:11020!important}
 #apelSyncLogModal .modal-content{border:0;border-radius:10px;overflow:hidden}
+#apelSyncLogModal .apel-sync-log-dialog{margin-top:1rem;margin-bottom:1rem;align-items:flex-start}
 #apelSyncLogModal .modal-header{background:linear-gradient(135deg,#2563eb 0%,#0891b2 100%);color:#fff;border-bottom:0}
 #apelSyncLogModal .modal-title{color:#fff;font-weight:700}
 #apelSyncLogModal .modal-header .btn-close{filter:invert(1);opacity:.9}
@@ -100,7 +110,7 @@ function initApelUserList(){
   let tableStarted = false;
   function startTable(){
     if (tableStarted || !window.jQuery || !jQuery.fn.DataTable) return;
-    const table=jQuery('#userDTApel').DataTable({pageLength:10,lengthChange:true,lengthMenu:[10,25,50,100,200],ordering:true,order:[[1,'asc']],autoWidth:false,scrollX:false,retrieve:true,dom:'<"row mb-2"<"col-sm-12 col-md-6 dt-top-left"l><"col-sm-12 col-md-6 d-flex justify-content-md-end dt-top-right"f>>t<"dt-bottom-row mt-2 d-flex justify-content-between align-items-center"<"dt-info-left"i><"dt-paging-right d-flex justify-content-end"p>>',language:{lengthMenu:<?= json_encode((string)__('userList_dt_length_menu')) ?>,search:'',info:<?= json_encode((string)__('userList_dt_info')) ?>,infoEmpty:<?= json_encode((string)__('userList_dt_info_empty')) ?>,emptyTable:<?= json_encode((string)__('userList_no_records')) ?>,paginate:{previous:<?= json_encode((string)__('userList_dt_paginate_prev')) ?>,next:<?= json_encode((string)__('userList_dt_paginate_next')) ?>},zeroRecords:<?= json_encode((string)__('userList_dt_zero_records')) ?>},columnDefs:[{targets:0,orderable:false,searchable:false,width:56},{targets:5,orderable:false,searchable:false,width:110}],rowCallback:function(row,data,displayIndex){const info=this.api().page.info();jQuery('td:eq(0)',row).text(info.start+displayIndex+1);},drawCallback:function(){document.querySelectorAll('#userDTApel [data-bs-toggle="tooltip"]').forEach(el=>bootstrap.Tooltip.getOrCreateInstance(el));}});
+    const table=jQuery('#userDTApel').DataTable({pageLength:10,lengthChange:true,lengthMenu:[10,25,50,100,200],ordering:true,order:[[1,'asc']],autoWidth:false,scrollX:false,retrieve:true,dom:'<"row mb-2"<"col-sm-12 col-md-6 dt-top-left"l><"col-sm-12 col-md-6 d-flex justify-content-md-end dt-top-right"f>>t<"dt-bottom-row mt-2 d-flex justify-content-between align-items-center"<"dt-info-left"i><"dt-paging-right d-flex justify-content-end"p>>',language:{lengthMenu:<?= json_encode((string)__('userList_dt_length_menu')) ?>,search:'',info:<?= json_encode((string)__('userList_dt_info')) ?>,infoEmpty:<?= json_encode((string)__('userList_dt_info_empty')) ?>,emptyTable:<?= json_encode((string)__('userList_no_records')) ?>,paginate:{previous:<?= json_encode((string)__('userList_dt_paginate_prev')) ?>,next:<?= json_encode((string)__('userList_dt_paginate_next')) ?>},zeroRecords:<?= json_encode((string)__('userList_dt_zero_records')) ?>},columnDefs:[{targets:0,orderable:false,searchable:false,width:56},{targets:5,orderable:false,searchable:false,width:110}],rowCallback:function(row,data,displayIndex){const info=this.api().page.info();jQuery('td:eq(0)',row).text(info.start+displayIndex+1);},drawCallback:function(){document.querySelectorAll('#userDTApel [data-bs-toggle="tooltip"]').forEach(el=>{bootstrap.Tooltip.getInstance(el)?.dispose();new bootstrap.Tooltip(el,{customClass:'apel-user-tooltip',container:'body',boundary:'viewport'});});}});
     if(window.DataTableStandard?.decorate)window.DataTableStandard.decorate('#userDTApel',{searchPlaceholder:<?= json_encode((string)__('userList_search_placeholder')) ?>});
     const topRight=jQuery('#userDTApel_wrapper .dt-top-right').addClass('align-items-center gap-2 flex-nowrap');
     if(!document.getElementById('apelManualSyncBtn'))topRight.append(jQuery('<button type="button" class="btn btn-primary" id="apelManualSyncBtn"><i class="ri-refresh-line me-1"></i><?= h((string)__('apelUser_manual_sync_button')) ?></button>'));
@@ -175,9 +185,10 @@ function initApelUserList(){
     errorElement.classList.add('d-none');
     try{
       const data=await postAction({action:'sync_logs'});
+      const showValue=value=>Number(value)>0?value:'';
       const rows=(data.runs||[]).map(run=>{
         const errors=Number(run.errors||0);
-        return [run.run_at||'-',run.trigger==='manual'?labels.triggerManual:labels.triggerCron,errors===0?labels.syncStatusSuccess:labels.syncStatusFailed,run.source||0,run.created||0,run.updated||0,run.deactivated||0,`${run.duration_ms||0} ms`];
+        return [run.run_at||'-',run.trigger==='manual'?labels.triggerManual:labels.triggerCron,errors===0?labels.syncStatusSuccess:labels.syncStatusFailed,showValue(run.source),showValue(run.created),showValue(run.updated),showValue(run.deactivated),Number(run.duration_ms)>0?`${run.duration_ms} ms`:'' ];
       });
       if(window.jQuery&&jQuery.fn.DataTable){
         if(jQuery.fn.DataTable.isDataTable('#apelSyncLogTable'))jQuery('#apelSyncLogTable').DataTable().destroy();

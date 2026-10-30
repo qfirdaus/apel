@@ -37,6 +37,10 @@ IQS Framework Student directory sync.
   reconciliation unless `--force-deactivate` is explicitly supplied.
 - Operational errors contain a SHA-256 identifier fingerprint rather than the
   student ID or personal data.
+- The scheduler performs a lightweight comparison on every interval. When no
+  source, user, ownership or deactivation change is detected, the scheduled
+  execution exits successfully as `SKIPPED=no_changes`, without creating a
+  full sync audit record or a visible Cronjob Log entry.
 
 ## Commands
 

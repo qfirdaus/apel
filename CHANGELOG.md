@@ -12,6 +12,15 @@ This changelog follows a release-style summary based on major project milestones
   DataTable, while keeping scheduled execution enabled only on staging.
 
 ### Changed
+- Changed the APEL Access tab from theme-primary blue to a distinct soft amber
+  palette with a high-contrast dark icon glyph in light and dark modes.
+- Top-aligned the APEL Student Sync Log modal with a consistent viewport gap.
+- Changed scheduled APEL synchronization to exit as `SKIPPED=no_changes` when
+  its comparison finds no create, update, ownership, reactivation or
+  deactivation work, avoiding full audit and visible log noise for no-op runs.
+- Renamed APEL student-facing list and form terminology to Matric No., Faculty
+  and Add APEL Student, and limited the sync history modal to runs that changed
+  data or reported an error so routine no-op executions do not create noise.
 - Renamed the project-owned user-list tab to `APEL Access` in English and
   `Akses APEL` in Malay.
 - Matched the APEL Access table structure, column sizing, spacing, pagination,
@@ -22,6 +31,12 @@ This changelog follows a release-style summary based on major project milestones
   Access modal structure, spacing, controls and confirmation layout.
 
 ### Fixed
+- Forced the active APEL Access Remix Icon glyph, size and theme-primary tile
+  to remain visible when shared navigation icon styles are present.
+- Rebuilt pre-initialized APEL tooltips with an unrestricted max-content width
+  so long student names and matric numbers remain on one line.
+- Kept APEL table cell tooltips on a single line with content-based width,
+  scoped only to the APEL user list.
 - Removed the internal status code from the Manual Sync confirmation, replaced
   the disabled `proc_open` dependency with the shared in-process sync runner,
   and removed the malformed duplicate sorting-indicator row from Cronjob Log.

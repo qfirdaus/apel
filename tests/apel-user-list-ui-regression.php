@@ -43,6 +43,14 @@ if (!str_contains($assets, 'pageLength:10')) {
 if (!str_contains($nav, "__('apelUser_tab_access')")) {
     throw new RuntimeException('APEL tab label must use the bilingual project translation key.');
 }
+if (!str_contains($assets, '#tab-apel-access-tab.active')
+    || !str_contains($assets, '--apel-tab-rgb:245,158,11')
+    || !str_contains($assets, 'color-mix(in srgb,rgb(var(--apel-tab-rgb)) 22%,var(--bs-body-bg))')
+    || !str_contains($assets, 'background-color:rgb(var(--apel-tab-rgb))!important')
+    || !str_contains($assets, 'ri-graduation-cap-fill::before')
+) {
+    throw new RuntimeException('APEL Access tab must use its distinct soft amber colour treatment.');
+}
 if (!str_contains($panel, 'user-access-table user-access-table--sixcol')
     || substr_count($panel, 'class="col-') < 12
 ) {
@@ -60,6 +68,13 @@ if (!str_contains($assets, '#userDTApel .group-chip')
     || !str_contains($assets, 'color:#334155')
 ) {
     throw new RuntimeException('APEL group chips must provide an explicit readable colour treatment.');
+}
+if (!str_contains($assets, "customClass:'apel-user-tooltip'")
+    || !str_contains($assets, 'white-space:nowrap!important')
+    || !str_contains($assets, 'width:max-content')
+    || !str_contains($assets, 'getInstance(el)?.dispose()')
+) {
+    throw new RuntimeException('APEL table tooltips must remain on one line.');
 }
 foreach (['au-modal-tabs', 'form-section-title', 'modal-footer', 'is-edit-mode'] as $modalContract) {
     if (!str_contains($panel . $assets, $modalContract)) {
