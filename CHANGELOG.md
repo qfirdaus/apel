@@ -28,6 +28,10 @@ This changelog follows a release-style summary based on major project milestones
 ### Added
 - Added bilingual APEL user-list labels and regression checks for the tab,
   six-column table contract and deferred asset initialisation.
+- Added a project-owned OneID student profile sync for
+  `apelq_student_profiles` status `02`, including dry-run support, permanent
+  APEL ownership, safe status reconciliation, audit summaries, locking,
+  regression coverage and a staggered staging cron schedule.
 
 ## [1.11.2] - 2026-10-30
 
