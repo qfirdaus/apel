@@ -451,4 +451,7 @@ return [
     'js_coord_remove_title' => 'Remove Coordinator?',
     'js_coord_remove_text' => 'Are you sure you want to remove {name} as Coordinator for {faculty}?',
     'js_coord_remove_btn' => 'Yes, Remove',
+
+    // ==== Maintenance Page ====
+    'maintenance_title' => 'Module Under Maintenance',    
 ];

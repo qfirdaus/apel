@@ -451,4 +451,7 @@ return [
     'js_coord_remove_title' => 'Gugurkan Penyelaras?',
     'js_coord_remove_text' => 'Adakah anda pasti untuk menggugurkan {name} sebagai Penyelaras bagi {faculty}?',
     'js_coord_remove_btn' => 'Ya, Gugurkan',
+
+    // ==== Maintenance Page ====
+    'maintenance_title' => 'Modul Dalam Kemaskini',
 ];

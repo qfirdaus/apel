@@ -75,7 +75,7 @@ $studentName = $_SESSION['f_nama'] ?? $_SESSION['nama'] ?? 'Pelajar';
         <ul class="text-secondary small mb-0 ps-3" style="line-height: 1.8;">
             <li>Anda masih boleh melengkapkan maklumat di bahagian menu lain yang telah dibuka seperti <strong>Maklumat Peribadi</strong> dan <strong>Keluarga</strong>.</li>
             <li>Sebarang pengumuman pembukaan rasmi modul ini akan dimaklumkan melalui notifikasi papan pemuka portal atau emel rasmi Al-Fateh anda.</li>
-            <li>Sekiranya anda mempunyai sebarang pertanyaan segera, sila hubungi Penyelaras APEL.Q di Pusat Pengurusan Akademik.</li>
+            <li>Sekiranya anda mempunyai sebarang pertanyaan segera, sila hubungi Penyelaras APEL.Q di Pusat Pembelajaran Sepanjang Hayat.</li>
         </ul>
     </div>
 </div>
