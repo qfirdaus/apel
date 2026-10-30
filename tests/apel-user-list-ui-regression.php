@@ -44,7 +44,7 @@ if (!str_contains($nav, "__('apelUser_tab_access')")) {
     throw new RuntimeException('APEL tab label must use the bilingual project translation key.');
 }
 if (!str_contains($assets, '#tab-apel-access-tab.active')
-    || !str_contains($assets, 'rgba(var(--bs-primary-rgb),.17)')
+    || !str_contains($assets, 'color-mix(in srgb,rgb(var(--bs-primary-rgb)) 18%,var(--bs-body-bg))')
     || !str_contains($assets, 'color:var(--bs-primary)')
     || !str_contains($assets, 'background-color:rgb(var(--bs-primary-rgb))!important')
     || !str_contains($assets, 'ri-graduation-cap-fill::before')

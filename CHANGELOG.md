@@ -12,6 +12,8 @@ This changelog follows a release-style summary based on major project milestones
   DataTable, while keeping scheduled execution enabled only on staging.
 
 ### Changed
+- Highlighted the active APEL Access tab with a clearer soft tint mixed from
+  the current theme primary colour and body background.
 - Increased the soft theme-aware APEL Access active-tab contrast and added a
   solid primary icon tile with a white icon for clearer recognition.
 - Softened the APEL Access tab treatment and changed it from a fixed teal
