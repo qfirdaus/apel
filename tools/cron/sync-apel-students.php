@@ -116,8 +116,8 @@ try {
              f_statusID, f_status, f_flag, f_insertdt, f_updatedt, f_updateby,
              f_remarks, f_isAutoProvisioned, f_identitySource)
          VALUES
-            (:identifier, :identifier, 'PELAJAR', :group_id, :group_code,
-             :name, :name, :ic, :password, 0,
+            (:login_identifier, :staff_identifier, 'PELAJAR', :group_id, :group_code,
+             :full_name, :nickname, :ic, :password, 0,
              :email, :phone, :faculty_code, :faculty_name,
              NULL, 'APEL', 1, NOW(), NOW(), :actor,
              :remarks, 1, 'ONEID')"
@@ -168,10 +168,12 @@ try {
             if ($matches === []) {
                 if (!$dryRun) {
                     $insertUser->execute([
-                        ':identifier' => $identifier,
+                        ':login_identifier' => $identifier,
+                        ':staff_identifier' => $identifier,
                         ':group_id' => (int)$group['f_groupID'],
                         ':group_code' => (string)$group['f_groupKod'],
-                        ':name' => $name,
+                        ':full_name' => $name,
+                        ':nickname' => $name,
                         ':ic' => $clean($profile['ic_no'] ?? '') ?: null,
                         ':password' => password_hash(bin2hex(random_bytes(24)), PASSWORD_DEFAULT),
                         ':email' => $email !== '' ? $email : null,
