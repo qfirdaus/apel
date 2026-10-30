@@ -46,7 +46,8 @@ if (!str_contains($nav, "__('apelUser_tab_access')")) {
 if (!str_contains($assets, '#tab-apel-access-tab.active')
     || !str_contains($assets, 'rgba(var(--bs-primary-rgb),.17)')
     || !str_contains($assets, 'color:var(--bs-primary)')
-    || !str_contains($assets, 'background:var(--bs-primary)!important')
+    || !str_contains($assets, 'background-color:rgb(var(--bs-primary-rgb))!important')
+    || !str_contains($assets, 'ri-graduation-cap-fill::before')
 ) {
     throw new RuntimeException('APEL Access tab must use a soft theme-primary colour treatment.');
 }

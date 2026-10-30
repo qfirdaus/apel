@@ -33,6 +33,8 @@ This changelog follows a release-style summary based on major project milestones
   Access modal structure, spacing, controls and confirmation layout.
 
 ### Fixed
+- Forced the active APEL Access Remix Icon glyph, size and theme-primary tile
+  to remain visible when shared navigation icon styles are present.
 - Rebuilt pre-initialized APEL tooltips with an unrestricted max-content width
   so long student names and matric numbers remain on one line.
 - Kept APEL table cell tooltips on a single line with content-based width,
