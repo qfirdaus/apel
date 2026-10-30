@@ -46,7 +46,13 @@ $stats = [
 ];
 $errors = [];
 $startedAt = microtime(true);
-$actor = 'cron:apel-student-sync';
+$runAt = (new DateTimeImmutable('now', new DateTimeZone('Asia/Kuala_Lumpur')))->format(DATE_ATOM);
+$trigger = strtolower(trim((string)(getenv('APEL_SYNC_TRIGGER') ?: 'cron')));
+$trigger = in_array($trigger, ['cron', 'manual'], true) ? $trigger : 'cron';
+$requestedActor = preg_replace('/[^a-zA-Z0-9_.@-]/', '', (string)(getenv('APEL_SYNC_ACTOR') ?: '')) ?: '';
+$actor = $trigger === 'manual' && $requestedActor !== ''
+    ? 'manual:' . mb_substr($requestedActor, 0, 80)
+    : 'cron:apel-student-sync';
 
 /** @return string */
 $clean = static fn(mixed $value): string => trim((string)$value);
@@ -337,6 +343,8 @@ try {
             'dry_run' => false,
         ]);
     }
+    echo "APEL_STUDENT_SYNC_RUN_AT={$runAt}\n";
+    echo 'APEL_STUDENT_SYNC_TRIGGER=' . $trigger . "\n";
     echo 'APEL_STUDENT_SYNC_MODE=' . ($dryRun ? 'dry-run' : 'apply') . "\n";
     foreach ($stats as $name => $value) {
         echo 'APEL_STUDENT_SYNC_' . strtoupper($name) . '=' . $value . "\n";
@@ -354,6 +362,8 @@ try {
             'duration_ms' => $durationMs,
         ]);
     }
+    fwrite(STDERR, "APEL_STUDENT_SYNC_RUN_AT={$runAt}\n");
+    fwrite(STDERR, 'APEL_STUDENT_SYNC_TRIGGER=' . $trigger . "\n");
     fwrite(STDERR, 'APEL_STUDENT_SYNC_FATAL=' . $e->getMessage() . "\n");
     exit(1);
 }

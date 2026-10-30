@@ -71,3 +71,8 @@ existing minute 00, 05/15/25/35/45/55, 09/39 and 17 schedules:
 
 Production must be audited and scheduled separately; installing the staging
 schedule does not authorize a production cron change.
+
+The local WSL checkout does not install or activate this cron schedule. From
+the APEL Access tab, authorized administrators can run the same audited command
+on demand with **Manual Sync** and review both scheduled and manual executions
+through the latest-first **Cronjob Log** DataTable.

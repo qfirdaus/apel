@@ -52,6 +52,45 @@ try {
         exit;
     };
 
+    $syncLogFile = dirname(__DIR__, 4) . '/storage/logs/apel-student-sync.log';
+    $readSyncRuns = static function (string $path, int $limit = 250): array {
+        if (!is_file($path) || !is_readable($path)) {
+            return [];
+        }
+        $size = (int)(filesize($path) ?: 0);
+        $handle = fopen($path, 'rb');
+        if ($handle === false) {
+            return [];
+        }
+        $maxBytes = 1024 * 1024;
+        if ($size > $maxBytes) {
+            fseek($handle, -$maxBytes, SEEK_END);
+            fgets($handle);
+        }
+        $content = stream_get_contents($handle) ?: '';
+        fclose($handle);
+
+        $runs = [];
+        $current = [];
+        foreach (preg_split('/\R/', $content) ?: [] as $line) {
+            if (!preg_match('/^APEL_STUDENT_SYNC_([A-Z_]+)=(.*)$/', trim($line), $match)) {
+                continue;
+            }
+            $key = strtolower($match[1]);
+            if ($key === 'run_at' && $current !== []) {
+                $runs[] = $current;
+                $current = [];
+            }
+            $current[$key] = trim($match[2]);
+        }
+        if ($current !== [] && isset($current['run_at'])) {
+            $runs[] = $current;
+        }
+        $runs = array_values(array_filter($runs, static fn(array $run): bool => isset($run['run_at'])));
+        usort($runs, static fn(array $a, array $b): int => strcmp((string)($b['run_at'] ?? ''), (string)($a['run_at'] ?? '')));
+        return array_slice($runs, 0, max(1, $limit));
+    };
+
     $writeAudit = static function (
         string $eventType,
         string $outcome,
@@ -126,6 +165,55 @@ try {
         }
         return $row;
     };
+
+    if ($action === 'sync_logs') {
+        $success(['error' => false, 'runs' => $readSyncRuns($syncLogFile)]);
+    }
+
+    if ($action === 'manual_sync') {
+        if (!checkRateLimit('apel_user_manual_sync', 3, 300)) {
+            jsonErrorResponse('Too many manual sync requests. Please try again later.', 429);
+        }
+        if (!function_exists('proc_open')) {
+            jsonErrorResponse('Manual sync is unavailable on this server.', 503);
+        }
+        $root = dirname(__DIR__, 4);
+        $commandFile = $root . '/tools/cron/sync-apel-students.php';
+        $phpBinary = is_executable('/usr/bin/php8.4') ? '/usr/bin/php8.4' : PHP_BINARY;
+        if (!is_file($commandFile) || !is_executable($phpBinary)) {
+            jsonErrorResponse('APEL sync command is unavailable.', 503);
+        }
+        $pipes = [];
+        $process = proc_open(
+            [$phpBinary, $commandFile],
+            [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+            $root,
+            ['APEL_SYNC_TRIGGER' => 'manual', 'APEL_SYNC_ACTOR' => $actor]
+        );
+        if (!is_resource($process)) {
+            jsonErrorResponse('Manual sync could not be started.', 500);
+        }
+        fclose($pipes[0]);
+        $stdout = stream_get_contents($pipes[1]) ?: '';
+        $stderr = stream_get_contents($pipes[2]) ?: '';
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exitCode = proc_close($process);
+        $logPayload = rtrim($stdout . ($stderr !== '' ? "\n" . $stderr : '')) . "\n\n";
+        if (@file_put_contents($syncLogFile, $logPayload, FILE_APPEND | LOCK_EX) === false) {
+            error_log('[apel-user-sync] Unable to append synchronization log.');
+        }
+        if ($exitCode !== 0) {
+            jsonErrorResponse('APEL user synchronization failed. Review the cronjob log.', 500);
+        }
+        $runs = $readSyncRuns($syncLogFile, 1);
+        $success([
+            'error' => false,
+            'message' => 'APEL user synchronization completed.',
+            'run' => $runs[0] ?? [],
+        ]);
+    }
 
     if ($action === 'delete') {
         if ($userID <= 0) jsonErrorResponse('ID pengguna tidak sah.', 400);

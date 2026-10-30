@@ -6,6 +6,11 @@ This changelog follows a release-style summary based on major project milestones
 
 ## [Unreleased]
 
+### Added
+- Added administrator controls to run the status-02 APEL student sync manually
+  and inspect timestamped cron/manual execution history in a latest-first
+  DataTable, while keeping scheduled execution enabled only on staging.
+
 ### Changed
 - Renamed the project-owned user-list tab to `APEL Access` in English and
   `Akses APEL` in Malay.
