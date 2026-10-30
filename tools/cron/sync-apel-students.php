@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-if (PHP_SAPI !== 'cli') {
+if (PHP_SAPI !== 'cli' && !defined('APEL_SYNC_INTERNAL_RUN')) {
     http_response_code(404);
     exit(1);
 }
 
-$options = getopt('', ['dry-run', 'force-deactivate', 'max-deactivate-percent::']);
+$options = getopt('', ['dry-run', 'force-deactivate', 'max-deactivate-percent::']) ?: [];
 $dryRun = array_key_exists('dry-run', $options);
 $forceDeactivate = array_key_exists('force-deactivate', $options);
 $maxDeactivatePercent = max(0.0, min(100.0, (float)($options['max-deactivate-percent'] ?? 20)));
@@ -16,18 +16,24 @@ $lockDir = $root . '/storage/locks';
 $logDir = $root . '/storage/logs';
 foreach ([$lockDir, $logDir] as $directory) {
     if (!is_dir($directory) && !mkdir($directory, 0775, true) && !is_dir($directory)) {
-        fwrite(STDERR, "Unable to create runtime directory: {$directory}\n");
+        echo "APEL_STUDENT_SYNC_FATAL=Unable to create runtime directory: {$directory}\n";
         exit(1);
     }
 }
 
 $lockHandle = fopen($lockDir . '/apel-student-sync.internal.lock', 'c');
 if ($lockHandle === false || !flock($lockHandle, LOCK_EX | LOCK_NB)) {
-    fwrite(STDOUT, "APEL_STUDENT_SYNC_SKIPPED=already_running\n");
+    echo "APEL_STUDENT_SYNC_SKIPPED=already_running\n";
+    if (defined('APEL_SYNC_INTERNAL_RUN')) {
+        $GLOBALS['APEL_SYNC_INTERNAL_RESULT'] = ['success' => false, 'skipped' => true, 'reason' => 'already_running'];
+        return;
+    }
     exit(0);
 }
 
-define('ALLOW_ANON_AJAX', true);
+if (!defined('ALLOW_ANON_AJAX')) {
+    define('ALLOW_ANON_AJAX', true);
+}
 $_SERVER['SCRIPT_NAME'] = '/tools/cron/sync-apel-students.php';
 $_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'];
 require_once $root . '/public/includes/init.php';
@@ -351,7 +357,17 @@ try {
     }
     echo "APEL_STUDENT_SYNC_DURATION_MS={$durationMs}\n";
     foreach ($errors as $error) {
-        fwrite(STDERR, 'APEL_STUDENT_SYNC_ERROR=' . json_encode($error, JSON_UNESCAPED_SLASHES) . "\n");
+        echo 'APEL_STUDENT_SYNC_ERROR=' . json_encode($error, JSON_UNESCAPED_SLASHES) . "\n";
+    }
+    if (defined('APEL_SYNC_INTERNAL_RUN')) {
+        $GLOBALS['APEL_SYNC_INTERNAL_RESULT'] = [
+            'success' => $stats['errors'] === 0,
+            'run_at' => $runAt,
+            'trigger' => $trigger,
+            'stats' => $stats,
+            'duration_ms' => $durationMs,
+        ];
+        return;
     }
     exit($stats['errors'] === 0 ? 0 : 2);
 } catch (Throwable $e) {
@@ -362,8 +378,18 @@ try {
             'duration_ms' => $durationMs,
         ]);
     }
-    fwrite(STDERR, "APEL_STUDENT_SYNC_RUN_AT={$runAt}\n");
-    fwrite(STDERR, 'APEL_STUDENT_SYNC_TRIGGER=' . $trigger . "\n");
-    fwrite(STDERR, 'APEL_STUDENT_SYNC_FATAL=' . $e->getMessage() . "\n");
+    echo "APEL_STUDENT_SYNC_RUN_AT={$runAt}\n";
+    echo 'APEL_STUDENT_SYNC_TRIGGER=' . $trigger . "\n";
+    echo 'APEL_STUDENT_SYNC_FATAL=' . $e->getMessage() . "\n";
+    if (defined('APEL_SYNC_INTERNAL_RUN')) {
+        $GLOBALS['APEL_SYNC_INTERNAL_RESULT'] = [
+            'success' => false,
+            'run_at' => $runAt,
+            'trigger' => $trigger,
+            'error' => $e->getMessage(),
+            'duration_ms' => $durationMs,
+        ];
+        return;
+    }
     exit(1);
 }

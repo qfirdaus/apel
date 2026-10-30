@@ -8,7 +8,7 @@ return [
     'apelUser_manual_sync_button' => 'Sync Manual',
     'apelUser_cron_log_button' => 'Log Cronjob',
     'apelUser_sync_confirm_title' => 'Jalankan Sync APEL?',
-    'apelUser_sync_confirm_text' => 'Profil pelajar APEL yang layak dengan status 02 akan diselaraskan sekarang.',
+    'apelUser_sync_confirm_text' => 'Profil pelajar APEL yang layak akan diselaraskan sekarang.',
     'apelUser_sync_confirm_button' => 'Ya, Sync Sekarang',
     'apelUser_sync_running' => 'Sedang menyelaraskan pengguna APEL...',
     'apelUser_sync_success' => 'Penyelarasan pengguna APEL selesai.',

@@ -8,7 +8,7 @@ return [
     'apelUser_manual_sync_button' => 'Manual Sync',
     'apelUser_cron_log_button' => 'Cronjob Log',
     'apelUser_sync_confirm_title' => 'Run APEL Sync?',
-    'apelUser_sync_confirm_text' => 'Eligible APEL student profiles with status 02 will be synchronized now.',
+    'apelUser_sync_confirm_text' => 'Eligible APEL student profiles will be synchronized now.',
     'apelUser_sync_confirm_button' => 'Yes, Sync Now',
     'apelUser_sync_running' => 'Synchronizing APEL users...',
     'apelUser_sync_success' => 'APEL user synchronization completed.',

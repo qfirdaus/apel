@@ -174,37 +174,32 @@ try {
         if (!checkRateLimit('apel_user_manual_sync', 3, 300)) {
             jsonErrorResponse('Too many manual sync requests. Please try again later.', 429);
         }
-        if (!function_exists('proc_open')) {
-            jsonErrorResponse('Manual sync is unavailable on this server.', 503);
-        }
         $root = dirname(__DIR__, 4);
         $commandFile = $root . '/tools/cron/sync-apel-students.php';
-        $phpBinary = is_executable('/usr/bin/php8.4') ? '/usr/bin/php8.4' : PHP_BINARY;
-        if (!is_file($commandFile) || !is_executable($phpBinary)) {
+        if (!is_file($commandFile)) {
             jsonErrorResponse('APEL sync command is unavailable.', 503);
         }
-        $pipes = [];
-        $process = proc_open(
-            [$phpBinary, $commandFile],
-            [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
-            $pipes,
-            $root,
-            ['APEL_SYNC_TRIGGER' => 'manual', 'APEL_SYNC_ACTOR' => $actor]
-        );
-        if (!is_resource($process)) {
-            jsonErrorResponse('Manual sync could not be started.', 500);
+        define('APEL_SYNC_INTERNAL_RUN', true);
+        $previousTrigger = getenv('APEL_SYNC_TRIGGER');
+        $previousActor = getenv('APEL_SYNC_ACTOR');
+        putenv('APEL_SYNC_TRIGGER=manual');
+        putenv('APEL_SYNC_ACTOR=' . $actor);
+        unset($GLOBALS['APEL_SYNC_INTERNAL_RESULT']);
+        ob_start();
+        $runInternalSync = static function (string $file): void {
+            require $file;
+        };
+        $runInternalSync($commandFile);
+        $output = (string)ob_get_clean();
+        $result = $GLOBALS['APEL_SYNC_INTERNAL_RESULT'] ?? ['success' => false];
+        $previousTrigger === false ? putenv('APEL_SYNC_TRIGGER') : putenv('APEL_SYNC_TRIGGER=' . $previousTrigger);
+        $previousActor === false ? putenv('APEL_SYNC_ACTOR') : putenv('APEL_SYNC_ACTOR=' . $previousActor);
+
+        $logPayload = rtrim($output) . "\n\n";
+        if (file_put_contents($syncLogFile, $logPayload, FILE_APPEND | LOCK_EX) === false) {
+            jsonErrorResponse('Synchronization completed but its execution log could not be saved.', 500);
         }
-        fclose($pipes[0]);
-        $stdout = stream_get_contents($pipes[1]) ?: '';
-        $stderr = stream_get_contents($pipes[2]) ?: '';
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        $exitCode = proc_close($process);
-        $logPayload = rtrim($stdout . ($stderr !== '' ? "\n" . $stderr : '')) . "\n\n";
-        if (@file_put_contents($syncLogFile, $logPayload, FILE_APPEND | LOCK_EX) === false) {
-            error_log('[apel-user-sync] Unable to append synchronization log.');
-        }
-        if ($exitCode !== 0) {
+        if (($result['success'] ?? false) !== true) {
             jsonErrorResponse('APEL user synchronization failed. Review the cronjob log.', 500);
         }
         $runs = $readSyncRuns($syncLogFile, 1);

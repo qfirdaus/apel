@@ -12,11 +12,11 @@ $contracts = [
     [$assets, 'apelAddUserBtn', 'Add APEL User button is missing.'],
     [$panel, 'apelSyncLogModal', 'Synchronization log modal is missing.'],
     [$panel, 'apelSyncLogTable', 'Synchronization log DataTable is missing.'],
-    [$assets, "order:[[0,'desc']]", 'Synchronization log must show the latest run first.'],
+    [$assets, 'ordering:false', 'Synchronization log sorting controls must be disabled.'],
     [$action, "\$action === 'manual_sync'", 'Manual synchronization endpoint is missing.'],
     [$action, "\$action === 'sync_logs'", 'Synchronization log endpoint is missing.'],
     [$action, 'apel_user_manual_sync', 'Manual synchronization must be rate limited.'],
-    [$action, 'proc_open', 'Manual synchronization must use the audited CLI command.'],
+    [$action, 'APEL_SYNC_INTERNAL_RUN', 'Manual synchronization must use the shared audited sync runner.'],
 ];
 
 foreach ($contracts as [$source, $needle, $message]) {

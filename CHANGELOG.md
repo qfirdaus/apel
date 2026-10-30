@@ -22,6 +22,9 @@ This changelog follows a release-style summary based on major project milestones
   Access modal structure, spacing, controls and confirmation layout.
 
 ### Fixed
+- Removed the internal status code from the Manual Sync confirmation, replaced
+  the disabled `proc_open` dependency with the shared in-process sync runner,
+  and removed the malformed duplicate sorting-indicator row from Cronjob Log.
 - Deferred APEL Access initialisation until shared Bootstrap, DataTables and
   SweetAlert assets are available, restoring Add, View As, Edit and Delete
   action behaviour.
