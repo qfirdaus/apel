@@ -21,6 +21,8 @@ $contracts = [
     "identifier_hash" => 'Operational output must avoid exposing student identifiers.',
     "APEL_STUDENT_SYNC_RUN_AT" => 'Each run must expose a timestamp for the administration log.',
     "APEL_STUDENT_SYNC_TRIGGER" => 'Each run must identify whether cron or an administrator triggered it.',
+    "APEL_STUDENT_SYNC_SKIPPED=no_changes" => 'Scheduled sync must skip full processing output when no data changed.',
+    "\$trigger === 'cron'" => 'No-change skipping must apply specifically to scheduled runs.',
 ];
 foreach ($contracts as $needle => $message) {
     if (!str_contains($sync, $needle)) {

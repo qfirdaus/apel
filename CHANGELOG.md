@@ -12,6 +12,9 @@ This changelog follows a release-style summary based on major project milestones
   DataTable, while keeping scheduled execution enabled only on staging.
 
 ### Changed
+- Changed scheduled APEL synchronization to exit as `SKIPPED=no_changes` when
+  its comparison finds no create, update, ownership, reactivation or
+  deactivation work, avoiding full audit and visible log noise for no-op runs.
 - Renamed APEL student-facing list and form terminology to Matric No., Faculty
   and Add APEL Student, and limited the sync history modal to runs that changed
   data or reported an error so routine no-op executions do not create noise.
