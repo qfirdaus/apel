@@ -12,6 +12,9 @@ This changelog follows a release-style summary based on major project milestones
   DataTable, while keeping scheduled execution enabled only on staging.
 
 ### Changed
+- Renamed APEL student-facing list and form terminology to Matric No., Faculty
+  and Add APEL Student, and limited the sync history modal to runs that changed
+  data or reported an error so routine no-op executions do not create noise.
 - Renamed the project-owned user-list tab to `APEL Access` in English and
   `Akses APEL` in Malay.
 - Matched the APEL Access table structure, column sizing, spacing, pagination,

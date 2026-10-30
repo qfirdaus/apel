@@ -86,7 +86,20 @@ try {
         if ($current !== [] && isset($current['run_at'])) {
             $runs[] = $current;
         }
-        $runs = array_values(array_filter($runs, static fn(array $run): bool => isset($run['run_at'])));
+        $runs = array_values(array_filter($runs, static function (array $run): bool {
+            if (!isset($run['run_at'])) {
+                return false;
+            }
+            if (isset($run['fatal']) || (int)($run['errors'] ?? 0) > 0) {
+                return true;
+            }
+            foreach (['created', 'updated', 'ownership_created', 'ownership_updated', 'reactivated', 'deactivated'] as $field) {
+                if ((int)($run[$field] ?? 0) > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }));
         usort($runs, static fn(array $a, array $b): int => strcmp((string)($b['run_at'] ?? ''), (string)($a['run_at'] ?? '')));
         return array_slice($runs, 0, max(1, $limit));
     };
@@ -202,11 +215,15 @@ try {
         if (($result['success'] ?? false) !== true) {
             jsonErrorResponse('APEL user synchronization failed. Review the cronjob log.', 500);
         }
-        $runs = $readSyncRuns($syncLogFile, 1);
+        $run = array_merge(
+            ['run_at' => $result['run_at'] ?? null, 'trigger' => $result['trigger'] ?? 'manual'],
+            is_array($result['stats'] ?? null) ? $result['stats'] : [],
+            ['duration_ms' => $result['duration_ms'] ?? 0]
+        );
         $success([
             'error' => false,
             'message' => 'APEL user synchronization completed.',
-            'run' => $runs[0] ?? [],
+            'run' => $run,
         ]);
     }
 

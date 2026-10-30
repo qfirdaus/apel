@@ -175,9 +175,10 @@ function initApelUserList(){
     errorElement.classList.add('d-none');
     try{
       const data=await postAction({action:'sync_logs'});
+      const showValue=value=>Number(value)>0?value:'';
       const rows=(data.runs||[]).map(run=>{
         const errors=Number(run.errors||0);
-        return [run.run_at||'-',run.trigger==='manual'?labels.triggerManual:labels.triggerCron,errors===0?labels.syncStatusSuccess:labels.syncStatusFailed,run.source||0,run.created||0,run.updated||0,run.deactivated||0,`${run.duration_ms||0} ms`];
+        return [run.run_at||'-',run.trigger==='manual'?labels.triggerManual:labels.triggerCron,errors===0?labels.syncStatusSuccess:labels.syncStatusFailed,showValue(run.source),showValue(run.created),showValue(run.updated),showValue(run.deactivated),Number(run.duration_ms)>0?`${run.duration_ms} ms`:'' ];
       });
       if(window.jQuery&&jQuery.fn.DataTable){
         if(jQuery.fn.DataTable.isDataTable('#apelSyncLogTable'))jQuery('#apelSyncLogTable').DataTable().destroy();
